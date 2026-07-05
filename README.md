@@ -966,6 +966,34 @@ src/
 
 
 
+dobna/
+├── backend/                 (اختیاری – در صورت استفاده از سرور اختصاصی)
+│   ├── supabase/
+│   │   ├── migrations/      (فایل‌های SQL برای ایجاد جداول و توابع)
+│   │   ├── functions/       (Edge Functions سوپابیس)
+│   │   └── seed.sql         (داده‌های اولیه مثل کارت‌ها – شما این را دارید)
+│   └── price-fetcher/       (کرون‌جاب برای به‌روزرسانی قیمت‌ها)
+├── frontend-web/            (React/Vite)
+│   ├── src/
+│   │   ├── components/      (تمامی کامپوننت‌های UI)
+│   │   ├── pages/           (صفحات اصلی: خانه، گروه، بازی، صرافی، پروفایل)
+│   │   ├── hooks/           (هوک‌های سفارشی برای Supabase، Realtime و ...)
+│   │   ├── contexts/        (مدیریت وضعیت کلی (Auth، Game، Chat))
+│   │   ├── services/        (ارتباط با Supabase، API قیمت، پرداخت)
+│   │   ├── utils/           (توابع کمکی مثل تولید کارت، بررسی برنده)
+│   │   ├── styles/          (فایل‌های CSS/Tailwind)
+│   │   └── App.jsx
+│   ├── public/              (Assets عمومی)
+│   ├── .env                 (متغیرهای محیطی)
+│   └── package.json
+├── frontend-mobile/         (Flutter یا React Native)
+│   └── (ساختار مشابه با وب)
+├── docs/                    (مستندات فنی و راهنما)
+└── README.md
+
+
+
+
 
 
 ```
