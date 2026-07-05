@@ -776,6 +776,188 @@ assets/
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+src/
+├── api/                        # ارتباط با Supabase و سرویس‌های خارجی
+│   ├── supabaseClient.js      # کلاینت Supabase (با تنظیمات Realtime)
+│   └── index.js               # خروجی یکپارچه همه سرویس‌ها
+│
+├── assets/                     # (اختیاری) اگر Assets رو اینجا کپی می‌کنید
+│   └── (لینک سمبلیک به پوشه assets روت)
+│
+├── components/                 # کامپوننت‌های قابل استفاده مجدد (UI)
+│   ├── common/                 # کامپوننت‌های عمومی
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── ErrorBoundary.jsx
+│   │   ├── Modal.jsx
+│   │   └── ToastNotification.jsx
+│   │
+│   ├── layout/                 # کامپوننت‌های ساختاری
+│   │   ├── MainLayout.jsx     # قالب اصلی صفحات (با هدر، فوتر، منو)
+│   │   ├── AuthLayout.jsx     # قالب صفحات احراز هویت
+│   │   └── GameLayout.jsx     # قالب صفحات بازی (با تایمر و کارت)
+│   │
+│   ├── navigation/             # نویگیشن
+│   │   ├── BottomNav.jsx      # منوی پایین (۵ گزینه اصلی)
+│   │   ├── TopNav.jsx         # نوار بالای صفحه
+│   │   └── FloatingChatButton.jsx  # دکمه شناور چت
+│   │
+│   ├── wallet/                 # کامپوننت‌های کیف پول و صرافی
+│   │   ├── AssetItem.jsx      # هر آیتم دارایی
+│   │   ├── PriceChart.jsx     # چارت قیمت
+│   │   ├── TransactionItem.jsx # هر تراکنش
+│   │   ├── NetworkSelector.jsx # انتخاب شبکه برای واریز
+│   │   └── QRCodeDisplay.jsx  # نمایش و ذخیره QR Code
+│   │
+│   ├── game/                   # کامپوننت‌های بازی
+│   │   ├── BingoCard.jsx      # کارت ۳×۹
+│   │   ├── LevelCard.jsx      # کارت نمایش هر سطح تالار
+│   │   ├── Timer.jsx          # تایمر معکوس (۱۵۰ ثانیه)
+│   │   ├── CardSelector.jsx   # انتخاب کارت برای خرید
+│   │   └── WinnerModal.jsx    # مودال اعلام برنده
+│   │
+│   ├── duel/                   # کامپوننت‌های دوئل و چالش
+│   │   ├── DuelRequestCard.jsx # کارت درخواست دوئل
+│   │   ├── DuelTimer.jsx      # تایمر ۵ دقیقه‌ای دوئل
+│   │   ├── ChallengeCard.jsx  # کارت چالش
+│   │   └── StoryRow.jsx       # ردیف استوری‌ها (زرد و بنفش)
+│   │
+│   ├── chat/                   # کامپوننت‌های چت
+│   │   ├── ChatMessage.jsx    # هر پیام
+│   │   ├── ChatInput.jsx      # ورودی پیام
+│   │   └── ChatList.jsx       # لیست مکالمات
+│   │
+│   └── shared/                 # کامپوننت‌های اشتراکی دیگر
+│       ├── DobnaLogo.jsx      # لوگو با قابلیت ۵ ضربه برای Matrix
+│       ├── ShareButton.jsx    # دکمه اشتراک‌گذاری لینک
+│       ├── BalanceBox.jsx     # باکس موجودی با قابلیت تغییر ارز
+│       ├── SearchBar.jsx      # نوار جستجو
+│       └── LanguageSwitcher.jsx # تغییر زبان (فارسی/انگلیسی/...)
+│
+├── pages/                      # صفحات اصلی (هر کدوم یه مسیر)
+│   ├── HomePage.jsx           # صفحه اصلی لابی (با استوری‌ها و سطوح)
+│   ├── CommunityPage.jsx      # صفحه داخلی گروه (نمایش ۴ سطح)
+│   ├── GameRoomPage.jsx       # صفحه بازی (کارت‌ها و تایمر)
+│   ├── DuelPage.jsx           # صفحه دوئل (با تایمر ۵ دقیقه)
+│   ├── ChallengePage.jsx      # صفحه چالش‌ها
+│   ├── WalletPage.jsx         # داشبورد کیف پول
+│   ├── DepositPage.jsx        # صفحه واریز (انتخاب شبکه و آدرس)
+│   ├── WithdrawPage.jsx       # صفحه برداشت
+│   ├── SwapPage.jsx           # صفحه تبدیل ارز
+│   ├── TransferPage.jsx       # صفحه انتقال به DID
+│   ├── CoinDetailPage.jsx     # صفحه جزئیات هر ارز (چارت و فعالیت‌ها)
+│   ├── ChatPage.jsx           # صفحه چت (گروهی و خصوصی)
+│   ├── ProfilePage.jsx        # پروفایل کاربر
+│   ├── MatrixPage.jsx         # صفحه مخفی Matrix (با افکت‌های نئونی)
+│   ├── Auth/                  # صفحات احراز هویت
+│   │   ├── LoginPage.jsx
+│   │   ├── RegisterPage.jsx
+│   │   └── ForgotPasswordPage.jsx
+│   └── SettingsPage.jsx       # تنظیمات کاربر (زبان، امنیت، ...)
+│
+├── services/                   # سرویس‌های ارتباط با بک‌اند
+│   ├── authService.js         # احراز هویت (ورود، ثبت‌نام، خروج)
+│   ├── communityService.js    # مدیریت گروه‌ها و کامونیتی‌ها
+│   ├── gameService.js         # مدیریت بازی (کارت، تایمر، برنده)
+│   ├── roomService.js         # مدیریت اتاق‌های بازی
+│   ├── duelService.js         # مدیریت دوئل (ایجاد، پیوستن، تایمر)
+│   ├── challengeService.js    # مدیریت چالش‌ها
+│   ├── walletService.js       # کیف پول (موجودی، سود، لیست دارایی‌ها)
+│   ├── depositService.js      # واریز (شبکه‌ها، آدرس، QR)
+│   ├── withdrawService.js     # برداشت
+│   ├── swapService.js         # تبدیل ارز
+│   ├── transferService.js     # انتقال به DID
+│   ├── chatService.js         # چت (ارسال/دریافت پیام، تعداد نخوانده)
+│   ├── notificationService.js # نوتیفیکیشن‌ها
+│   ├── priceService.js        # قیمت لحظه‌ای و چارت
+│   └── paymentService.js      # درگاه پرداخت (واریز/برداشت)
+│
+├── hooks/                      # هوک‌های سفارشی
+│   ├── useAuth.js             # وضعیت احراز هویت
+│   ├── useCommunity.js        # اطلاعات گروه فعال
+│   ├── useGame.js             # وضعیت بازی (تایمر، کارت‌ها)
+│   ├── useDuel.js             # مدیریت دوئل
+│   ├── useWallet.js           # مدیریت کیف پول
+│   ├── useChat.js             # مدیریت چت (پیام‌ها، تعداد نخوانده)
+│   ├── useRealtime.js         # اتصال به Supabase Realtime
+│   ├── useTimer.js            # تایمر معکوس (۱۵۰ ثانیه و ۵ دقیقه)
+│   ├── usePriceChart.js       # داده‌های چارت قیمت
+│   ├── useMatrix.js           # تشخیص ۵ ضربه روی لوگو
+│   ├── useAudioManager.js     # پخش افکت‌های صوتی (از پوشه sounds)
+│   ├── useNotification.js     # مدیریت نوتیفیکیشن‌ها
+│   ├── useOTP.js              # مدیریت کد یک‌بارمصرف
+│   └── useTranslation.js      # مدیریت زبان (i18n)
+│
+├── store/                      # مدیریت وضعیت (با Zustand)
+│   ├── authStore.js           # وضعیت کاربر
+│   ├── communityStore.js      # وضعیت گروه فعال
+│   ├── gameStore.js           # وضعیت بازی جاری
+│   ├── walletStore.js         # وضعیت کیف پول و دارایی‌ها
+│   ├── chatStore.js           # وضعیت چت (پیام‌ها، مخاطبین)
+│   ├── duelStore.js           # وضعیت دوئل‌ها
+│   ├── storyStore.js          # استوری‌های لحظه‌ای
+│   ├── matrixStore.js         # وضعیت نمایش Matrix
+│   └── uiStore.js             # وضعیت رابط کاربری (مودال، لودینگ، ...)
+│
+├── utils/                      # ابزارهای کمکی (Helper Functions)
+│   ├── assetMapper.js         # اتصال ارز/سطح به تصویر اسکناس، آیکون، پرچم
+│   ├── currencyFormatter.js   # فرمت اعداد (تومان، دلار، ...)
+│   ├── timeFormatter.js       # تبدیل ثانیه به دقیقه:ثانیه
+│   ├── cardValidator.js       # اعتبارسنجی کارت‌ها (۱۵ عدد غیرتکراری)
+│   ├── winnerChecker.js       # بررسی برنده در سمت کلاینت
+│   ├── shareHelper.js         # تولید لینک دعوت و اشتراک‌گذاری
+│   ├── matrixEffects.js       # افکت‌های صفحه Matrix (نوشته‌های سبز)
+│   ├── duelHelper.js          # محاسبه کارمزد دوئل و زمان‌بندی
+│   ├── networkMapper.js       # اتصال نام شبکه به آیکون و توضیحات
+│   ├── qrGenerator.js         # تولید QR Code از آدرس
+│   ├── priceFormatter.js      # فرمت قیمت‌ها با توجه به زبان
+│   └── validators.js          # اعتبارسنجی‌های ورودی (ایمیل، شماره موبایل، DID)
+│
+├── locales/                    # فایل‌های زبان (برای i18n)
+│   ├── en.json                # انگلیسی
+│   ├── fa.json                # فارسی
+│   ├── tr.json                # ترکی
+│   └── ar.json                # عربی (در آینده)
+│
+├── styles/                     # استایل‌های سراسری
+│   ├── index.css              # استایل اصلی (با Tailwind)
+│   ├── rtl.css                # تنظیمات RTL برای فارسی/عربی
+│   └── animations.css         # انیمیشن‌های سفارشی
+│
+├── routes/                     # تنظیمات مسیرها (React Router)
+│   ├── AppRoutes.jsx          # تعریف همه مسیرها
+│   └── PrivateRoute.jsx       # محافظت از مسیرهای نیازمند احراز هویت
+│
+├── config/                     # فایل‌های پیکربندی
+│   ├── constants.js           # ثابت‌های پروژه (مثل لیست ارزها، شبکه‌ها)
+│   ├── i18n.js                # پیکربندی i18next
+│   └── theme.js               # تم‌های رنگی (تاریک/روشن)
+│
+├── App.jsx                     # کامپوننت اصلی اپلیکیشن
+├── main.jsx                    # نقطه ورود (ReactDOM.render)
+└── index.html                  # (در ریشه پروژه است، نه src)
+
+
+
+
+
+
+
+
 ```
 
 
