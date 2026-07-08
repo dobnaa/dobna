@@ -1,0 +1,61 @@
+1.جدول دوئل
+CREATE TABLE public.duels (
+  id BIGSERIAL PRIMARY KEY,
+  creator_id UUID REFERENCES public.profiles(id),
+  opponent_id UUID REFERENCES public.profiles(id),
+  currency VARCHAR(10) NOT NULL, -- USDT, BTC, IRT, ...
+  amount DECIMAL(20,8) NOT NULL,
+  level INTEGER NOT NULL CHECK (level BETWEEN 1 AND 4),
+  status VARCHAR(20) DEFAULT 'waiting', -- waiting, active, completed, cancelled
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '5 minutes'),
+  winner_id UUID REFERENCES public.profiles(id),
+  fee DECIMAL(20,8) DEFAULT 0
+);
+
+
+
+
+
+
+2.جدول chat_messages
+CREATE TABLE public.chat_messages (
+  id BIGSERIAL PRIMARY KEY,
+  sender_id UUID REFERENCES public.profiles(id),
+  receiver_id UUID REFERENCES public.profiles(id), -- NULL برای چت گروهی
+  community_id UUID REFERENCES public.communities(id), -- NULL برای چت خصوصی
+  content TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+3.جدول notifications
+CREATE TABLE public.notifications (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id),
+  type VARCHAR(30) NOT NULL, -- new_message, duel_request, challenge_invite, game_win
+  content TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT FALSE,
+  related_id BIGINT, -- آیدی دوئل، چالش، پیام، ...
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
+
+
+
+4.جدول transactions (برای دوئل و بازی)
+CREATE TABLE public.transactions (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id),
+  type VARCHAR(30) NOT NULL, -- duel_deposit, duel_refund, duel_win, game_fee, ...
+  currency VARCHAR(10) NOT NULL,
+  amount DECIMAL(20,8) NOT NULL,
+  reference_id BIGINT, -- آیدی دوئل یا بازی
+  status VARCHAR(20) DEFAULT 'pending',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
