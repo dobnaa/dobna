@@ -1,0 +1,25 @@
+{
+  "wallet": {
+    "title": "کیف پول",
+    "total_assets": "ارزش کل دارایی شما",
+    "daily_interest": "سود تعلق گرفته روزانه",
+    "deposit": "واریز",
+    "withdraw": "برداشت",
+    "swap": "تبدیل",
+    "transfer": "انتقال"
+  },
+  "deposit": {
+    "title": "واریز",
+    "select_network": "انتخاب شبکه",
+    "address": "آدرس واریز",
+    "save_qr": "ذخیره QR Code",
+    "min_deposit": "حداقل واریز",
+    "blocks_confirm": "تعداد بلاک برای تأیید"
+  },
+  "duel": {
+    "title": "دوئل",
+    "expires_in": "زمان باقی‌مانده",
+    "join": "پیوستن به دوئل",
+    "cancel": "لغو دوئل"
+  }
+}
