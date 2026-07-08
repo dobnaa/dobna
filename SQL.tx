@@ -59,3 +59,97 @@ CREATE TABLE public.transactions (
   status VARCHAR(20) DEFAULT 'pending',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+
+
+
+
+
+
+جدول wallets (کیف پول کاربران)
+
+
+CREATE TABLE public.wallets (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) UNIQUE,
+  total_balance_usd DECIMAL(20,8) DEFAULT 0,
+  daily_interest DECIMAL(10,2) DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
+
+
+
+جدول user_balances (موجودی هر ارز)
+
+CREATE TABLE public.user_balances (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id),
+  currency VARCHAR(10) NOT NULL, -- BTC, USDT, IRT, ETH, ...
+  amount DECIMAL(20,8) DEFAULT 0,
+  locked_amount DECIMAL(20,8) DEFAULT 0, -- برای دوئل‌ها و بازی‌های در حال انجام
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
+
+
+
+جدول transactions (تاریخچه کامل تراکنش‌ها - به‌روز شده)
+CREATE TABLE public.transactions (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id),
+  type VARCHAR(30) NOT NULL, -- deposit, withdraw, swap, transfer, game_win, duel_win, duel_refund
+  currency VARCHAR(10) NOT NULL,
+  amount DECIMAL(20,8) NOT NULL,
+  fee DECIMAL(20,8) DEFAULT 0,
+  network VARCHAR(30), -- BSC, TRC20, ERC20, Solana, ...
+  address VARCHAR(255), -- آدرس مقصد یا مبدأ
+  tx_id VARCHAR(255), -- هش تراکنش در بلاک‌چین
+  status VARCHAR(20) DEFAULT 'pending', -- pending, confirmed, failed, cancelled
+  reference_id BIGINT, -- آیدی دوئل، بازی، یا سفارش
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  confirmed_at TIMESTAMPTZ
+);
+
+
+
+
+
+جدول price_history (داده‌های چارت قیمت)
+
+CREATE TABLE public.price_history (
+  id BIGSERIAL PRIMARY KEY,
+  currency_pair VARCHAR(20) NOT NULL, -- BTC/USD, ETH/USDT, IRT/USD, ...
+  price DECIMAL(20,8) NOT NULL,
+  volume DECIMAL(20,8),
+  timestamp TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
+
+
+جدول deposit_addresses (آدرس‌های واریز برای هر کاربر و شبکه)
+
+CREATE TABLE public.deposit_addresses (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id),
+  currency VARCHAR(10) NOT NULL,
+  network VARCHAR(30) NOT NULL, -- BSC, TRC20, ERC20, ...
+  address VARCHAR(255) NOT NULL UNIQUE,
+  contract_address VARCHAR(255), -- برای توکن‌ها
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
