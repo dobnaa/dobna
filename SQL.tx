@@ -1,4 +1,4 @@
-1.جدول دوئل
+1.جدول دوئل //
 CREATE TABLE public.duels (
   id BIGSERIAL PRIMARY KEY,
   creator_id UUID REFERENCES public.profiles(id),
