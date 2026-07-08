@@ -1,1 +1,5 @@
-[]
+/* index.css */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
