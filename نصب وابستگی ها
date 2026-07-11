@@ -5,3 +5,7 @@ npm install i18next react-i18next i18next-browser-languagedetector
 تولید تصویر با کد (آواتار)
 npm install @dicebear/avatars @dicebear/avataaars
 
+آیکون های UI
+npm install lucide-react
+
+
