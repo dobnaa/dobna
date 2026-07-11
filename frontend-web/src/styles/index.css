@@ -1,1 +1,8 @@
-[]
+/* styles/index.css */
+.bg-neon-gradient {
+  background: radial-gradient(circle at 20% 50%, #1E3A5F, #0A0F1D);
+}
+/* یا */
+.bg-matrix {
+  background: linear-gradient(180deg, #0a0a0a 0%, #00ff41 100%);
+}
