@@ -50,3 +50,27 @@
     "transfer": "انتقال"
   }
 }
+{
+  "wallet": {
+    "title": "کیف پول",
+    "total_assets": "ارزش کل دارایی شما",
+    "daily_interest": "سود روزانه",
+    "monthly": "ماهانه",
+    "deposit": "واریز",
+    "withdraw": "برداشت",
+    "swap": "تبدیل",
+    "transfer": "انتقال",
+    "crypto": "رمزارز",
+    "currency": "ارز",
+    "assets": "دارایی‌ها",
+    "items": "مورد",
+    "no_assets": "هیچ دارایی در این بخش وجود ندارد",
+    "activity": "فعالیت‌ها",
+    "transactions": "تراکنش",
+    "no_transactions": "هیچ تراکنشی یافت نشد",
+    "view_all": "مشاهده همه"
+  },
+  "common": {
+    "loading": "در حال بارگذاری..."
+  }
+}
