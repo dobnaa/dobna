@@ -1,1 +1,27 @@
-[]
+{
+  "home": {
+    "search_placeholder": "Search Communities & Groups",
+    "no_stories": "No active challenges or duels",
+    "balance": "Balance"
+  },
+  "game": {
+    "rooms": "Rooms",
+    "click_to_join": "Click to join",
+    "level": "Level"
+  },
+  "duel": {
+    "title": "Duel",
+    "join": "Join Duel"
+  },
+  "challenge": {
+    "title": "Challenge",
+    "join": "Join Challenge"
+  },
+  "wallet": {
+    "title": "Wallet",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "swap": "Swap",
+    "transfer": "Transfer"
+  }
+}
