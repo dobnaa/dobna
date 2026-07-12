@@ -15,3 +15,6 @@ npm install -g sharp-cli
 # یا برای استفاده در پروژه:
 cd dobna
 npm install sharp
+
+# در ریشه پروژه (dobna/)
+node compress-images.js
