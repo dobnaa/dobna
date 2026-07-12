@@ -68,3 +68,12 @@ export const emojiMap = countryList.reduce((map, country) => {
 export const getEmojiByCode = (code) => {
   return emojiMap[code]?.emoji || '🏳️'; // پرچم سفید به عنوان پیش‌فرض
 };
+// utils/emojiMap.js
+export const getEmojiFlag = (countryCode) => {
+  const flags = {
+    'US': '🇺🇸', 'IR': '🇮🇷', 'DE': '🇩🇪', 'GB': '🇬🇧', 
+    'TR': '🇹🇷', 'AE': '🇦🇪', 'CA': '🇨🇦', 'AU': '🇦🇺',
+    // ... بقیه
+  };
+  return flags[countryCode] || '🏳️';
+};
