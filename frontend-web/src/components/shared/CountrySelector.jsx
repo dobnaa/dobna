@@ -97,3 +97,15 @@ const CountrySelector = ({ value, onChange }) => {
 };
 
 export default CountrySelector;
+
+// components/shared/CountrySelector.jsx
+import { getEmojiFlag } from '../../utils/emojiMap';
+
+const CountrySelector = ({ value, onChange }) => {
+  return (
+    <button className="flex items-center gap-2">
+      <span className="text-2xl">{getEmojiFlag(value)}</span>  {/* ✅ ایموجی به جای SVG */}
+      <span>USA</span>
+    </button>
+  );
+};
