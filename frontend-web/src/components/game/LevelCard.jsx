@@ -38,3 +38,11 @@ const LevelCard = ({ level, currency, cardPrice, roomNumber, onPress }) => {
 };
 
 export default LevelCard;
+
+// در کامپوننت LevelCard
+<img
+  src={getNoteImage(currency, level)}
+  alt={`${currency} note`}
+  className="w-[110px] h-[28px] object-cover rounded-md flex-shrink-0"
+  loading="lazy"
+/>
