@@ -23,3 +23,30 @@
     "cancel": "لغو دوئل"
   }
 }
+{
+  "home": {
+    "search_placeholder": "جستجوی گروه‌ها و کامونیتی‌ها",
+    "no_stories": "هیچ چالش یا دوئلی در جریان نیست",
+    "balance": "موجودی"
+  },
+  "game": {
+    "rooms": "اتاق",
+    "click_to_join": "برای ورود کلیک کنید",
+    "level": "سطح"
+  },
+  "duel": {
+    "title": "دوئل",
+    "join": "شرکت در دوئل"
+  },
+  "challenge": {
+    "title": "چالش",
+    "join": "شرکت در چالش"
+  },
+  "wallet": {
+    "title": "کیف پول",
+    "deposit": "واریز",
+    "withdraw": "برداشت",
+    "swap": "تبدیل",
+    "transfer": "انتقال"
+  }
+}
