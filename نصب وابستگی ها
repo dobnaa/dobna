@@ -9,3 +9,9 @@ npm install @dicebear/avatars @dicebear/avataaars
 npm install lucide-react
 
 
+# نصب Sharp (کتابخانه پردازش تصویر در Node.js)
+npm install -g sharp-cli
+
+# یا برای استفاده در پروژه:
+cd dobna
+npm install sharp
