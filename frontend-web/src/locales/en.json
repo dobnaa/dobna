@@ -25,3 +25,28 @@
     "transfer": "Transfer"
   }
 }
+
+{
+  "wallet": {
+    "title": "Wallet",
+    "total_assets": "Your Total Assets",
+    "daily_interest": "Daily Interest",
+    "monthly": "monthly",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "crypto": "Crypto",
+    "currency": "Currency",
+    "assets": "Assets",
+    "items": "items",
+    "no_assets": "No assets in this section",
+    "activity": "Activity",
+    "transactions": "transactions",
+    "no_transactions": "No transactions found",
+    "view_all": "View All"
+  },
+  "common": {
+    "loading": "Loading..."
+  }
+}
