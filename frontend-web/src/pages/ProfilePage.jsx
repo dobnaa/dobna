@@ -121,3 +121,17 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+// pages/ProfilePage.jsx
+import { generateAvatar } from '../../utils/avatarGenerator';
+
+const ProfilePage = ({ user }) => {
+  const avatarSvg = generateAvatar(user.id || 'guest');
+  
+  return (
+    <div 
+      className="w-16 h-16 rounded-full bg-gray-700"
+      dangerouslySetInnerHTML={{ __html: avatarSvg }} 
+    />
+  );
+};
