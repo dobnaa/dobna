@@ -4,6 +4,131 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useWalletStore } from '../stores/walletStore';
 import { useAuth } from '../hooks/useAuth';
+import { formatCurrency } from '../utils/currencyFormatter';
+import { calculateDailyInterest } from '../utils/interestCalculator';
+
+// کامپوننت‌ها
+import WalletHeader from '../components/wallet/WalletHeader';
+import TotalValue from '../components/wallet/TotalValue';
+import ActionButtons from '../components/wallet/ActionButtons';
+import AssetsSection from '../components/wallet/AssetsSection';
+
+const WalletPage = () => {
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
+  const {
+    balances,
+    totalValue,
+    dailyInterest,
+    transactions,
+    isLoading,
+    fetchWalletData,
+    withdrawInterest,
+  } = useWalletStore();
+
+  const [showBalance, setShowBalance] = useState(true);
+  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
+
+  // بارگذاری داده‌ها
+  useEffect(() => {
+    if (user) {
+      fetchWalletData(user.id);
+    }
+  }, [user, fetchWalletData]);
+
+  // هدایت به صفحات
+  const handleBack = () => navigate(-1);
+  const handleOrder = () => navigate('/order');
+  const handleScan = () => navigate('/scan-qr');
+  const handleShare = () => {
+    // اشتراک‌گذاری لینک دعوت
+    const link = `http://dobna.com/invite/${user?.did}`;
+    if (navigator.share) {
+      navigator.share({ title: 'DOBNA', text: 'Join me on DOBNA!', url: link });
+    } else {
+      navigator.clipboard.writeText(link);
+      alert(t('wallet.link_copied'));
+    }
+  };
+  const handleCopyDID = () => {
+    navigator.clipboard.writeText(user?.did || '');
+    alert(t('wallet.did_copied'));
+  };
+
+  const handleDeposit = () => navigate('/deposit');
+  const handleWithdraw = () => navigate('/withdraw');
+  const handleSwap = () => navigate('/swap');
+  const handleTransfer = () => navigate('/transfer');
+
+  const handleAssetPress = (currency) => {
+    navigate(`/coin/${currency}`);
+  };
+
+  const handleWithdrawInterest = async () => {
+    try {
+      await withdrawInterest();
+      alert(t('wallet.interest_withdrawn'));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white pb-24" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* هدر */}
+      <WalletHeader
+        did={user?.did || '---'}
+        onBack={handleBack}
+        onCopy={handleCopyDID}
+        onOrder={handleOrder}
+        onScan={handleScan}
+        onShare={handleShare}
+        showBalance={showBalance}
+        onToggleBalance={() => setShowBalance(!showBalance)}
+      />
+
+      {/* ارزش کل و سود */}
+      <TotalValue
+        totalValue={totalValue}
+        dailyInterest={dailyInterest}
+        showBalance={showBalance}
+        onWithdrawInterest={handleWithdrawInterest}
+      />
+
+      {/* دکمه‌های عملیاتی */}
+      <ActionButtons
+        onDeposit={handleDeposit}
+        onWithdraw={handleWithdraw}
+        onSwap={handleSwap}
+        onTransfer={handleTransfer}
+      />
+
+      {/* بخش دارایی‌ها */}
+      <AssetsSection
+        assets={balances}
+        onAssetPress={handleAssetPress}
+        transactions={transactions}
+      />
+    </div>
+  );
+};
+
+export default WalletPage;
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useWalletStore } from '../stores/walletStore';
+import { useAuth } from '../hooks/useAuth';
 import { formatCurrency, formatCompactNumber } from '../utils/currencyFormatter';
 import { getCryptoIcon } from '../utils/assetMapper';
 import { 
