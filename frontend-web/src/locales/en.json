@@ -121,3 +121,23 @@
     "file_processing": "Processing image..."
   }
 }
+{
+  "chat": {
+    "title": "Chat",
+    "all": "All",
+    "personal": "Personal",
+    "groups": "Groups",
+    "duels": "Duels",
+    "challenges": "Challenges",
+    "admin": "Admin",
+    "members": "members",
+    "online": "online",
+    "view": "View",
+    "pinned_messages": "Pinned Messages",
+    "write_message": "Write your message...",
+    "no_conversations": "No conversations found",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "duel_request": "Duel Request"
+  }
+}
