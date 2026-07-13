@@ -109,3 +109,30 @@
     "wallet": "کیف پول"
   }
 }
+{
+  "wallet": {
+    "title": "کیف پول",
+    "total_assets": "ارزش کل دارایی شما",
+    "daily_interest": "سود روزانه",
+    "deposit": "واریز",
+    "withdraw": "برداشت",
+    "swap": "تبدیل",
+    "transfer": "انتقال",
+    "assets": "دارایی‌ها",
+    "crypto": "رمزارز",
+    "currency": "ارز",
+    "activity": "فعالیت‌ها",
+    "search": "جستجو..."
+  },
+  "order": {
+    "title": "درخواست پرداخت",
+    "did": "شناسه DID",
+    "amount": "مبلغ",
+    "generate": "ساخت درخواست",
+    "copy": "کپی لینک"
+  },
+  "scan": {
+    "title": "اسکن QR",
+    "select_from_gallery": "انتخاب از گالری"
+  }
+}
