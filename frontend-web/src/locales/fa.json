@@ -107,32 +107,47 @@
     "swap": "تبدیل",
     "transfer": "انتقال",
     "wallet": "کیف پول"
-  }
-}
 {
   "wallet": {
     "title": "کیف پول",
     "total_assets": "ارزش کل دارایی شما",
     "daily_interest": "سود روزانه",
-    "deposit": "واریز",
     "withdraw": "برداشت",
+    "deposit": "واریز",
     "swap": "تبدیل",
     "transfer": "انتقال",
     "assets": "دارایی‌ها",
     "crypto": "رمزارز",
     "currency": "ارز",
     "activity": "فعالیت‌ها",
-    "search": "جستجو..."
+    "search": "جستجو...",
+    "no_assets": "هیچ دارایی در این بخش وجود ندارد",
+    "no_transactions": "هیچ تراکنشی یافت نشد",
+    "recent_activity": "فعالیت‌های اخیر",
+    "link_copied": "لینک با موفقیت کپی شد",
+    "did_copied": "DID با موفقیت کپی شد",
+    "interest_withdrawn": "سود با موفقیت برداشت شد",
+    "balance": "موجودی"
   },
   "order": {
     "title": "درخواست پرداخت",
     "did": "شناسه DID",
+    "did_placeholder": "DID: 9202605211856123",
     "amount": "مبلغ",
+    "currency": "ارز",
     "generate": "ساخت درخواست",
-    "copy": "کپی لینک"
+    "link_copied": "لینک با موفقیت کپی شد",
+    "fill_all_fields": "لطفاً تمام فیلدها را پر کنید",
+    "qr_hint": "این QR کد را با دوستان خود به اشتراک بگذارید"
   },
   "scan": {
     "title": "اسکن QR",
-    "select_from_gallery": "انتخاب از گالری"
+    "select_from_gallery": "انتخاب از گالری",
+    "scan_complete": "اسکن کامل شد",
+    "scan_success": "اسکن موفق",
+    "scan_again": "اسکن مجدد",
+    "invalid_qr": "QR کد نامعتبر است",
+    "camera_error": "خطا در دسترسی به دوربین",
+    "file_processing": "در حال پردازش تصویر..."
   }
 }
