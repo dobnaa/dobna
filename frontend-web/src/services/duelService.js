@@ -1,4 +1,102 @@
-// services/duelService.js
+// frontend-web/src/services/duelService.js
+import { supabase } from '../api/supabaseClient';
+import { generateDuelId, generateTransactionId } from '../utils/idGenerator';
+
+// ایجاد دوئل عمومی
+export const createPublicDuel = async ({ currency, amount, level }) => {
+  const { data: user } = await supabase.auth.getUser();
+  const userId = user.user.id;
+
+  // 1. بررسی موجودی
+  const { data: balance } = await supabase
+    .from('user_balances')
+    .select('amount')
+    .eq('user_id', userId)
+    .eq('currency', currency)
+    .single();
+
+  if (balance.amount < amount) throw new Error('Insufficient balance');
+
+  // 2. کسر مبلغ از کاربر و واریز به حساب مرکزی 11111111
+  await supabase.rpc('transfer_to_escrow', {
+    p_user_id: userId,
+    p_currency: currency,
+    p_amount: amount,
+    p_account: '11111111',
+    p_reference: 'duel_create'
+  });
+
+  // 3. ایجاد دوئل
+  const { data: duel, error } = await supabase
+    .from('duels')
+    .insert({
+      duel_id: generateDuelId(),
+      creator_id: userId,
+      currency,
+      amount,
+      level,
+      type: 'public',
+      status: 'waiting',
+      expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  // 4. ثبت تراکنش
+  await supabase.from('transactions').insert({
+    tx_id: generateTransactionId('DUL', currency, '11111111', 1),
+    user_id: userId,
+    type: 'duel_create',
+    currency,
+    amount: -amount,
+    reference_id: duel.id,
+    description: `Duel creation (Level ${level})`,
+  });
+
+  return duel;
+};
+
+// پیوستن به دوئل
+export const joinDuel = async (duelId) => {
+  const { data: user } = await supabase.auth.getUser();
+  const userId = user.user.id;
+
+  // دریافت اطلاعات دوئل
+  const { data: duel } = await supabase
+    .from('duels')
+    .select('*')
+    .eq('id', duelId)
+    .single();
+
+  if (duel.status !== 'waiting') throw new Error('Duel is not available');
+  if (new Date(duel.expires_at) < new Date()) throw new Error('Duel expired');
+
+  // کسر مبلغ از کاربر دوم
+  await supabase.rpc('transfer_to_escrow', {
+    p_user_id: userId,
+    p_currency: duel.currency,
+    p_amount: duel.amount,
+    p_account: '11111111',
+    p_reference: 'duel_join'
+  });
+
+  // به‌روزرسانی دوئل
+  await supabase
+    .from('duels')
+    .update({
+      opponent_id: userId,
+      status: 'active',
+      started_at: new Date().toISOString(),
+    })
+    .eq('id', duelId);
+
+  // شروع بازی دوئل
+  await supabase.rpc('fn_start_duel_game', { p_duel_id: duelId });
+
+  return { success: true };
+};
 
 import { supabase } from './supabaseClient';
 import { generateDuelId, generateTransactionId } from '../utils/idGenerator';
