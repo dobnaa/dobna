@@ -50,3 +50,30 @@
     "loading": "Loading..."
   }
 }
+{
+  "wallet": {
+    "title": "Wallet",
+    "total_assets": "Your Total Assets",
+    "daily_interest": "Daily Interest",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "assets": "Assets",
+    "crypto": "Crypto",
+    "currency": "Currency",
+    "activity": "Activity",
+    "search": "Search..."
+  },
+  "order": {
+    "title": "Payment Request",
+    "did": "DID",
+    "amount": "Amount",
+    "generate": "Generate Request",
+    "copy": "Copy Link"
+  },
+  "scan": {
+    "title": "Scan QR",
+    "select_from_gallery": "Select from Gallery"
+  }
+}
