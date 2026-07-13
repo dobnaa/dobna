@@ -151,3 +151,23 @@
     "file_processing": "در حال پردازش تصویر..."
   }
 }
+{
+  "chat": {
+    "title": "چت",
+    "all": "همه",
+    "personal": "شخصی",
+    "groups": "گروه‌ها",
+    "duels": "دوئل‌ها",
+    "challenges": "چالش‌ها",
+    "admin": "مدیر",
+    "members": "عضو",
+    "online": "آنلاین",
+    "view": "بازدید",
+    "pinned_messages": "پیام‌های سنجاق‌شده",
+    "write_message": "پیام خود را بنویسید...",
+    "no_conversations": "هیچ مکالمه‌ای وجود ندارد",
+    "follow": "دنبال کردن",
+    "unfollow": "لغو دنبال کردن",
+    "duel_request": "درخواست دوئل"
+  }
+}
