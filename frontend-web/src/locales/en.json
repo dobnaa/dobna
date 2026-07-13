@@ -77,3 +77,47 @@
     "select_from_gallery": "Select from Gallery"
   }
 }
+{
+  "wallet": {
+    "title": "Wallet",
+    "total_assets": "Your Total Assets",
+    "daily_interest": "Daily Interest",
+    "withdraw": "Withdraw",
+    "deposit": "Deposit",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "assets": "Assets",
+    "crypto": "Crypto",
+    "currency": "Currency",
+    "activity": "Activity",
+    "search": "Search...",
+    "no_assets": "No assets in this section",
+    "no_transactions": "No transactions found",
+    "recent_activity": "Recent Activity",
+    "link_copied": "Link copied successfully",
+    "did_copied": "DID copied successfully",
+    "interest_withdrawn": "Interest withdrawn successfully",
+    "balance": "Balance"
+  },
+  "order": {
+    "title": "Payment Request",
+    "did": "DID",
+    "did_placeholder": "DID: 9202605211856123",
+    "amount": "Amount",
+    "currency": "Currency",
+    "generate": "Generate Request",
+    "link_copied": "Link copied successfully",
+    "fill_all_fields": "Please fill all fields",
+    "qr_hint": "Share this QR code with your friends"
+  },
+  "scan": {
+    "title": "Scan QR",
+    "select_from_gallery": "Select from Gallery",
+    "scan_complete": "Scan complete",
+    "scan_success": "Scan successful",
+    "scan_again": "Scan Again",
+    "invalid_qr": "Invalid QR code",
+    "camera_error": "Camera access error",
+    "file_processing": "Processing image..."
+  }
+}
