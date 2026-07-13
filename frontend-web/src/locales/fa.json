@@ -74,3 +74,38 @@
     "loading": "در حال بارگذاری..."
   }
 }
+{
+  "wallet": {
+    "title": "کیف پول",
+    "total_assets": "ارزش کل دارایی شما",
+    "deposit": "واریز",
+    "withdraw": "برداشت",
+    "swap": "تبدیل",
+    "transfer": "انتقال"
+  },
+  "duel": {
+    "title": "دوئل",
+    "create": "ایجاد دوئل",
+    "join": "شرکت در دوئل",
+    "expires": "زمان باقیمانده"
+  },
+  "challenge": {
+    "title": "چالش",
+    "create": "ایجاد چالش",
+    "join": "شرکت در چالش",
+    "expires": "زمان باقیمانده"
+  },
+  "game": {
+    "rooms": "اتاق‌ها",
+    "players": "بازیکنان",
+    "level": "سطح"
+  },
+  "nav": {
+    "home": "خانه",
+    "duel": "دوئل",
+    "challenge": "چالش",
+    "swap": "تبدیل",
+    "transfer": "انتقال",
+    "wallet": "کیف پول"
+  }
+}
