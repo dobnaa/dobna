@@ -151,5 +151,15 @@ CREATE TABLE public.deposit_addresses (
 );
 
 
+ساختار جدول dobna_cards
+
+CREATE TABLE IF NOT EXISTS public.dobna_cards (
+    id BIGSERIAL PRIMARY KEY,
+    card_number INTEGER UNIQUE NOT NULL,
+    row1 INTEGER[] NOT NULL,
+    row2 INTEGER[] NOT NULL,
+    row3 INTEGER[] NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 
