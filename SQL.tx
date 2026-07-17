@@ -1,158 +1,453 @@
- 1.جدول دوئل 
-CREATE TABLE public.duels (
-  id BIGSERIAL PRIMARY KEY,
-  creator_id UUID REFERENCES public.profiles(id),
-  opponent_id UUID REFERENCES public.profiles(id),
-  currency VARCHAR(10) NOT NULL, -- USDT, BTC, IRT, ...
-  amount DECIMAL(20,8) NOT NULL,
-  level INTEGER NOT NULL CHECK (level BETWEEN 1 AND 4),
-  status VARCHAR(20) DEFAULT 'waiting', -- waiting, active, completed, cancelled
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  expires_at TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '5 minutes'),
-  winner_id UUID REFERENCES public.profiles(id),
-  fee DECIMAL(20,8) DEFAULT 0
+-- ======================================================
+-- 🗄️  DOBNA Complete Database Schema
+-- 📅  Created: 2026-07-16
+-- 📝  Description: All tables for DOBNA platform
+-- ======================================================
+
+-- ======================================================
+-- 1. ENABLE EXTENSIONS
+-- ======================================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- ======================================================
+-- 2. PROFILES TABLE (User profiles with all personal info)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    did VARCHAR(16) UNIQUE NOT NULL,
+    account_number VARCHAR(8) UNIQUE NOT NULL,
+    username VARCHAR(30) UNIQUE NOT NULL,
+    full_name VARCHAR(100),
+    display_name VARCHAR(100),
+    avatar VARCHAR(255),
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    national_id VARCHAR(20),
+    bank_account_number VARCHAR(30),
+    bank_card_number VARCHAR(20),
+    bank_name VARCHAR(100),
+    password_hash VARCHAR(255),
+    is_verified BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_admin BOOLEAN DEFAULT FALSE,
+    is_support BOOLEAN DEFAULT FALSE,
+    referred_by UUID REFERENCES public.profiles(id),
+    referral_code VARCHAR(20) UNIQUE,
+    total_referrals INTEGER DEFAULT 0,
+    total_commission DECIMAL(20,8) DEFAULT 0,
+    last_login_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.profiles IS 'User profiles with all personal and bank information';
+COMMENT ON COLUMN public.profiles.did IS '16-digit unique identifier (DID)';
+COMMENT ON COLUMN public.profiles.account_number IS '8-digit account number';
+COMMENT ON COLUMN public.profiles.is_verified IS 'Blue checkmark for verified users';
 
+CREATE INDEX idx_profiles_username ON public.profiles(username);
+CREATE INDEX idx_profiles_phone ON public.profiles(phone);
+CREATE INDEX idx_profiles_did ON public.profiles(did);
+CREATE INDEX idx_profiles_account_number ON public.profiles(account_number);
+CREATE INDEX idx_profiles_referred_by ON public.profiles(referred_by);
+CREATE INDEX idx_profiles_is_verified ON public.profiles(is_verified);
+CREATE INDEX idx_profiles_is_active ON public.profiles(is_active);
 
-
-
-
-2.جدول chat_messages
-CREATE TABLE public.chat_messages (
-  id BIGSERIAL PRIMARY KEY,
-  sender_id UUID REFERENCES public.profiles(id),
-  receiver_id UUID REFERENCES public.profiles(id), -- NULL برای چت گروهی
-  community_id UUID REFERENCES public.communities(id), -- NULL برای چت خصوصی
-  content TEXT NOT NULL,
-  is_read BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 3. COMMUNITIES TABLE (Groups with 4-level game rooms)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.communities (
+    id BIGSERIAL PRIMARY KEY,
+    gp_id VARCHAR(8) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    avatar VARCHAR(255),
+    description TEXT,
+    currency VARCHAR(10) NOT NULL,
+    owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    bmc_amount DECIMAL(20,8) DEFAULT 0,
+    bmc_initial DECIMAL(20,8) DEFAULT 0,
+    bmc_added DECIMAL(20,8) DEFAULT 0,
+    lottery_amount DECIMAL(20,8) DEFAULT 0,
+    total_games_played INTEGER DEFAULT 0,
+    total_cards_used INTEGER DEFAULT 0,
+    total_fees_collected DECIMAL(20,8) DEFAULT 0,
+    member_count INTEGER DEFAULT 0,
+    online_count INTEGER DEFAULT 0,
+    rank INTEGER DEFAULT 0,
+    is_verified BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    invite_link VARCHAR(255),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.communities IS 'Communities/groups with 4-level game rooms';
+COMMENT ON COLUMN public.communities.gp_id IS '6-digit GP account number (GP000001)';
+COMMENT ON COLUMN public.communities.username IS 'Group username with currency suffix (e.g., irancoin-BTC)';
+COMMENT ON COLUMN public.communities.bmc_amount IS 'Total Building Management Capital (BMC)';
+COMMENT ON COLUMN public.communities.lottery_amount IS 'Lottery fund amount (0.5% of game fees)';
 
+CREATE INDEX idx_communities_username ON public.communities(username);
+CREATE INDEX idx_communities_currency ON public.communities(currency);
+CREATE INDEX idx_communities_owner_id ON public.communities(owner_id);
+CREATE INDEX idx_communities_rank ON public.communities(rank);
+CREATE INDEX idx_communities_is_active ON public.communities(is_active);
 
-3.جدول notifications
-CREATE TABLE public.notifications (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id),
-  type VARCHAR(30) NOT NULL, -- new_message, duel_request, challenge_invite, game_win
-  content TEXT NOT NULL,
-  is_read BOOLEAN DEFAULT FALSE,
-  related_id BIGINT, -- آیدی دوئل، چالش، پیام، ...
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 4. COMMUNITY MEMBERS TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.community_members (
+    id BIGSERIAL PRIMARY KEY,
+    community_id BIGINT REFERENCES public.communities(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    role VARCHAR(20) DEFAULT 'member' CHECK (role IN ('owner', 'admin', 'member')),
+    is_online BOOLEAN DEFAULT FALSE,
+    is_following BOOLEAN DEFAULT FALSE,
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (community_id, user_id)
 );
 
+COMMENT ON TABLE public.community_members IS 'Members of each community with roles';
 
+CREATE INDEX idx_community_members_community_id ON public.community_members(community_id);
+CREATE INDEX idx_community_members_user_id ON public.community_members(user_id);
+CREATE INDEX idx_community_members_role ON public.community_members(role);
 
-
-
-
-
-4.جدول transactions (برای دوئل و بازی)
-CREATE TABLE public.transactions (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id),
-  type VARCHAR(30) NOT NULL, -- duel_deposit, duel_refund, duel_win, game_fee, ...
-  currency VARCHAR(10) NOT NULL,
-  amount DECIMAL(20,8) NOT NULL,
-  reference_id BIGINT, -- آیدی دوئل یا بازی
-  status VARCHAR(20) DEFAULT 'pending',
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 5. FOLLOWERS TABLE (Follow/Unfollow system)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.followers (
+    id BIGSERIAL PRIMARY KEY,
+    follower_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    following_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (follower_id, following_id)
 );
 
+COMMENT ON TABLE public.followers IS 'User following relationships';
 
+CREATE INDEX idx_followers_follower_id ON public.followers(follower_id);
+CREATE INDEX idx_followers_following_id ON public.followers(following_id);
 
-
-
-
-
-جدول wallets (کیف پول کاربران)
-
-
-CREATE TABLE public.wallets (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id) UNIQUE,
-  total_balance_usd DECIMAL(20,8) DEFAULT 0,
-  daily_interest DECIMAL(10,2) DEFAULT 0,
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 6. ROOMS TABLE (Game rooms in community levels)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.rooms (
+    id BIGSERIAL PRIMARY KEY,
+    community_id BIGINT REFERENCES public.communities(id) ON DELETE CASCADE,
+    level INTEGER NOT NULL CHECK (level BETWEEN 1 AND 4),
+    status VARCHAR(20) DEFAULT 'waiting' CHECK (status IN ('waiting', 'active', 'completed', 'cancelled')),
+    card_price DECIMAL(20,8) NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    total_cards INTEGER DEFAULT 0,
+    max_cards INTEGER DEFAULT 60,
+    called_numbers INTEGER[] DEFAULT '{}',
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    winner_id UUID REFERENCES public.profiles(id),
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.rooms IS 'Game rooms in community levels (up to 999 rooms per level)';
+COMMENT ON COLUMN public.rooms.level IS '1-4 (game levels)';
+COMMENT ON COLUMN public.rooms.called_numbers IS 'Array of called numbers (1-90)';
+COMMENT ON COLUMN public.rooms.max_cards IS 'Maximum 60 cards per room';
 
+CREATE INDEX idx_rooms_community_id ON public.rooms(community_id);
+CREATE INDEX idx_rooms_level ON public.rooms(level);
+CREATE INDEX idx_rooms_status ON public.rooms(status);
+CREATE INDEX idx_rooms_created_at ON public.rooms(created_at);
 
-
-
-
-
-جدول user_balances (موجودی هر ارز)
-
-CREATE TABLE public.user_balances (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id),
-  currency VARCHAR(10) NOT NULL, -- BTC, USDT, IRT, ETH, ...
-  amount DECIMAL(20,8) DEFAULT 0,
-  locked_amount DECIMAL(20,8) DEFAULT 0, -- برای دوئل‌ها و بازی‌های در حال انجام
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 7. GAME CARDS TABLE (Cards assigned to players in rooms)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.game_cards (
+    id BIGSERIAL PRIMARY KEY,
+    room_id BIGINT REFERENCES public.rooms(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    card_number INTEGER NOT NULL CHECK (card_number BETWEEN 1 AND 60),
+    row1 INTEGER[] NOT NULL,
+    row2 INTEGER[] NOT NULL,
+    row3 INTEGER[] NOT NULL,
+    is_winner BOOLEAN DEFAULT FALSE,
+    is_line_winner BOOLEAN DEFAULT FALSE,
+    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'completed', 'expired')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (room_id, user_id, card_number)
 );
 
+COMMENT ON TABLE public.game_cards IS 'Bingo cards (3x9) assigned to players in game rooms';
+COMMENT ON COLUMN public.game_cards.card_number IS '1-60 (for community games)';
 
+CREATE INDEX idx_game_cards_room_id ON public.game_cards(room_id);
+CREATE INDEX idx_game_cards_user_id ON public.game_cards(user_id);
+CREATE INDEX idx_game_cards_is_winner ON public.game_cards(is_winner);
 
-
-
-
-
-جدول transactions (تاریخچه کامل تراکنش‌ها - به‌روز شده)
-CREATE TABLE public.transactions (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id),
-  type VARCHAR(30) NOT NULL, -- deposit, withdraw, swap, transfer, game_win, duel_win, duel_refund
-  currency VARCHAR(10) NOT NULL,
-  amount DECIMAL(20,8) NOT NULL,
-  fee DECIMAL(20,8) DEFAULT 0,
-  network VARCHAR(30), -- BSC, TRC20, ERC20, Solana, ...
-  address VARCHAR(255), -- آدرس مقصد یا مبدأ
-  tx_id VARCHAR(255), -- هش تراکنش در بلاک‌چین
-  status VARCHAR(20) DEFAULT 'pending', -- pending, confirmed, failed, cancelled
-  reference_id BIGINT, -- آیدی دوئل، بازی، یا سفارش
-  description TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  confirmed_at TIMESTAMPTZ
+-- ======================================================
+-- 8. DUELS TABLE (Public, Private, and Group duels)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.duels (
+    id BIGSERIAL PRIMARY KEY,
+    duel_id VARCHAR(20) UNIQUE NOT NULL,
+    creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    opponent_id UUID REFERENCES public.profiles(id),
+    community_id BIGINT REFERENCES public.communities(id),
+    currency VARCHAR(10) NOT NULL,
+    amount DECIMAL(20,8) NOT NULL,
+    level INTEGER NOT NULL CHECK (level BETWEEN 1 AND 4),
+    duel_type VARCHAR(20) NOT NULL CHECK (duel_type IN ('public', 'private', 'group')),
+    status VARCHAR(20) DEFAULT 'waiting' CHECK (status IN ('waiting', 'active', 'completed', 'cancelled')),
+    expires_at TIMESTAMPTZ NOT NULL,
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    winner_id UUID REFERENCES public.profiles(id),
+    fee DECIMAL(20,8) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.duels IS 'Duel system with 5-minute expiry timer';
+COMMENT ON COLUMN public.duels.duel_id IS 'Unique duel identifier (DUL-XXXXXX)';
+COMMENT ON COLUMN public.duels.duel_type IS 'public, private (user-to-user), or group';
+COMMENT ON COLUMN public.duels.expires_at IS '5 minutes from creation';
 
+CREATE INDEX idx_duels_status ON public.duels(status);
+CREATE INDEX idx_duels_creator_id ON public.duels(creator_id);
+CREATE INDEX idx_duels_opponent_id ON public.duels(opponent_id);
+CREATE INDEX idx_duels_community_id ON public.duels(community_id);
+CREATE INDEX idx_duels_expires_at ON public.duels(expires_at);
 
-
-
-جدول price_history (داده‌های چارت قیمت)
-
-CREATE TABLE public.price_history (
-  id BIGSERIAL PRIMARY KEY,
-  currency_pair VARCHAR(20) NOT NULL, -- BTC/USD, ETH/USDT, IRT/USD, ...
-  price DECIMAL(20,8) NOT NULL,
-  volume DECIMAL(20,8),
-  timestamp TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 9. DUEL PARTICIPANTS TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.duel_participants (
+    id BIGSERIAL PRIMARY KEY,
+    duel_id BIGINT REFERENCES public.duels(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    card_number INTEGER NOT NULL CHECK (card_number BETWEEN 1 AND 30),
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (duel_id, user_id)
 );
 
+COMMENT ON TABLE public.duel_participants IS 'Participants in duels (1 card each, 1-30)';
+COMMENT ON COLUMN public.duel_participants.card_number IS '1-30 (for duels)';
 
+CREATE INDEX idx_duel_participants_duel_id ON public.duel_participants(duel_id);
+CREATE INDEX idx_duel_participants_user_id ON public.duel_participants(user_id);
 
-
-
-
-جدول deposit_addresses (آدرس‌های واریز برای هر کاربر و شبکه)
-
-CREATE TABLE public.deposit_addresses (
-  id BIGSERIAL PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id),
-  currency VARCHAR(10) NOT NULL,
-  network VARCHAR(30) NOT NULL, -- BSC, TRC20, ERC20, ...
-  address VARCHAR(255) NOT NULL UNIQUE,
-  contract_address VARCHAR(255), -- برای توکن‌ها
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+-- ======================================================
+-- 10. CHALLENGES TABLE (Challenges with 20-min timer, 6-hour cooldown)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.challenges (
+    id BIGSERIAL PRIMARY KEY,
+    challenge_id VARCHAR(20) UNIQUE NOT NULL,
+    creator_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    currency VARCHAR(10) NOT NULL,
+    amount DECIMAL(20,8) NOT NULL,
+    level INTEGER NOT NULL CHECK (level BETWEEN 1 AND 4),
+    status VARCHAR(20) DEFAULT 'waiting' CHECK (status IN ('waiting', 'active', 'completed', 'cancelled')),
+    max_participants INTEGER DEFAULT 100,
+    min_participants INTEGER DEFAULT 5,
+    current_participants INTEGER DEFAULT 1,
+    expires_at TIMESTAMPTZ NOT NULL,
+    started_at TIMESTAMPTZ,
+    completed_at TIMESTAMPTZ,
+    winner_id UUID REFERENCES public.profiles(id),
+    total_pool DECIMAL(20,8) DEFAULT 0,
+    creator_fee DECIMAL(20,8) DEFAULT 0,
+    platform_fee DECIMAL(20,8) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.challenges IS 'Challenges with 20-min timer, 5-100 participants';
+COMMENT ON COLUMN public.challenges.challenge_id IS 'Unique challenge identifier (CHL-XXXXXX)';
+COMMENT ON COLUMN public.challenges.expires_at IS '20 minutes from creation';
+COMMENT ON COLUMN public.challenges.creator_fee IS '20% of total pool to creator';
+COMMENT ON COLUMN public.challenges.platform_fee IS '5% of total pool to platform';
 
-ساختار جدول dobna_cards
+CREATE INDEX idx_challenges_status ON public.challenges(status);
+CREATE INDEX idx_challenges_creator_id ON public.challenges(creator_id);
+CREATE INDEX idx_challenges_expires_at ON public.challenges(expires_at);
+CREATE INDEX idx_challenges_level ON public.challenges(level);
 
+-- ======================================================
+-- 11. CHALLENGE PARTICIPANTS TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.challenge_participants (
+    id BIGSERIAL PRIMARY KEY,
+    challenge_id BIGINT REFERENCES public.challenges(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    card_number INTEGER NOT NULL CHECK (card_number BETWEEN 1 AND 100),
+    joined_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (challenge_id, user_id)
+);
+
+COMMENT ON TABLE public.challenge_participants IS 'Participants in challenges (1 card each, 1-100)';
+COMMENT ON COLUMN public.challenge_participants.card_number IS '1-100 (for challenges)';
+
+CREATE INDEX idx_challenge_participants_challenge_id ON public.challenge_participants(challenge_id);
+CREATE INDEX idx_challenge_participants_user_id ON public.challenge_participants(user_id);
+
+-- ======================================================
+-- 12. CHAT MESSAGES TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.chat_messages (
+    id BIGSERIAL PRIMARY KEY,
+    sender_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    receiver_id UUID REFERENCES public.profiles(id),
+    community_id BIGINT REFERENCES public.communities(id),
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_pinned BOOLEAN DEFAULT FALSE,
+    reply_to_id BIGINT REFERENCES public.chat_messages(id),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.chat_messages IS 'Chat messages (private, group, system)';
+COMMENT ON COLUMN public.chat_messages.receiver_id IS 'NULL for group chats';
+COMMENT ON COLUMN public.chat_messages.community_id IS 'NULL for private chats';
+COMMENT ON COLUMN public.chat_messages.is_pinned IS 'Pinned by group owner/admin';
+
+CREATE INDEX idx_chat_messages_sender_id ON public.chat_messages(sender_id);
+CREATE INDEX idx_chat_messages_receiver_id ON public.chat_messages(receiver_id);
+CREATE INDEX idx_chat_messages_community_id ON public.chat_messages(community_id);
+CREATE INDEX idx_chat_messages_is_read ON public.chat_messages(is_read);
+CREATE INDEX idx_chat_messages_created_at ON public.chat_messages(created_at);
+
+-- ======================================================
+-- 13. NOTIFICATIONS TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    type VARCHAR(30) NOT NULL,
+    content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_seen BOOLEAN DEFAULT FALSE,
+    related_id BIGINT,
+    action_url VARCHAR(255),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.notifications IS 'User notifications (messages, duels, challenges, wins)';
+COMMENT ON COLUMN public.notifications.type IS 'new_message, duel_request, challenge_invite, game_win, etc.';
+
+CREATE INDEX idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX idx_notifications_is_read ON public.notifications(is_read);
+CREATE INDEX idx_notifications_type ON public.notifications(type);
+CREATE INDEX idx_notifications_created_at ON public.notifications(created_at);
+
+-- ======================================================
+-- 14. TRANSACTIONS TABLE (Complete transaction history)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.transactions (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    type VARCHAR(30) NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    amount DECIMAL(20,8) NOT NULL,
+    fee DECIMAL(20,8) DEFAULT 0,
+    balance_after DECIMAL(20,8),
+    network VARCHAR(30),
+    address VARCHAR(255),
+    tx_id VARCHAR(255),
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'failed', 'cancelled')),
+    reference_id BIGINT,
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    confirmed_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE public.transactions IS 'Complete transaction history for all operations';
+COMMENT ON COLUMN public.transactions.type IS 'deposit, withdraw, swap, transfer, game_win, duel_win, etc.';
+COMMENT ON COLUMN public.transactions.balance_after IS 'Balance after transaction (for auditing)';
+
+CREATE INDEX idx_transactions_user_id ON public.transactions(user_id);
+CREATE INDEX idx_transactions_type ON public.transactions(type);
+CREATE INDEX idx_transactions_currency ON public.transactions(currency);
+CREATE INDEX idx_transactions_status ON public.transactions(status);
+CREATE INDEX idx_transactions_reference_id ON public.transactions(reference_id);
+CREATE INDEX idx_transactions_created_at ON public.transactions(created_at);
+
+-- ======================================================
+-- 15. WALLETS TABLE (User wallet overview)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.wallets (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+    total_balance_usd DECIMAL(20,8) DEFAULT 0,
+    daily_interest DECIMAL(10,2) DEFAULT 0,
+    interest_accrued DECIMAL(20,8) DEFAULT 0,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.wallets IS 'User wallet with total USD value and daily interest';
+COMMENT ON COLUMN public.wallets.daily_interest IS 'Daily interest (10% APY)';
+COMMENT ON COLUMN public.wallets.interest_accrued IS 'Total accrued interest (can be withdrawn)';
+
+CREATE INDEX idx_wallets_user_id ON public.wallets(user_id);
+
+-- ======================================================
+-- 16. USER BALANCES TABLE (Balance per currency)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.user_balances (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    currency VARCHAR(10) NOT NULL,
+    amount DECIMAL(20,8) DEFAULT 0,
+    locked_amount DECIMAL(20,8) DEFAULT 0,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (user_id, currency)
+);
+
+COMMENT ON TABLE public.user_balances IS 'User balance per currency';
+COMMENT ON COLUMN public.user_balances.locked_amount IS 'Locked for duels and games in progress';
+
+CREATE INDEX idx_user_balances_user_id ON public.user_balances(user_id);
+CREATE INDEX idx_user_balances_currency ON public.user_balances(currency);
+
+-- ======================================================
+-- 17. PRICE HISTORY TABLE (Chart data)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.price_history (
+    id BIGSERIAL PRIMARY KEY,
+    currency_pair VARCHAR(20) NOT NULL,
+    price DECIMAL(20,8) NOT NULL,
+    volume DECIMAL(20,8),
+    timestamp TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.price_history IS 'Price history for charts (1H, 1D, 1W, 1M, YTD, ALL)';
+
+CREATE INDEX idx_price_history_currency_pair ON public.price_history(currency_pair);
+CREATE INDEX idx_price_history_timestamp ON public.price_history(timestamp);
+CREATE INDEX idx_price_history_currency_pair_timestamp ON public.price_history(currency_pair, timestamp);
+
+-- ======================================================
+-- 18. DEPOSIT ADDRESSES TABLE (Crypto deposit addresses)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.deposit_addresses (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    currency VARCHAR(10) NOT NULL,
+    network VARCHAR(30) NOT NULL,
+    address VARCHAR(255) NOT NULL UNIQUE,
+    contract_address VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.deposit_addresses IS 'Deposit addresses for crypto (BSC, TRC20, ERC20, Solana, etc.)';
+COMMENT ON COLUMN public.deposit_addresses.network IS 'BSC, TRC20, ERC20, Solana, Avalanche, TON, etc.';
+
+CREATE INDEX idx_deposit_addresses_user_id ON public.deposit_addresses(user_id);
+CREATE INDEX idx_deposit_addresses_address ON public.deposit_addresses(address);
+CREATE INDEX idx_deposit_addresses_network ON public.deposit_addresses(network);
+
+-- ======================================================
+-- 19. STANDARD BINGO CARDS TABLE (100 cards - you already have this)
+-- ======================================================
 CREATE TABLE IF NOT EXISTS public.dobna_cards (
     id BIGSERIAL PRIMARY KEY,
     card_number INTEGER UNIQUE NOT NULL,
@@ -162,4 +457,376 @@ CREATE TABLE IF NOT EXISTS public.dobna_cards (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+COMMENT ON TABLE public.dobna_cards IS '100 standard Bingo cards (3x9)';
+COMMENT ON COLUMN public.dobna_cards.card_number IS '1-100 (1-30 for duels, 1-60 for rooms, 1-100 for challenges)';
 
+CREATE INDEX idx_dobna_cards_card_number ON public.dobna_cards(card_number);
+
+-- ======================================================
+-- 20. SYSTEM ACCOUNTS TABLE (Platform fee accounts)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.system_accounts (
+    id BIGSERIAL PRIMARY KEY,
+    account_number VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    currency VARCHAR(10) NOT NULL,
+    balance DECIMAL(20,8) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.system_accounts IS 'System accounts for fees and escrow';
+COMMENT ON COLUMN public.system_accounts.account_number IS '11111111, 00000001 - 00000008';
+
+-- Insert system accounts
+INSERT INTO public.system_accounts (account_number, name, description, currency) VALUES
+('11111111', 'حساب مرکزی', 'نگهداری موقت وجوه دوئل و چالش', 'ALL'),
+('00000001', 'کارمزد تالار سطح ۱', 'کارمزد بازی‌های سطح ۱ (5%)', 'ALL'),
+('00000002', 'کارمزد تالار سطح ۲', 'کارمزد بازی‌های سطح ۲ (5%)', 'ALL'),
+('00000003', 'کارمزد تالار سطح ۳', 'کارمزد بازی‌های سطح ۳ (5%)', 'ALL'),
+('00000004', 'کارمزد تالار سطح ۴', 'کارمزد بازی‌های سطح ۴ (5%)', 'ALL'),
+('00000005', 'کارمزد دوئل', 'کارمزد دوئل‌ها (5%)', 'ALL'),
+('00000006', 'کارمزد چالش', 'کارمزد چالش‌ها (5%)', 'ALL'),
+('00000007', 'کارمزد سوآپ', 'کارمزد تبدیل ارزها', 'ALL'),
+('00000008', 'کارمزد انتقال', 'کارمزد انتقال داخلی', 'ALL')
+ON CONFLICT (account_number) DO NOTHING;
+
+CREATE INDEX idx_system_accounts_account_number ON public.system_accounts(account_number);
+
+-- ======================================================
+-- 21. INVITATIONS TABLE (Referral system)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.invitations (
+    id BIGSERIAL PRIMARY KEY,
+    inviter_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    invitee_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    invite_code VARCHAR(20) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'expired')),
+    reward_amount DECIMAL(20,8) DEFAULT 0,
+    reward_currency VARCHAR(10),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    accepted_at TIMESTAMPTZ,
+    UNIQUE (inviter_id, invitee_id)
+);
+
+COMMENT ON TABLE public.invitations IS 'Referral/invitation system with rewards';
+
+CREATE INDEX idx_invitations_inviter_id ON public.invitations(inviter_id);
+CREATE INDEX idx_invitations_invitee_id ON public.invitations(invitee_id);
+CREATE INDEX idx_invitations_invite_code ON public.invitations(invite_code);
+CREATE INDEX idx_invitations_status ON public.invitations(status);
+
+-- ======================================================
+-- 22. USER SETTINGS TABLE
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.user_settings (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+    language VARCHAR(10) DEFAULT 'en',
+    theme VARCHAR(20) DEFAULT 'dark',
+    notifications_enabled BOOLEAN DEFAULT TRUE,
+    sound_enabled BOOLEAN DEFAULT TRUE,
+    two_factor_enabled BOOLEAN DEFAULT FALSE,
+    otp_secret VARCHAR(255),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.user_settings IS 'User preferences and settings';
+
+CREATE INDEX idx_user_settings_user_id ON public.user_settings(user_id);
+
+-- ======================================================
+-- 23. REPORTS TABLE (User reports for violations)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.reports (
+    id BIGSERIAL PRIMARY KEY,
+    reporter_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    reported_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    community_id BIGINT REFERENCES public.communities(id) ON DELETE CASCADE,
+    type VARCHAR(30) NOT NULL CHECK (type IN ('user', 'group', 'duel', 'challenge', 'message')),
+    reason TEXT NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'reviewed', 'resolved', 'rejected')),
+    admin_note TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    resolved_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE public.reports IS 'User reports for moderation';
+
+CREATE INDEX idx_reports_reporter_id ON public.reports(reporter_id);
+CREATE INDEX idx_reports_reported_id ON public.reports(reported_id);
+CREATE INDEX idx_reports_status ON public.reports(status);
+CREATE INDEX idx_reports_type ON public.reports(type);
+
+-- ======================================================
+-- 24. COMMUNITY STATS TABLE (For rank calculations)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.community_stats (
+    id BIGSERIAL PRIMARY KEY,
+    community_id BIGINT REFERENCES public.communities(id) ON DELETE CASCADE UNIQUE,
+    total_bmc DECIMAL(20,8) DEFAULT 0,
+    total_lottery DECIMAL(20,8) DEFAULT 0,
+    total_rank_score DECIMAL(20,8) DEFAULT 0,
+    games_played_today INTEGER DEFAULT 0,
+    games_played_week INTEGER DEFAULT 0,
+    games_played_month INTEGER DEFAULT 0,
+    cards_used_today INTEGER DEFAULT 0,
+    cards_used_week INTEGER DEFAULT 0,
+    cards_used_month INTEGER DEFAULT 0,
+    fees_collected_today DECIMAL(20,8) DEFAULT 0,
+    fees_collected_week DECIMAL(20,8) DEFAULT 0,
+    fees_collected_month DECIMAL(20,8) DEFAULT 0,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.community_stats IS 'Community statistics for rank calculation';
+
+CREATE INDEX idx_community_stats_community_id ON public.community_stats(community_id);
+CREATE INDEX idx_community_stats_total_rank_score ON public.community_stats(total_rank_score);
+
+-- ======================================================
+-- 25. CHALLENGE COOLDOWN TABLE (6-hour timer per user)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.challenge_cooldowns (
+    id BIGSERIAL PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    last_challenge_at TIMESTAMPTZ DEFAULT NOW(),
+    cooldown_until TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (user_id)
+);
+
+COMMENT ON TABLE public.challenge_cooldowns IS '6-hour cooldown timer for challenges';
+
+CREATE INDEX idx_challenge_cooldowns_user_id ON public.challenge_cooldowns(user_id);
+
+-- ======================================================
+-- 26. ADMIN STATUS STORIES TABLE (Admin story images)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.admin_stories (
+    id BIGSERIAL PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    thumbnail VARCHAR(255),
+    display_order INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE public.admin_stories IS 'Admin status stories (up to 20 images)';
+
+CREATE INDEX idx_admin_stories_is_active ON public.admin_stories(is_active);
+CREATE INDEX idx_admin_stories_display_order ON public.admin_stories(display_order);
+
+-- ======================================================
+-- 27. SYSTEM NOTIFICATIONS TABLE (System messages to users)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.system_notifications (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    target_type VARCHAR(20) DEFAULT 'all' CHECK (target_type IN ('all', 'users', 'community', 'specific')),
+    target_id BIGINT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    expires_at TIMESTAMPTZ
+);
+
+COMMENT ON TABLE public.system_notifications IS 'System notifications to all users or specific groups';
+
+CREATE INDEX idx_system_notifications_is_active ON public.system_notifications(is_active);
+CREATE INDEX idx_system_notifications_target_type ON public.system_notifications(target_type);
+
+-- ======================================================
+-- 28. RLS POLICIES (Row Level Security)
+-- ======================================================
+-- Enable RLS on all tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.communities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.community_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.followers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.rooms ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.game_cards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.duels ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.duel_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenges ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenge_participants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.chat_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.wallets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_balances ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.deposit_addresses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invitations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.community_stats ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.challenge_cooldowns ENABLE ROW LEVEL SECURITY;
+
+
+-- ======================================================
+-- 29. CURRENCIES TABLE (Add this to your schema)
+-- ======================================================
+--
+
+-- ======================================================
+-- 29. CURRENCIES TABLE (Master list of all currencies)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS public.currencies (
+    id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(10) UNIQUE NOT NULL,                -- BTC, USD, IRT, ...
+    name VARCHAR(50) NOT NULL,                       -- Bitcoin, US Dollar, ...
+    name_fa VARCHAR(50),                             -- بیت‌کوین, دلار آمریکا, ...
+    symbol VARCHAR(10),                              -- ₿, $, ﷼, ...
+    icon VARCHAR(50),                                -- bitcoin.svg, usd.svg, ...
+    type VARCHAR(20) NOT NULL CHECK (type IN ('crypto', 'fiat')),
+    decimal_places INTEGER DEFAULT 8,                -- تعداد اعشار (BTC=8, USD=2, IRT=0)
+    price_usd DECIMAL(20,8) DEFAULT 0,               -- قیمت لحظه‌ای (برای نمایش سریع)
+    is_active BOOLEAN DEFAULT TRUE,
+    is_deposit_enabled BOOLEAN DEFAULT TRUE,
+    is_withdraw_enabled BOOLEAN DEFAULT TRUE,
+    is_swap_enabled BOOLEAN DEFAULT TRUE,
+    min_deposit DECIMAL(20,8) DEFAULT 0,
+    min_withdraw DECIMAL(20,8) DEFAULT 0,
+    withdraw_fee DECIMAL(20,8) DEFAULT 0,
+    network_list TEXT[],                              -- لیست شبکه‌های پشتیبانی‌شده
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE public.currencies IS 'Master list of all supported currencies (crypto and fiat)';
+COMMENT ON COLUMN public.currencies.code IS 'Unique currency code (BTC, USD, IRT, etc.)';
+COMMENT ON COLUMN public.currencies.type IS 'crypto or fiat';
+COMMENT ON COLUMN public.currencies.decimal_places IS 'Number of decimal places for display (BTC: 8, USD: 2)';
+COMMENT ON COLUMN public.currencies.network_list IS 'Supported networks for crypto (BSC, TRC20, ERC20, Solana, etc.)';
+
+CREATE INDEX idx_currencies_code ON public.currencies(code);
+CREATE INDEX idx_currencies_type ON public.currencies(type);
+CREATE INDEX idx_currencies_is_active ON public.currencies(is_active);
+
+
+-- ======================================================
+-- INSERT ALL SUPPORTED CURRENCIES
+-- ======================================================
+INSERT INTO public.currencies (code, name, name_fa, symbol, icon, type, decimal_places, network_list) VALUES
+-- ===== CRYPTO =====
+('BTC', 'Bitcoin', 'بیت‌کوین', '₿', 'bitcoin.svg', 'crypto', 8, ARRAY['BTC', 'Lightning']),
+('ETH', 'Ethereum', 'اتریوم', '⟠', 'ethereum.svg', 'crypto', 8, ARRAY['ERC20']),
+('USDT', 'Tether', 'تتر', '₮', 'usdt.svg', 'crypto', 2, ARRAY['BSC(BEP20)', 'TRC20', 'ERC20', 'Solana', 'TON']),
+('SOL', 'Solana', 'سولانا', '◎', 'solana.svg', 'crypto', 8, ARRAY['Solana']),
+('BNB', 'BNB', 'بایننس کوین', '◆', 'bnb.svg', 'crypto', 8, ARRAY['BSC(BEP20)']),
+('DOGE', 'Dogecoin', 'دوج‌کوین', 'Ð', 'dogecoin.svg', 'crypto', 8, ARRAY['DOGE']),
+('TON', 'Toncoin', 'تون‌کوین', '◆', 'toncoin.svg', 'crypto', 8, ARRAY['TON']),
+('BONK', 'Bonk', 'بونک', '🐕', 'bonk.svg', 'crypto', 8, ARRAY['Solana']),
+('PEPE', 'Pepe', 'پپه', '🐸', 'pepe.svg', 'crypto', 8, ARRAY['ERC20']),
+('HMSTR', 'Hamster', 'همستر', '🐹', 'hmstr.svg', 'crypto', 8, ARRAY['TON']),
+('USDC', 'USD Coin', 'یو اس دی سی', '💵', 'usdc.svg', 'crypto', 2, ARRAY['ERC20', 'Solana', 'BSC(BEP20)']),
+('SUI', 'Sui', 'سویی', '✦', 'sui.svg', 'crypto', 8, ARRAY['Sui']),
+
+-- ===== FIAT =====
+('USD', 'US Dollar', 'دلار آمریکا', '$', 'usd.svg', 'fiat', 2, ARRAY[]),
+('IRT', 'Iranian Toman', 'تومان ایران', '﷼', 'irt.svg', 'fiat', 0, ARRAY[]),
+('EUR', 'Euro', 'یورو', '€', 'eur.svg', 'fiat', 2, ARRAY[]),
+('TRY', 'Turkish Lira', 'لیر ترکیه', '₺', 'try.svg', 'fiat', 2, ARRAY[]),
+('GBP', 'British Pound', 'پوند', '£', 'gbp.svg', 'fiat', 2, ARRAY[]),
+('AED', 'UAE Dirham', 'درهم امارات', 'د.إ', 'aed.svg', 'fiat', 2, ARRAY[]),
+('CNY', 'Chinese Yuan', 'یوان چین', '¥', 'cny.svg', 'fiat', 2, ARRAY[]),
+('INR', 'Indian Rupee', 'روپیه هند', '₹', 'inr.svg', 'fiat', 2, ARRAY[]),
+('CAD', 'Canadian Dollar', 'دلار کانادا', 'C$', 'cad.svg', 'fiat', 2, ARRAY[]),
+('CHF', 'Swiss Franc', 'فرانک سوئیس', 'Fr', 'chf.svg', 'fiat', 2, ARRAY[]),
+('AUD', 'Australian Dollar', 'دلار استرالیا', 'A$', 'aud.svg', 'fiat', 2, ARRAY[])
+ON CONFLICT (code) DO NOTHING;
+
+-- به‌روزرسانی قیمت‌های تقریبی (برای نمایش اولیه)
+UPDATE public.currencies SET price_usd = 65000 WHERE code = 'BTC';
+UPDATE public.currencies SET price_usd = 3500 WHERE code = 'ETH';
+UPDATE public.currencies SET price_usd = 1 WHERE code = 'USDT';
+UPDATE public.currencies SET price_usd = 150 WHERE code = 'SOL';
+UPDATE public.currencies SET price_usd = 600 WHERE code = 'BNB';
+UPDATE public.currencies SET price_usd = 0.15 WHERE code = 'DOGE';
+UPDATE public.currencies SET price_usd = 5 WHERE code = 'TON';
+UPDATE public.currencies SET price_usd = 1 WHERE code = 'USD';
+UPDATE public.currencies SET price_usd = 0.000025 WHERE code = 'IRT';
+UPDATE public.currencies SET price_usd = 1.08 WHERE code = 'EUR';
+
+
+
+-- ======================================================
+-- ADD FOREIGN KEY CONSTRAINTS (OPTIONAL BUT RECOMMENDED)
+-- ======================================================
+
+-- 1. user_balances
+ALTER TABLE public.user_balances
+ADD CONSTRAINT fk_user_balances_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 2. communities
+ALTER TABLE public.communities
+ADD CONSTRAINT fk_communities_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 3. transactions
+ALTER TABLE public.transactions
+ADD CONSTRAINT fk_transactions_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 4. rooms
+ALTER TABLE public.rooms
+ADD CONSTRAINT fk_rooms_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 5. duels
+ALTER TABLE public.duels
+ADD CONSTRAINT fk_duels_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 6. challenges
+ALTER TABLE public.challenges
+ADD CONSTRAINT fk_challenges_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 7. deposit_addresses
+ALTER TABLE public.deposit_addresses
+ADD CONSTRAINT fk_deposit_addresses_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+-- 8. system_accounts
+ALTER TABLE public.system_accounts
+ADD CONSTRAINT fk_system_accounts_currency
+FOREIGN KEY (currency) REFERENCES public.currencies(code);
+
+
+
+-- دریافت تمام ارزهای فعال
+SELECT * FROM public.currencies WHERE is_active = true ORDER BY type, code;
+
+-- دریافت فقط کریپتوها
+SELECT * FROM public.currencies WHERE type = 'crypto' AND is_active = true;
+
+-- دریافت فقط فیات‌ها
+SELECT * FROM public.currencies WHERE type = 'fiat' AND is_active = true;
+
+
+SELECT 
+    c.*,
+    u.amount as user_balance,
+    u.locked_amount
+FROM public.currencies c
+LEFT JOIN public.user_balances u ON u.currency = c.code AND u.user_id = 'USER_UUID'
+WHERE c.code = 'BTC';
+
+
+SELECT 
+    code,
+    name,
+    price_usd,
+    network_list,
+    min_deposit,
+    is_deposit_enabled
+FROM public.currencies
+WHERE code = 'USDT' AND is_active = true;
+
+
+
+-- ======================================================
+-- ✅ END OF SCHEMA
+-- ======================================================
