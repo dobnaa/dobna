@@ -1,3 +1,18 @@
+
+
+1. اکستنشن‌ها: مطمئن شوید که اکستنشن‌های pg_cron و pg_net در Supabase فعال هستند (از طریق دشبورد یا SQL).
+2. پر کردن اطلاعات: در محیط‌های جدید، اطلاعات پروژه (project_ref و service_role_key) باید در تنظیمات Supabase تنظیم شوند
+
+
+
+
+
+
+
+
+
+
+
 پیاده‌سازی i18n (بین‌المللی‌سازی)
 npm install i18next react-i18next i18next-browser-languagedetector
 
