@@ -1,16 +1,19 @@
 -- ======================================================
 -- fn_complete_challenge.sql
--- اتمام چالش و توزیع جوایز بر اساس قوانین دوبنا
+-- اتمام چالش و توزیع جوایز از حساب مرکزی (۱۱۱۱۱۱۱۱)
 -- 
--- قوانین توزیع:
--- - ۲۰٪ از کل مبلغ به سازنده چالش (Creator)
+-- قوانین توزیع (بر اساس کل مبلغ جمع‌آوری‌شده):
+-- - ۲۰٪ به سازنده چالش (Creator)
 -- - ۵٪ کارمزد به حساب پلتفرم (00000006)
 -- - ۷۵٪ به برنده چالش (Winner)
 -- 
--- پیش‌شرط‌ها:
--- 1. چالش باید حداقل ۵ شرکت‌کننده داشته باشد
--- 2. برنده باید توسط تابع fn_check_winner مشخص شده باشد
--- 3. اتاق بازی مربوط به چالش باید فعال باشد
+-- جریان مالی:
+-- ۱. بررسی موجودی کافی در حساب مرکزی (۱۱۱۱۱۱۱۱)
+-- ۲. کسر کل مبلغ از حساب مرکزی
+-- ۳. واریز سهم سازنده (۲۰٪)
+-- ۴. واریز کارمزد پلتفرم (۵٪) به حساب ۰۰۰۰۰۰۰۶
+-- ۵. واریز جایزه به برنده (۷۵٪)
+-- ۶. ثبت تراکنش‌ها و به‌روزرسانی آمار
 -- ======================================================
 
 CREATE OR REPLACE FUNCTION fn_complete_challenge(p_challenge_id BIGINT)
@@ -23,8 +26,7 @@ DECLARE
     v_creator_share DECIMAL(20,8);
     v_platform_share DECIMAL(20,8);
     v_winner_share DECIMAL(20,8);
-    v_creator_balance DECIMAL(20,8);
-    v_winner_balance DECIMAL(20,8);
+    v_escrow_balance DECIMAL(20,8);
 BEGIN
     -- ======================================================
     -- ۱. اعتبارسنجی اولیه
@@ -39,23 +41,17 @@ BEGIN
         RAISE EXCEPTION '❌ چالش با شناسه % یافت نشد', p_challenge_id;
     END IF;
 
-    -- بررسی وضعیت چالش (فقط چالش‌های فعال یا در انتظار قابل تکمیل هستند)
+    -- بررسی وضعیت چالش
     IF v_challenge.status NOT IN ('active', 'waiting') THEN
-        RAISE EXCEPTION '❌ چالش با شناسه % در وضعیت قابل تکمیل نیست (وضعیت فعلی: %)', 
-            p_challenge_id, v_challenge.status;
+        RAISE EXCEPTION '❌ چالش در وضعیت قابل تکمیل نیست (وضعیت فعلی: %)', v_challenge.status;
     END IF;
 
-    -- بررسی تعداد شرکت‌کنندگان (حداقل ۵ نفر)
+    -- بررسی تعداد شرکت‌کنندگان
     IF v_challenge.current_participants < v_challenge.min_participants THEN
-        RAISE EXCEPTION '❌ چالش کمتر از % شرکت‌کننده دارد، قابل تکمیل نیست', 
-            v_challenge.min_participants;
+        RAISE EXCEPTION '❌ چالش کمتر از % شرکت‌کننده دارد', v_challenge.min_participants;
     END IF;
 
-    -- ======================================================
-    -- ۲. پیدا کردن اتاق بازی و برنده
-    -- ======================================================
-
-    -- پیدا کردن اتاق مربوط به این چالش
+    -- پیدا کردن اتاق و برنده
     SELECT id INTO v_room_id
     FROM public.rooms
     WHERE challenge_id = p_challenge_id
@@ -63,34 +59,50 @@ BEGIN
     LIMIT 1;
 
     IF v_room_id IS NULL THEN
-        RAISE EXCEPTION '❌ اتاقی برای چالش شناسه % یافت نشد', p_challenge_id;
+        RAISE EXCEPTION '❌ اتاقی برای چالش یافت نشد';
     END IF;
 
-    -- پیدا کردن برنده از کارت‌های بازی (کارتی که is_winner = TRUE است)
     SELECT user_id INTO v_winner_id
     FROM public.game_cards
-    WHERE room_id = v_room_id
-      AND is_winner = TRUE
+    WHERE room_id = v_room_id AND is_winner = TRUE
     LIMIT 1;
 
     IF v_winner_id IS NULL THEN
-        RAISE EXCEPTION '❌ برنده‌ای برای چالش شناسه % یافت نشد', p_challenge_id;
+        RAISE EXCEPTION '❌ برنده‌ای برای چالش یافت نشد';
     END IF;
 
     -- ======================================================
-    -- ۳. محاسبه مبالغ
+    -- ۲. محاسبه مبالغ
     -- ======================================================
 
-    -- کل مبلغ چالش = قیمت هر کارت × تعداد شرکت‌کنندگان
     v_total_pool := v_challenge.amount * v_challenge.current_participants;
-
-    -- سهم هر بخش
-    v_creator_share := v_total_pool * 0.20;   -- ۲۰٪ به سازنده
-    v_platform_share := v_total_pool * 0.05;  -- ۵٪ کارمزد پلتفرم
-    v_winner_share := v_total_pool - v_creator_share - v_platform_share; -- ۷۵٪ به برنده
+    v_creator_share := v_total_pool * 0.20;   -- ۲۰٪
+    v_platform_share := v_total_pool * 0.05;  -- ۵٪
+    v_winner_share := v_total_pool - v_creator_share - v_platform_share; -- ۷۵٪
 
     -- ======================================================
-    -- ۴. واریز مبالغ به حساب‌های مربوطه
+    -- ۳. بررسی و کسر از حساب مرکزی (۱۱۱۱۱۱۱۱)
+    -- ======================================================
+
+    -- دریافت موجودی حساب مرکزی برای ارز مورد نظر
+    SELECT balance INTO v_escrow_balance
+    FROM public.system_accounts
+    WHERE account_number = '11111111'
+      AND currency = v_challenge.currency;
+
+    IF v_escrow_balance < v_total_pool THEN
+        RAISE EXCEPTION '❌ موجودی حساب مرکزی (۱۱۱۱۱۱۱۱) برای ارز % کافی نیست (موجودی: %، موردنیاز: %)',
+            v_challenge.currency, v_escrow_balance, v_total_pool;
+    END IF;
+
+    -- کسر کل مبلغ از حساب مرکزی
+    UPDATE public.system_accounts
+    SET balance = balance - v_total_pool
+    WHERE account_number = '11111111'
+      AND currency = v_challenge.currency;
+
+    -- ======================================================
+    -- ۴. توزیع وجوه از حساب مرکزی به مقاصد نهایی
     -- ======================================================
 
     -- ۴.۱ واریز سهم سازنده (۲۰٪)
@@ -99,7 +111,7 @@ BEGIN
     WHERE user_id = v_challenge.creator_id
       AND currency = v_challenge.currency;
 
-    -- ۴.۲ واریز کارمزد پلتفرم به حساب ۰۰۰۰۰۰۰۶
+    -- ۴.۲ واریز کارمزد پلتفرم (۵٪) به حساب ۰۰۰۰۰۰۰۶
     PERFORM fn_deposit_fee('00000006', v_challenge.currency, v_platform_share);
 
     -- ۴.۳ واریز جایزه به برنده (۷۵٪)
@@ -122,10 +134,29 @@ BEGIN
     WHERE id = p_challenge_id;
 
     -- ======================================================
-    -- ۶. ثبت تراکنش‌ها
+    -- ۶. ثبت تراکنش‌های خروجی
     -- ======================================================
 
-    -- ۶.۱ تراکنش برنده
+    -- ۶.۱ تراکنش کسر از حساب مرکزی (خروجی)
+    INSERT INTO public.transactions (
+        user_id,
+        type,
+        currency,
+        amount,
+        reference_id,
+        status,
+        description
+    ) VALUES (
+        '11111111',
+        'escrow_debit',
+        v_challenge.currency,
+        -v_total_pool,
+        p_challenge_id,
+        'completed',
+        '🔻 کسر کل مبلغ چالش از حساب مرکزی - ' || v_challenge.challenge_id
+    );
+
+    -- ۶.۲ تراکنش واریز به برنده
     INSERT INTO public.transactions (
         user_id,
         type,
@@ -144,7 +175,7 @@ BEGIN
         '🏆 جایزه برنده چالش - ' || v_challenge.challenge_id
     );
 
-    -- ۶.۲ تراکنش سازنده
+    -- ۶.۳ تراکنش واریز به سازنده
     INSERT INTO public.transactions (
         user_id,
         type,
@@ -163,7 +194,7 @@ BEGIN
         '👑 سهم سازنده چالش - ' || v_challenge.challenge_id
     );
 
-    -- ۶.۳ تراکنش کارمزد پلتفرم
+    -- ۶.۴ تراکنش واریز کارمزد پلتفرم
     INSERT INTO public.transactions (
         user_id,
         type,
@@ -186,7 +217,6 @@ BEGIN
     -- ۷. به‌روزرسانی آمار کاربران (اختیاری)
     -- ======================================================
 
-    -- اگر جدول user_stats وجود دارد، آمار را به‌روز کن
     BEGIN
         -- آمار برنده
         INSERT INTO public.user_stats (user_id, total_wins, total_score)
@@ -204,34 +234,31 @@ BEGIN
             total_challenges_created = user_stats.total_challenges_created + 1;
     EXCEPTION
         WHEN undefined_table THEN
-            RAISE NOTICE 'ℹ️ جدول user_stats وجود ندارد، از به‌روزرسانی آمار صرف‌نظر شد';
+            RAISE NOTICE 'ℹ️ جدول user_stats وجود ندارد';
     END;
 
     -- ======================================================
-    -- ۸. ثبت لاگ موفقیت
+    -- ۸. لاگ موفقیت
     -- ======================================================
 
-    RAISE NOTICE '✅ چالش % با موفقیت تکمیل شد. برنده: %، مبلغ جایزه: % %', 
-        v_challenge.challenge_id, 
-        v_winner_id, 
-        v_winner_share, 
+    RAISE NOTICE '✅ چالش % تکمیل شد. کل مبلغ: % %، برنده: %، جایزه: % %',
+        v_challenge.challenge_id,
+        v_total_pool,
+        v_challenge.currency,
+        v_winner_id,
+        v_winner_share,
         v_challenge.currency;
 
 EXCEPTION
-    -- مدیریت خطاها و بازگرداندن تراکنش در صورت بروز مشکل
     WHEN OTHERS THEN
         RAISE EXCEPTION '❌ خطا در تکمیل چالش %: %', p_challenge_id, SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
 
 COMMENT ON FUNCTION fn_complete_challenge IS '
-اتمام چالش و توزیع جوایز بر اساس قوانین دوبنا:
-- ۲۰٪ از کل مبلغ به سازنده چالش
-- ۵٪ کارمزد به حساب پلتفرم (00000006)
-- ۷۵٪ به برنده چالش
-
-پیش‌شرط‌ها:
-- چالش باید حداقل ۵ شرکت‌کننده داشته باشد
-- برنده باید توسط fn_check_winner مشخص شده باشد
-- اتاق بازی مربوط به چالش باید فعال باشد
+اتمام چالش و توزیع جوایز با استفاده از حساب مرکزی (۱۱۱۱۱۱۱۱):
+۱. بررسی و کسر کل مبلغ از حساب مرکزی
+۲. واریز ۲۰٪ به سازنده
+۳. واریز ۵٪ کارمزد به حساب ۰۰۰۰۰۰۰۶
+۴. واریز ۷۵٪ به برنده
 ';
