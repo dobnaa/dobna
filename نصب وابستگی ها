@@ -17,6 +17,9 @@ cd dobna
 npm install sharp
 
 
-npm install @supabase/supabase-js
+
 # در ریشه پروژه (dobna/)
 node compress-images.js
+
+
+npm install @supabase/supabase-js
