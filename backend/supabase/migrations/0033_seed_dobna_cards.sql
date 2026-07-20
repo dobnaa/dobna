@@ -106,3 +106,15 @@ INSERT INTO public.dobna_cards (card_number, row1, row2, row3) VALUES
 (98, ARRAY[0,11,0,36,47,0,62,0,89], ARRAY[2,0,26,0,0,54,0,77,85], ARRAY[0,16,0,33,45,58,0,74,0]),
 (99, ARRAY[4,0,27,0,48,0,69,0,83], ARRAY[0,19,0,35,0,52,0,75,90], ARRAY[0,12,22,37,0,57,0,78,0]),
 (100, ARRAY[0,14,0,0,46,53,68,0,88], ARRAY[7,0,23,36,0,0,0,72,84], ARRAY[0,20,0,34,0,59,0,76,81]);
+
+
+
+-- تأیید درج
+DO $$
+BEGIN
+    IF (SELECT COUNT(*) FROM public.dobna_cards) = 100 THEN
+        RAISE NOTICE '✅ 100 کارت با موفقیت درج شدند';
+    ELSE
+        RAISE WARNING '⚠️ تعداد کارت‌ها صحیح نیست!';
+    END IF;
+END $$;
