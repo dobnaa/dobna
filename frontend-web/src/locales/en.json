@@ -1,32 +1,92 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "back": "Back",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "save": "Save",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "send": "Send",
+    "copy": "Copy",
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
+    "today": "Today",
+    "yesterday": "Yesterday"
+  },
+  "nav": {
+    "home": "Home",
+    "duel": "Duel",
+    "challenge": "Challenge",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "wallet": "Wallet"
+  },
   "home": {
     "search_placeholder": "Search Communities & Groups",
     "no_stories": "No active challenges or duels",
-    "balance": "Balance"
+    "balance": "Balance",
+    "community": "Community",
+    "groups": "Groups"
   },
   "game": {
     "rooms": "Rooms",
     "click_to_join": "Click to join",
-    "level": "Level"
+    "level": "Level",
+    "players": "Players",
+    "buy_cards": "Buy Cards",
+    "card_price": "Card Price",
+    "time_remaining": "Time Remaining",
+    "select_cards": "Select Cards",
+    "max_cards": "Maximum 6 cards",
+    "your_cards": "Your Cards",
+    "remaining_cards": "Remaining Cards",
+    "start_game": "Game Started",
+    "winner": "Winner",
+    "line_winner": "Line Winner",
+    "full_house": "Full House"
   },
   "duel": {
     "title": "Duel",
-    "join": "Join Duel"
+    "create": "Create Duel",
+    "join": "Join Duel",
+    "expires": "Time Remaining",
+    "expires_in": "Expires in",
+    "cancel": "Cancel Duel",
+    "public": "Public Duel",
+    "private": "Private Duel",
+    "group": "Group Duel",
+    "select_level": "Select Level",
+    "select_currency": "Select Currency",
+    "enter_opponent": "Enter Opponent Username",
+    "no_duels": "No active duels",
+    "your_duels": "Your Duels",
+    "waiting_for_opponent": "Waiting for opponent",
+    "in_progress": "In Progress"
   },
   "challenge": {
     "title": "Challenge",
-    "join": "Join Challenge"
+    "create": "Create Challenge",
+    "join": "Join Challenge",
+    "expires": "Time Remaining",
+    "expires_in": "Expires in",
+    "cancel": "Cancel Challenge",
+    "select_level": "Select Level",
+    "select_currency": "Select Currency",
+    "unlocked_levels": "Unlocked Levels",
+    "participants": "Participants",
+    "max_participants": "Max Participants",
+    "min_participants": "Min Participants",
+    "creator_fee": "Creator Fee (20%)",
+    "platform_fee": "Platform Fee (5%)",
+    "no_challenges": "No active challenges",
+    "your_challenges": "Your Challenges",
+    "waiting": "Waiting",
+    "active": "Active"
   },
-  "wallet": {
-    "title": "Wallet",
-    "deposit": "Deposit",
-    "withdraw": "Withdraw",
-    "swap": "Swap",
-    "transfer": "Transfer"
-  }
-}
-
-{
   "wallet": {
     "title": "Wallet",
     "total_assets": "Your Total Assets",
@@ -44,55 +104,8 @@
     "activity": "Activity",
     "transactions": "transactions",
     "no_transactions": "No transactions found",
-    "view_all": "View All"
-  },
-  "common": {
-    "loading": "Loading..."
-  }
-}
-{
-  "wallet": {
-    "title": "Wallet",
-    "total_assets": "Your Total Assets",
-    "daily_interest": "Daily Interest",
-    "deposit": "Deposit",
-    "withdraw": "Withdraw",
-    "swap": "Swap",
-    "transfer": "Transfer",
-    "assets": "Assets",
-    "crypto": "Crypto",
-    "currency": "Currency",
-    "activity": "Activity",
-    "search": "Search..."
-  },
-  "order": {
-    "title": "Payment Request",
-    "did": "DID",
-    "amount": "Amount",
-    "generate": "Generate Request",
-    "copy": "Copy Link"
-  },
-  "scan": {
-    "title": "Scan QR",
-    "select_from_gallery": "Select from Gallery"
-  }
-}
-{
-  "wallet": {
-    "title": "Wallet",
-    "total_assets": "Your Total Assets",
-    "daily_interest": "Daily Interest",
-    "withdraw": "Withdraw",
-    "deposit": "Deposit",
-    "swap": "Swap",
-    "transfer": "Transfer",
-    "assets": "Assets",
-    "crypto": "Crypto",
-    "currency": "Currency",
-    "activity": "Activity",
+    "view_all": "View All",
     "search": "Search...",
-    "no_assets": "No assets in this section",
-    "no_transactions": "No transactions found",
     "recent_activity": "Recent Activity",
     "link_copied": "Link copied successfully",
     "did_copied": "DID copied successfully",
@@ -119,9 +132,7 @@
     "invalid_qr": "Invalid QR code",
     "camera_error": "Camera access error",
     "file_processing": "Processing image..."
-  }
-}
-{
+  },
   "chat": {
     "title": "Chat",
     "all": "All",
@@ -138,6 +149,85 @@
     "no_conversations": "No conversations found",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "duel_request": "Duel Request"
+    "duel_request": "Duel Request",
+    "reply": "Reply",
+    "delete": "Delete",
+    "report": "Report",
+    "typing": "typing...",
+    "voice_message": "Voice message"
+  },
+  "communities": {
+    "title": "Community & Groups",
+    "create_title": "Create Community & Group",
+    "create_subtitle": "Create game rooms and group chat",
+    "create_community": "+ Create Group & Community",
+    "create_hint": "Create group, game rooms and chat",
+    "no_communities": "No groups found",
+    "community": "Community",
+    "save_lottery": "Lottery Fund",
+    "total_bmc": "Total BMC",
+    "rank": "Rank",
+    "choose_avatar": "Choose Avatar",
+    "group_name": "Group Name",
+    "enter_group_name": "Enter group name",
+    "name_hint": "Your name can be in any language",
+    "select_community": "Select Community",
+    "select_community_hint": "Select community type",
+    "group_username": "Group Username",
+    "enter_username": "Enter group username",
+    "username_hint": "Username must be letters or numbers in English",
+    "username_warning": "You cannot change the group ID for 30 days",
+    "bmc_required": "Required amount for Community Building (BMC)",
+    "bmc_hint": "This amount is locked in the BFC account during the group's lifetime and profit is added from each game",
+    "create_button": "Deposit BMC & Create Group",
+    "gp_id": "Group ID",
+    "follow": "Follow",
+    "following": "Following",
+    "owner": "Owner",
+    "member": "Member",
+    "online_members": "Online Members",
+    "mutual_friends": "Mutual Friends",
+    "add_member": "Add Member",
+    "search_members": "Search members...",
+    "no_members": "No members in this group",
+    "duel_in_group": "Duel in Group"
+  },
+  "community": {
+    "members": "Members",
+    "online": "Online",
+    "lottery_savings": "Lottery Fund",
+    "building_management": "Building Management Capital",
+    "group_rank": "Group Rank in Community",
+    "days": "days",
+    "edit_avatar": "Edit Group Avatar",
+    "edit_name": "Edit Group Name",
+    "edit_username": "Edit Group Username",
+    "create_lottery": "Create Lottery in Group",
+    "delete_group": "Delete Group & Withdraw BMC",
+    "total_bmc": "Total Building Management Capital",
+    "favorite_group": "Favorite Group",
+    "report_group": "Report Group",
+    "leave_group": "Leave Group",
+    "duel_in_group": "+ Duel in Group"
+  },
+  "deposit": {
+    "title": "Deposit",
+    "select_network": "Select Network",
+    "address": "Deposit Address",
+    "save_qr": "Save QR Code",
+    "min_deposit": "Min Deposit",
+    "blocks_confirm": "Blocks to Confirm"
+  },
+  "profile": {
+    "title": "Profile",
+    "events": "Events",
+    "question_hour": "Question Hour",
+    "groups": "Groups",
+    "language_settings": "Language & Voice Settings",
+    "support": "Support",
+    "privacy_security": "Privacy & Security",
+    "contact": "Contact",
+    "create_group": "Create Group",
+    "logout": "Logout"
   }
 }
