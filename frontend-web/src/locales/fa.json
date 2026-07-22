@@ -1,56 +1,92 @@
 {
-  "wallet": {
-    "title": "کیف پول",
-    "total_assets": "ارزش کل دارایی شما",
-    "daily_interest": "سود تعلق گرفته روزانه",
-    "deposit": "واریز",
-    "withdraw": "برداشت",
+  "common": {
+    "loading": "در حال بارگذاری...",
+    "back": "بازگشت",
+    "cancel": "لغو",
+    "delete": "حذف",
+    "save": "ذخیره",
+    "edit": "ویرایش",
+    "close": "بستن",
+    "confirm": "تأیید",
+    "send": "ارسال",
+    "copy": "کپی",
+    "seconds": "ثانیه",
+    "minutes": "دقیقه",
+    "hours": "ساعت",
+    "days": "روز",
+    "today": "امروز",
+    "yesterday": "دیروز"
+  },
+  "nav": {
+    "home": "خانه",
+    "duel": "دوئل",
+    "challenge": "چالش",
     "swap": "تبدیل",
-    "transfer": "انتقال"
+    "transfer": "انتقال",
+    "wallet": "کیف پول"
   },
-  "deposit": {
-    "title": "واریز",
-    "select_network": "انتخاب شبکه",
-    "address": "آدرس واریز",
-    "save_qr": "ذخیره QR Code",
-    "min_deposit": "حداقل واریز",
-    "blocks_confirm": "تعداد بلاک برای تأیید"
-  },
-  "duel": {
-    "title": "دوئل",
-    "expires_in": "زمان باقی‌مانده",
-    "join": "پیوستن به دوئل",
-    "cancel": "لغو دوئل"
-  }
-}
-{
   "home": {
     "search_placeholder": "جستجوی گروه‌ها و کامونیتی‌ها",
     "no_stories": "هیچ چالش یا دوئلی در جریان نیست",
-    "balance": "موجودی"
+    "balance": "موجودی",
+    "community": "کامونیتی",
+    "groups": "گروه‌ها"
   },
   "game": {
     "rooms": "اتاق",
     "click_to_join": "برای ورود کلیک کنید",
-    "level": "سطح"
+    "level": "سطح",
+    "players": "بازیکنان",
+    "buy_cards": "خرید کارت",
+    "card_price": "قیمت کارت",
+    "time_remaining": "زمان باقیمانده",
+    "select_cards": "انتخاب کارت",
+    "max_cards": "حداکثر ۶ کارت",
+    "your_cards": "کارت‌های شما",
+    "remaining_cards": "کارت‌های باقیمانده",
+    "start_game": "بازی شروع شد",
+    "winner": "برنده",
+    "line_winner": "برنده خطی",
+    "full_house": "پر"
   },
   "duel": {
     "title": "دوئل",
-    "join": "شرکت در دوئل"
+    "create": "ایجاد دوئل",
+    "join": "شرکت در دوئل",
+    "expires": "زمان باقیمانده",
+    "expires_in": "زمان باقیمانده",
+    "cancel": "لغو دوئل",
+    "public": "دوئل عمومی",
+    "private": "دوئل خصوصی",
+    "group": "دوئل گروهی",
+    "select_level": "انتخاب سطح",
+    "select_currency": "انتخاب ارز",
+    "enter_opponent": "نام کاربری حریف را وارد کنید",
+    "no_duels": "هیچ دوئل فعالی وجود ندارد",
+    "your_duels": "دوئل‌های شما",
+    "waiting_for_opponent": "در انتظار حریف",
+    "in_progress": "در حال انجام"
   },
   "challenge": {
     "title": "چالش",
-    "join": "شرکت در چالش"
+    "create": "ایجاد چالش",
+    "join": "شرکت در چالش",
+    "expires": "زمان باقیمانده",
+    "expires_in": "زمان باقیمانده",
+    "cancel": "لغو چالش",
+    "select_level": "انتخاب سطح",
+    "select_currency": "انتخاب ارز",
+    "unlocked_levels": "سطوح آزاد شده",
+    "participants": "شرکت‌کنندگان",
+    "max_participants": "حداکثر شرکت‌کنندگان",
+    "min_participants": "حداقل شرکت‌کنندگان",
+    "creator_fee": "کارمزد سازنده (۲۰٪)",
+    "platform_fee": "کارمزد پلتفرم (۵٪)",
+    "no_challenges": "هیچ چالش فعالی وجود ندارد",
+    "your_challenges": "چالش‌های شما",
+    "waiting": "در انتظار",
+    "active": "فعال"
   },
-  "wallet": {
-    "title": "کیف پول",
-    "deposit": "واریز",
-    "withdraw": "برداشت",
-    "swap": "تبدیل",
-    "transfer": "انتقال"
-  }
-}
-{
   "wallet": {
     "title": "کیف پول",
     "total_assets": "ارزش کل دارایی شما",
@@ -68,61 +104,8 @@
     "activity": "فعالیت‌ها",
     "transactions": "تراکنش",
     "no_transactions": "هیچ تراکنشی یافت نشد",
-    "view_all": "مشاهده همه"
-  },
-  "common": {
-    "loading": "در حال بارگذاری..."
-  }
-}
-{
-  "wallet": {
-    "title": "کیف پول",
-    "total_assets": "ارزش کل دارایی شما",
-    "deposit": "واریز",
-    "withdraw": "برداشت",
-    "swap": "تبدیل",
-    "transfer": "انتقال"
-  },
-  "duel": {
-    "title": "دوئل",
-    "create": "ایجاد دوئل",
-    "join": "شرکت در دوئل",
-    "expires": "زمان باقیمانده"
-  },
-  "challenge": {
-    "title": "چالش",
-    "create": "ایجاد چالش",
-    "join": "شرکت در چالش",
-    "expires": "زمان باقیمانده"
-  },
-  "game": {
-    "rooms": "اتاق‌ها",
-    "players": "بازیکنان",
-    "level": "سطح"
-  },
-  "nav": {
-    "home": "خانه",
-    "duel": "دوئل",
-    "challenge": "چالش",
-    "swap": "تبدیل",
-    "transfer": "انتقال",
-    "wallet": "کیف پول"
-{
-  "wallet": {
-    "title": "کیف پول",
-    "total_assets": "ارزش کل دارایی شما",
-    "daily_interest": "سود روزانه",
-    "withdraw": "برداشت",
-    "deposit": "واریز",
-    "swap": "تبدیل",
-    "transfer": "انتقال",
-    "assets": "دارایی‌ها",
-    "crypto": "رمزارز",
-    "currency": "ارز",
-    "activity": "فعالیت‌ها",
+    "view_all": "مشاهده همه",
     "search": "جستجو...",
-    "no_assets": "هیچ دارایی در این بخش وجود ندارد",
-    "no_transactions": "هیچ تراکنشی یافت نشد",
     "recent_activity": "فعالیت‌های اخیر",
     "link_copied": "لینک با موفقیت کپی شد",
     "did_copied": "DID با موفقیت کپی شد",
@@ -149,9 +132,7 @@
     "invalid_qr": "QR کد نامعتبر است",
     "camera_error": "خطا در دسترسی به دوربین",
     "file_processing": "در حال پردازش تصویر..."
-  }
-}
-{
+  },
   "chat": {
     "title": "چت",
     "all": "همه",
@@ -168,10 +149,13 @@
     "no_conversations": "هیچ مکالمه‌ای وجود ندارد",
     "follow": "دنبال کردن",
     "unfollow": "لغو دنبال کردن",
-    "duel_request": "درخواست دوئل"
-  }
-}
-{
+    "duel_request": "درخواست دوئل",
+    "reply": "پاسخ",
+    "delete": "حذف",
+    "report": "گزارش",
+    "typing": "در حال تایپ...",
+    "voice_message": "پیام صوتی"
+  },
   "communities": {
     "title": "جامعه و گروه‌ها",
     "create_title": "ساخت کامونیتی و گروه",
@@ -225,5 +209,25 @@
     "report_group": "گزارش گروه",
     "leave_group": "ترک گروه",
     "duel_in_group": "+ دوئل در گروه"
+  },
+  "deposit": {
+    "title": "واریز",
+    "select_network": "انتخاب شبکه",
+    "address": "آدرس واریز",
+    "save_qr": "ذخیره QR Code",
+    "min_deposit": "حداقل واریز",
+    "blocks_confirm": "تعداد بلاک برای تأیید"
+  },
+  "profile": {
+    "title": "پروفایل",
+    "events": "رویداد",
+    "question_hour": "ساعت سوال",
+    "groups": "گروه‌ها",
+    "language_settings": "تنظیمات زبان و صدای گوینده",
+    "support": "پشتیبانی",
+    "privacy_security": "حریم خصوصی و امنیت",
+    "contact": "راه‌های ارتباطی",
+    "create_group": "ساخت گروه",
+    "logout": "خروج"
   }
 }
