@@ -1,134 +1,9 @@
 // pages/WalletPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useWalletStore } from '../stores/walletStore';
+import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
-import { formatCurrency } from '../utils/currencyFormatter';
-import { calculateDailyInterest } from '../utils/interestCalculator';
-
-// کامپوننت‌ها
-import WalletHeader from '../components/wallet/WalletHeader';
-import TotalValue from '../components/wallet/TotalValue';
-import ActionButtons from '../components/wallet/ActionButtons';
-import AssetsSection from '../components/wallet/AssetsSection';
-
-const WalletPage = () => {
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const { user } = useAuth();
-  const {
-    balances,
-    totalValue,
-    dailyInterest,
-    transactions,
-    isLoading,
-    fetchWalletData,
-    withdrawInterest,
-  } = useWalletStore();
-
-  const [showBalance, setShowBalance] = useState(true);
-  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
-
-  // بارگذاری داده‌ها
-  useEffect(() => {
-    if (user) {
-      fetchWalletData(user.id);
-    }
-  }, [user, fetchWalletData]);
-
-  // هدایت به صفحات
-  const handleBack = () => navigate(-1);
-  const handleOrder = () => navigate('/order');
-  const handleScan = () => navigate('/scan-qr');
-  const handleShare = () => {
-    // اشتراک‌گذاری لینک دعوت
-    const link = `http://dobna.com/invite/${user?.did}`;
-    if (navigator.share) {
-      navigator.share({ title: 'DOBNA', text: 'Join me on DOBNA!', url: link });
-    } else {
-      navigator.clipboard.writeText(link);
-      alert(t('wallet.link_copied'));
-    }
-  };
-  const handleCopyDID = () => {
-    navigator.clipboard.writeText(user?.did || '');
-    alert(t('wallet.did_copied'));
-  };
-
-  const handleDeposit = () => navigate('/deposit');
-  const handleWithdraw = () => navigate('/withdraw');
-  const handleSwap = () => navigate('/swap');
-  const handleTransfer = () => navigate('/transfer');
-
-  const handleAssetPress = (currency) => {
-    navigate(`/coin/${currency}`);
-  };
-
-  const handleWithdrawInterest = async () => {
-    try {
-      await withdrawInterest();
-      alert(t('wallet.interest_withdrawn'));
-    } catch (error) {
-      alert(error.message);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white pb-24" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* هدر */}
-      <WalletHeader
-        did={user?.did || '---'}
-        onBack={handleBack}
-        onCopy={handleCopyDID}
-        onOrder={handleOrder}
-        onScan={handleScan}
-        onShare={handleShare}
-        showBalance={showBalance}
-        onToggleBalance={() => setShowBalance(!showBalance)}
-      />
-
-      {/* ارزش کل و سود */}
-      <TotalValue
-        totalValue={totalValue}
-        dailyInterest={dailyInterest}
-        showBalance={showBalance}
-        onWithdrawInterest={handleWithdrawInterest}
-      />
-
-      {/* دکمه‌های عملیاتی */}
-      <ActionButtons
-        onDeposit={handleDeposit}
-        onWithdraw={handleWithdraw}
-        onSwap={handleSwap}
-        onTransfer={handleTransfer}
-      />
-
-      {/* بخش دارایی‌ها */}
-      <AssetsSection
-        assets={balances}
-        onAssetPress={handleAssetPress}
-        transactions={transactions}
-      />
-    </div>
-  );
-};
-
-export default WalletPage;
-
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useWalletStore } from '../stores/walletStore';
-import { useAuth } from '../hooks/useAuth';
 import { formatCurrency, formatCompactNumber } from '../utils/currencyFormatter';
 import { getCryptoIcon } from '../utils/assetMapper';
 import { 
@@ -141,14 +16,14 @@ import {
   ChevronRight,
   TrendingUp,
   Clock,
-  ArrowUpRight,
-  ArrowDownRight
 } from 'lucide-react';
 
+// ======================================================
 // کامپوننت فرعی: نمایش هر دارایی
+// ======================================================
 const AssetItem = ({ asset, onClick }) => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
+  const { t, currentLanguage } = useTranslation();
+  const isRTL = currentLanguage?.dir === 'rtl';
   
   // نام ارز به زبان فارسی یا انگلیسی
   const getLocalizedName = (currency) => {
@@ -205,10 +80,12 @@ const AssetItem = ({ asset, onClick }) => {
   );
 };
 
+// ======================================================
 // کامپوننت فرعی: نمایش هر تراکنش
+// ======================================================
 const TransactionItem = ({ tx }) => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
+  const { t, currentLanguage } = useTranslation();
+  const isRTL = currentLanguage?.dir === 'rtl';
   
   const getTypeLabel = (type) => {
     const labels = {
@@ -222,11 +99,12 @@ const TransactionItem = ({ tx }) => {
       duel_create: { en: 'Duel Create', fa: 'ایجاد دوئل' },
       challenge_create: { en: 'Challenge Create', fa: 'ایجاد چالش' },
       duel_refund: { en: 'Duel Refund', fa: 'بازگشت دوئل' },
+      interest: { en: 'Interest', fa: 'سود' },
     };
     return labels[type]?.[isRTL ? 'fa' : 'en'] || type;
   };
 
-  const isPositive = ['deposit', 'duel_win', 'challenge_win', 'game_win', 'duel_refund'].includes(tx.type);
+  const isPositive = ['deposit', 'duel_win', 'challenge_win', 'game_win', 'duel_refund', 'interest'].includes(tx.type);
   const isNegative = ['withdraw', 'swap', 'transfer', 'duel_create', 'challenge_create'].includes(tx.type);
 
   return (
@@ -254,10 +132,12 @@ const TransactionItem = ({ tx }) => {
   );
 };
 
+// ======================================================
 // صفحه اصلی کیف پول
+// ======================================================
 const WalletPage = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t, currentLanguage, changeLanguage } = useTranslation();
   const { user } = useAuth();
   const { 
     balances, 
@@ -266,16 +146,18 @@ const WalletPage = () => {
     transactions, 
     isLoading,
     fetchWalletData,
-    toggleBalanceVisibility
+    withdrawInterest,
   } = useWalletStore();
   
   const [showBalance, setShowBalance] = useState(true);
   const [activeTab, setActiveTab] = useState('crypto'); // 'crypto' | 'currency'
   const [filteredTransactions, setFilteredTransactions] = useState([]);
 
-  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
+  const isRTL = currentLanguage?.dir === 'rtl';
 
+  // ======================================================
   // بارگذاری داده‌ها
+  // ======================================================
   useEffect(() => {
     if (user) {
       fetchWalletData(user.id);
@@ -295,7 +177,46 @@ const WalletPage = () => {
     setFilteredTransactions(filtered);
   }, [transactions, activeTab]);
 
+  // ======================================================
+  // هندلرها
+  // ======================================================
+  const handleBack = () => navigate(-1);
+  const handleOrder = () => navigate('/order');
+  const handleScan = () => navigate('/scan-qr');
+  
+  const handleShare = () => {
+    const link = `http://dobna.com/invite/${user?.did}`;
+    if (navigator.share) {
+      navigator.share({ title: 'DOBNA', text: 'Join me on DOBNA!', url: link });
+    } else {
+      navigator.clipboard.writeText(link);
+      alert(t('wallet.link_copied'));
+    }
+  };
+  
+  const handleCopyDID = () => {
+    navigator.clipboard.writeText(user?.did || '');
+    alert(t('wallet.did_copied'));
+  };
+
+  const handleDeposit = () => navigate('/deposit');
+  const handleWithdraw = () => navigate('/withdraw');
+  const handleSwap = () => navigate('/swap');
+  const handleTransfer = () => navigate('/transfer');
+  const handleAssetPress = (currency) => navigate(`/coin/${currency}`);
+
+  const handleWithdrawInterest = async () => {
+    try {
+      await withdrawInterest();
+      alert(t('wallet.interest_withdrawn'));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  // ======================================================
   // فیلتر دارایی‌ها بر اساس تب
+  // ======================================================
   const filteredBalances = balances?.filter(b => {
     if (activeTab === 'crypto') {
       return ['BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE'].includes(b.currency);
@@ -304,26 +225,62 @@ const WalletPage = () => {
     }
   }) || [];
 
-  // تنظیم سود روزانه
+  // ======================================================
+  // سود روزانه
+  // ======================================================
   const dailyInterestAmount = (totalValue * 0.01).toFixed(2); // 1% ماهانه
 
+  // ======================================================
+  // رندر لودینگ
+  // ======================================================
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // ======================================================
+  // رندر اصلی
+  // ======================================================
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-24" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* هدر */}
+    <div 
+      className="min-h-screen bg-gray-900 text-white pb-24" 
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
+      {/* ===== هدر ===== */}
       <div className="bg-gray-800/50 border-b border-gray-700 p-4 flex items-center justify-between">
-        <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-white transition">
+        <button onClick={handleBack} className="text-gray-400 hover:text-white transition">
           <ChevronRight className={`w-6 h-6 ${isRTL ? 'rotate-180' : ''}`} />
         </button>
         <h1 className="text-lg font-bold">{t('wallet.title')}</h1>
-        <button 
-          onClick={() => setShowBalance(!showBalance)} 
-          className="text-gray-400 hover:text-white transition"
-        >
-          {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-        </button>
+        <div className="flex items-center gap-3">
+          {/* دکمه نمایش/مخفی کردن موجودی */}
+          <button 
+            onClick={() => setShowBalance(!showBalance)} 
+            className="text-gray-400 hover:text-white transition"
+          >
+            {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+          </button>
+          {/* دکمه Order (درخواست پرداخت) */}
+          <button 
+            onClick={handleOrder} 
+            className="text-gray-400 hover:text-white transition"
+          >
+            <Send className="w-5 h-5" />
+          </button>
+          {/* دکمه اسکن QR */}
+          <button 
+            onClick={handleScan} 
+            className="text-gray-400 hover:text-white transition"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      {/* ارزش کل دارایی */}
+      {/* ===== ارزش کل دارایی ===== */}
       <div className="p-4">
         <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-2xl p-4 border border-blue-500/20">
           <p className="text-gray-400 text-sm">{t('wallet.total_assets')}</p>
@@ -348,28 +305,28 @@ const WalletPage = () => {
           {/* دکمه‌های عملیاتی */}
           <div className="grid grid-cols-4 gap-2 mt-4">
             <button 
-              onClick={() => navigate('/deposit')}
+              onClick={handleDeposit}
               className="bg-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition flex flex-col items-center"
             >
               <ArrowUp className="w-4 h-4" />
               <span>{t('wallet.deposit')}</span>
             </button>
             <button 
-              onClick={() => navigate('/withdraw')}
+              onClick={handleWithdraw}
               className="bg-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition flex flex-col items-center"
             >
               <ArrowDown className="w-4 h-4" />
               <span>{t('wallet.withdraw')}</span>
             </button>
             <button 
-              onClick={() => navigate('/swap')}
+              onClick={handleSwap}
               className="bg-purple-600 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition flex flex-col items-center"
             >
               <RefreshCw className="w-4 h-4" />
               <span>{t('wallet.swap')}</span>
             </button>
             <button 
-              onClick={() => navigate('/transfer')}
+              onClick={handleTransfer}
               className="bg-yellow-600 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700 transition flex flex-col items-center"
             >
               <Send className="w-4 h-4" />
@@ -379,7 +336,7 @@ const WalletPage = () => {
         </div>
       </div>
 
-      {/* تب‌های Crypto / Currency */}
+      {/* ===== تب‌های Crypto / Currency ===== */}
       <div className="px-4 mb-3">
         <div className="bg-gray-800 rounded-xl p-1 flex">
           <button
@@ -401,7 +358,7 @@ const WalletPage = () => {
         </div>
       </div>
 
-      {/* لیست دارایی‌ها */}
+      {/* ===== لیست دارایی‌ها ===== */}
       <div className="px-4 mb-4">
         <h2 className="text-gray-400 text-sm mb-2 flex items-center justify-between">
           <span>{t('wallet.assets')}</span>
@@ -413,7 +370,7 @@ const WalletPage = () => {
               <AssetItem 
                 key={asset.currency} 
                 asset={asset} 
-                onClick={() => navigate(`/coin/${asset.currency}`)}
+                onClick={handleAssetPress}
               />
             ))
           ) : (
@@ -424,7 +381,7 @@ const WalletPage = () => {
         </div>
       </div>
 
-      {/* تاریخچه تراکنش‌ها */}
+      {/* ===== تاریخچه تراکنش‌ها ===== */}
       <div className="px-4">
         <h2 className="text-gray-400 text-sm mb-2 flex items-center justify-between">
           <span>{t('wallet.activity')}</span>
@@ -451,12 +408,36 @@ const WalletPage = () => {
         )}
       </div>
 
-      {/* لودینگ */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      {/* ===== انتخاب زبان (نمایش در پایین صفحه) ===== */}
+      <div className="px-4 mt-6 pb-4 flex justify-center">
+        <div className="flex items-center gap-2">
+          <span className="text-gray-500 text-xs">{t('common.language')}:</span>
+          <button
+            onClick={() => changeLanguage('en')}
+            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'en' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+          >
+            EN
+          </button>
+          <button
+            onClick={() => changeLanguage('fa')}
+            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'fa' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+          >
+            FA
+          </button>
+          <button
+            onClick={() => changeLanguage('tr')}
+            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'tr' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+          >
+            TR
+          </button>
+          <button
+            onClick={() => changeLanguage('ar')}
+            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'ar' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+          >
+            AR
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
