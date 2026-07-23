@@ -229,5 +229,18 @@
     "contact": "Contact",
     "create_group": "Create Group",
     "logout": "Logout"
+  },
+  "auth": {
+    "verify_code": "Verify Code",
+    "code_sent_to": "The login code was sent to",
+    "edit_number": "Edit number",
+    "resend_code": "Request new code",
+    "resend_timer": "{{seconds}} seconds to request a new code",
+    "confirm": "Confirm and continue",
+    "errors": {
+      "invalid_code": "Please enter a valid 6-digit code",
+      "verification_failed": "Invalid verification code. Please try again.",
+      "resend_failed": "Failed to resend code. Please try again."
+    }
   }
 }
