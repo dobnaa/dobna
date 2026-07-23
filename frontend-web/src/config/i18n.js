@@ -20,7 +20,7 @@ import fi from '../locales/fi.json';
 import pt from '../locales/pt.json';
 import uz from '../locales/uz.json';
 import vi from '../locales/vi.json';
-import sv from '../locales/sv.json';
+import sv from '../locales/sv.json'; // ✅ اصلاح شد
 
 // ======================================================
 // ۱. لیست زبان‌های پشتیبانی‌شده (برای استفاده در کامپوننت‌ها)
