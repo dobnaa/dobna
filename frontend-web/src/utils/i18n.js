@@ -8,9 +8,18 @@ import fa from '../locales/fa.json';
 import tr from '../locales/tr.json';
 import ar from '../locales/ar.json';
 import ru from '../locales/ru.json';
-import in from '../locales/in.json';
+import hi from '../locales/hi.json';
 import fr from '../locales/fr.json';
-import ch from '../locales/ch.json';
+import zh from '../locales/zh.json';
+import id from '../locales/id.json';
+import ko from '../locales/ko.json';
+import es from '../locales/es.json';
+import cs from '../locales/cs.json';
+import fi from '../locales/fi.json';
+import pt from '../locales/pt.json';
+import uz from '../locales/uz.json';
+import vi from '../locales/vi.json';
+import sv from '../locales/sv.json
 
 const resources = {
   en: { translation: en },
@@ -18,9 +27,18 @@ const resources = {
   tr: { translation: tr },
   ar: { translation: ar },
   ru: { translation: ru },
-  in: { translation: in },
+  hi: { translation: hi },
   fr: { translation: fr },
-  ch: { translation: ch },
+  zh: { translation: zh },
+  id: { translation: id },
+  ko: { translation: ko },
+  es: { translation: es },
+  cs: { translation: cs },
+  fi: { translation: fi },
+  pt: { translation: pt },
+  uz: { translation: uz },
+  vi: { translation: vi },
+  sv: { translation: sv },
 };
 
 i18n
