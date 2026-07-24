@@ -1,10 +1,10 @@
-// pages/WalletPage.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+// pages/WalletPage.jsx (نسخه استاندارد - بدون هاردکد زبان)
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
 import { useWalletStore } from '../stores/walletStore';
-import { formatCurrency, formatCompactNumber } from '../utils/currencyFormatter';
+import { formatCompactNumber } from '../utils/currencyFormatter';
 import { getCryptoIcon } from '../utils/assetMapper';
 import { 
   ArrowDown, 
@@ -16,7 +16,15 @@ import {
   ChevronRight,
   TrendingUp,
   Clock,
+  Share2,
+  Copy,
 } from 'lucide-react';
+
+// ======================================================
+// لیست ارزهای کریپتو و فیات (برای فیلتر کردن)
+// ======================================================
+const CRYPTO_CURRENCIES = ['BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI'];
+const FIAT_CURRENCIES = ['USD', 'IRT', 'EUR', 'TRY', 'GBP', 'AED', 'CNY', 'INR', 'CAD', 'CHF', 'AUD'];
 
 // ======================================================
 // کامپوننت فرعی: نمایش هر دارایی
@@ -25,29 +33,10 @@ const AssetItem = ({ asset, onClick }) => {
   const { t, currentLanguage } = useTranslation();
   const isRTL = currentLanguage?.dir === 'rtl';
   
-  // نام ارز به زبان فارسی یا انگلیسی
+  // ✅ استفاده از i18n برای نام ارز
   const getLocalizedName = (currency) => {
-    const names = {
-      BTC: { en: 'Bitcoin', fa: 'بیت‌کوین' },
-      ETH: { en: 'Ethereum', fa: 'اتریوم' },
-      USDT: { en: 'Tether', fa: 'تتر' },
-      SOL: { en: 'Solana', fa: 'سولانا' },
-      BNB: { en: 'BNB', fa: 'بایننس کوین' },
-      DOGE: { en: 'Dogecoin', fa: 'دوج‌کوین' },
-      TON: { en: 'Toncoin', fa: 'تون‌کوین' },
-      IRT: { en: 'Iranian Toman', fa: 'تومان ایران' },
-      USD: { en: 'US Dollar', fa: 'دلار آمریکا' },
-      EUR: { en: 'Euro', fa: 'یورو' },
-      GBP: { en: 'British Pound', fa: 'پوند' },
-      TRY: { en: 'Turkish Lira', fa: 'لیر ترکیه' },
-      AED: { en: 'UAE Dirham', fa: 'درهم امارات' },
-      CAD: { en: 'Canadian Dollar', fa: 'دلار کانادا' },
-      CHF: { en: 'Swiss Franc', fa: 'فرانک سوئیس' },
-      AUD: { en: 'Australian Dollar', fa: 'دلار استرالیا' },
-      INR: { en: 'Indian Rupee', fa: 'روپیه هند' },
-      CNY: { en: 'Chinese Yuan', fa: 'یوان چین' },
-    };
-    return names[currency]?.[isRTL ? 'fa' : 'en'] || currency;
+    // از فایل‌های locales/*.json استفاده می‌کند
+    return t(`currencies.${currency}`, { defaultValue: currency });
   };
 
   return (
@@ -56,12 +45,12 @@ const AssetItem = ({ asset, onClick }) => {
       className="w-full bg-gray-800/50 rounded-xl p-3 flex items-center justify-between hover:bg-gray-700/50 transition border border-gray-700/30"
     >
       <div className="flex items-center gap-3">
-        {/* آیکون ارز */}
         <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg">
           {asset.icon || getCryptoIcon(asset.currency) || '💱'}
         </div>
         <div className="text-left">
           <p className="text-white font-medium">{asset.currency}</p>
+          {/* ✅ ترجمه با i18n */}
           <p className="text-gray-400 text-xs">{getLocalizedName(asset.currency)}</p>
         </div>
       </div>
@@ -87,21 +76,10 @@ const TransactionItem = ({ tx }) => {
   const { t, currentLanguage } = useTranslation();
   const isRTL = currentLanguage?.dir === 'rtl';
   
+  // ✅ استفاده از i18n برای نوع تراکنش
   const getTypeLabel = (type) => {
-    const labels = {
-      deposit: { en: 'Deposit', fa: 'واریز' },
-      withdraw: { en: 'Withdraw', fa: 'برداشت' },
-      swap: { en: 'Swap', fa: 'تبدیل' },
-      transfer: { en: 'Transfer', fa: 'انتقال' },
-      duel_win: { en: 'Duel Win', fa: 'برد دوئل' },
-      challenge_win: { en: 'Challenge Win', fa: 'برد چالش' },
-      game_win: { en: 'Game Win', fa: 'برد بازی' },
-      duel_create: { en: 'Duel Create', fa: 'ایجاد دوئل' },
-      challenge_create: { en: 'Challenge Create', fa: 'ایجاد چالش' },
-      duel_refund: { en: 'Duel Refund', fa: 'بازگشت دوئل' },
-      interest: { en: 'Interest', fa: 'سود' },
-    };
-    return labels[type]?.[isRTL ? 'fa' : 'en'] || type;
+    // از فایل‌های locales/*.json استفاده می‌کند
+    return t(`transaction_types.${type}`, { defaultValue: type });
   };
 
   const isPositive = ['deposit', 'duel_win', 'challenge_win', 'game_win', 'duel_refund', 'interest'].includes(tx.type);
@@ -150,89 +128,68 @@ const WalletPage = () => {
   } = useWalletStore();
   
   const [showBalance, setShowBalance] = useState(true);
-  const [activeTab, setActiveTab] = useState('crypto'); // 'crypto' | 'currency'
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [activeTab, setActiveTab] = useState('crypto');
+  const [toastMessage, setToastMessage] = useState(null);
 
   const isRTL = currentLanguage?.dir === 'rtl';
 
-  // ======================================================
-  // بارگذاری داده‌ها
-  // ======================================================
   useEffect(() => {
     if (user) {
       fetchWalletData(user.id);
     }
   }, [user, fetchWalletData]);
 
-  // فیلتر تراکنش‌ها بر اساس تب
-  useEffect(() => {
-    if (!transactions) return;
-    const filtered = transactions.filter(tx => {
-      if (activeTab === 'crypto') {
-        return ['BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE'].includes(tx.currency);
-      } else {
-        return ['USD', 'IRT', 'EUR', 'TRY', 'GBP', 'AED', 'CAD', 'CHF', 'AUD', 'INR', 'CNY'].includes(tx.currency);
-      }
-    });
-    setFilteredTransactions(filtered);
+  const filteredBalances = useMemo(() => {
+    if (!balances) return [];
+    const currencyList = activeTab === 'crypto' ? CRYPTO_CURRENCIES : FIAT_CURRENCIES;
+    return balances.filter(b => currencyList.includes(b.currency));
+  }, [balances, activeTab]);
+
+  const filteredTransactions = useMemo(() => {
+    if (!transactions) return [];
+    const currencyList = activeTab === 'crypto' ? CRYPTO_CURRENCIES : FIAT_CURRENCIES;
+    return transactions.filter(tx => currencyList.includes(tx.currency));
   }, [transactions, activeTab]);
 
-  // ======================================================
-  // هندلرها
-  // ======================================================
-  const handleBack = () => navigate(-1);
-  const handleOrder = () => navigate('/order');
-  const handleScan = () => navigate('/scan-qr');
-  
-  const handleShare = () => {
+  const handleBack = useCallback(() => navigate(-1), [navigate]);
+  const handleOrder = useCallback(() => navigate('/order'), [navigate]);
+  const handleScan = useCallback(() => navigate('/scan-qr'), [navigate]);
+  const handleDeposit = useCallback(() => navigate('/deposit'), [navigate]);
+  const handleWithdraw = useCallback(() => navigate('/withdraw'), [navigate]);
+  const handleSwap = useCallback(() => navigate('/swap'), [navigate]);
+  const handleTransfer = useCallback(() => navigate('/transfer'), [navigate]);
+  const handleAssetPress = useCallback((currency) => navigate(`/coin/${currency}`), [navigate]);
+
+  const handleShare = useCallback(() => {
     const link = `http://dobna.com/invite/${user?.did}`;
     if (navigator.share) {
       navigator.share({ title: 'DOBNA', text: 'Join me on DOBNA!', url: link });
     } else {
       navigator.clipboard.writeText(link);
-      alert(t('wallet.link_copied'));
+      setToastMessage(t('wallet.link_copied'));
+      setTimeout(() => setToastMessage(null), 3000);
     }
-  };
-  
-  const handleCopyDID = () => {
+  }, [user, t]);
+
+  const handleCopyDID = useCallback(() => {
     navigator.clipboard.writeText(user?.did || '');
-    alert(t('wallet.did_copied'));
-  };
+    setToastMessage(t('wallet.did_copied'));
+    setTimeout(() => setToastMessage(null), 3000);
+  }, [user, t]);
 
-  const handleDeposit = () => navigate('/deposit');
-  const handleWithdraw = () => navigate('/withdraw');
-  const handleSwap = () => navigate('/swap');
-  const handleTransfer = () => navigate('/transfer');
-  const handleAssetPress = (currency) => navigate(`/coin/${currency}`);
-
-  const handleWithdrawInterest = async () => {
+  const handleWithdrawInterest = useCallback(async () => {
     try {
       await withdrawInterest();
-      alert(t('wallet.interest_withdrawn'));
+      setToastMessage(t('wallet.interest_withdrawn'));
+      setTimeout(() => setToastMessage(null), 3000);
     } catch (error) {
-      alert(error.message);
+      setToastMessage(error.message);
+      setTimeout(() => setToastMessage(null), 3000);
     }
-  };
+  }, [withdrawInterest, t]);
 
-  // ======================================================
-  // فیلتر دارایی‌ها بر اساس تب
-  // ======================================================
-  const filteredBalances = balances?.filter(b => {
-    if (activeTab === 'crypto') {
-      return ['BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE'].includes(b.currency);
-    } else {
-      return ['USD', 'IRT', 'EUR', 'TRY', 'GBP', 'AED', 'CAD', 'CHF', 'AUD', 'INR', 'CNY'].includes(b.currency);
-    }
-  }) || [];
+  const dailyInterestAmount = (totalValue * 0.01).toFixed(2);
 
-  // ======================================================
-  // سود روزانه
-  // ======================================================
-  const dailyInterestAmount = (totalValue * 0.01).toFixed(2); // 1% ماهانه
-
-  // ======================================================
-  // رندر لودینگ
-  // ======================================================
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -241,46 +198,35 @@ const WalletPage = () => {
     );
   }
 
-  // ======================================================
-  // رندر اصلی
-  // ======================================================
   return (
-    <div 
-      className="min-h-screen bg-gray-900 text-white pb-24" 
-      dir={isRTL ? 'rtl' : 'ltr'}
-    >
-      {/* ===== هدر ===== */}
+    <div className="min-h-screen bg-gray-900 text-white pb-24" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Toast */}
+      {toastMessage && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-gray-800 border border-green-500/30 rounded-xl px-6 py-3 shadow-2xl animate-slide-down">
+          <p className="text-white text-sm">{toastMessage}</p>
+        </div>
+      )}
+
+      {/* هدر */}
       <div className="bg-gray-800/50 border-b border-gray-700 p-4 flex items-center justify-between">
         <button onClick={handleBack} className="text-gray-400 hover:text-white transition">
           <ChevronRight className={`w-6 h-6 ${isRTL ? 'rotate-180' : ''}`} />
         </button>
         <h1 className="text-lg font-bold">{t('wallet.title')}</h1>
-        <div className="flex items-center gap-3">
-          {/* دکمه نمایش/مخفی کردن موجودی */}
-          <button 
-            onClick={() => setShowBalance(!showBalance)} 
-            className="text-gray-400 hover:text-white transition"
-          >
+        <div className="flex items-center gap-2">
+          <button onClick={handleShare} className="text-gray-400 hover:text-white transition">
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button onClick={handleCopyDID} className="text-gray-400 hover:text-white transition">
+            <Copy className="w-5 h-5" />
+          </button>
+          <button onClick={() => setShowBalance(!showBalance)} className="text-gray-400 hover:text-white transition">
             {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-          </button>
-          {/* دکمه Order (درخواست پرداخت) */}
-          <button 
-            onClick={handleOrder} 
-            className="text-gray-400 hover:text-white transition"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-          {/* دکمه اسکن QR */}
-          <button 
-            onClick={handleScan} 
-            className="text-gray-400 hover:text-white transition"
-          >
-            <ArrowUp className="w-5 h-5" />
           </button>
         </div>
       </div>
 
-      {/* ===== ارزش کل دارایی ===== */}
+      {/* ارزش کل دارایی */}
       <div className="p-4">
         <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-2xl p-4 border border-blue-500/20">
           <p className="text-gray-400 text-sm">{t('wallet.total_assets')}</p>
@@ -288,7 +234,6 @@ const WalletPage = () => {
             {showBalance ? `$${formatCompactNumber(totalValue)}` : '••••••'}
           </p>
           
-          {/* سود روزانه */}
           <div className="mt-3 flex items-center justify-between bg-blue-500/10 rounded-lg p-2 border border-blue-500/20">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-green-400" />
@@ -302,33 +247,20 @@ const WalletPage = () => {
             </div>
           </div>
 
-          {/* دکمه‌های عملیاتی */}
           <div className="grid grid-cols-4 gap-2 mt-4">
-            <button 
-              onClick={handleDeposit}
-              className="bg-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition flex flex-col items-center"
-            >
+            <button onClick={handleDeposit} className="bg-blue-600 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition flex flex-col items-center">
               <ArrowUp className="w-4 h-4" />
               <span>{t('wallet.deposit')}</span>
             </button>
-            <button 
-              onClick={handleWithdraw}
-              className="bg-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition flex flex-col items-center"
-            >
+            <button onClick={handleWithdraw} className="bg-red-600 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition flex flex-col items-center">
               <ArrowDown className="w-4 h-4" />
               <span>{t('wallet.withdraw')}</span>
             </button>
-            <button 
-              onClick={handleSwap}
-              className="bg-purple-600 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition flex flex-col items-center"
-            >
+            <button onClick={handleSwap} className="bg-purple-600 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition flex flex-col items-center">
               <RefreshCw className="w-4 h-4" />
               <span>{t('wallet.swap')}</span>
             </button>
-            <button 
-              onClick={handleTransfer}
-              className="bg-yellow-600 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700 transition flex flex-col items-center"
-            >
+            <button onClick={handleTransfer} className="bg-yellow-600 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700 transition flex flex-col items-center">
               <Send className="w-4 h-4" />
               <span>{t('wallet.transfer')}</span>
             </button>
@@ -336,29 +268,19 @@ const WalletPage = () => {
         </div>
       </div>
 
-      {/* ===== تب‌های Crypto / Currency ===== */}
+      {/* تب‌ها */}
       <div className="px-4 mb-3">
         <div className="bg-gray-800 rounded-xl p-1 flex">
-          <button
-            onClick={() => setActiveTab('crypto')}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-              activeTab === 'crypto' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setActiveTab('crypto')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${activeTab === 'crypto' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}>
             {t('wallet.crypto')}
           </button>
-          <button
-            onClick={() => setActiveTab('currency')}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
-              activeTab === 'currency' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setActiveTab('currency')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${activeTab === 'currency' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'}`}>
             {t('wallet.currency')}
           </button>
         </div>
       </div>
 
-      {/* ===== لیست دارایی‌ها ===== */}
+      {/* لیست دارایی‌ها */}
       <div className="px-4 mb-4">
         <h2 className="text-gray-400 text-sm mb-2 flex items-center justify-between">
           <span>{t('wallet.assets')}</span>
@@ -367,11 +289,7 @@ const WalletPage = () => {
         <div className="space-y-2">
           {filteredBalances.length > 0 ? (
             filteredBalances.map((asset) => (
-              <AssetItem 
-                key={asset.currency} 
-                asset={asset} 
-                onClick={handleAssetPress}
-              />
+              <AssetItem key={asset.currency} asset={asset} onClick={handleAssetPress} />
             ))
           ) : (
             <div className="bg-gray-800/30 rounded-xl p-6 text-center text-gray-500">
@@ -381,7 +299,7 @@ const WalletPage = () => {
         </div>
       </div>
 
-      {/* ===== تاریخچه تراکنش‌ها ===== */}
+      {/* تاریخچه تراکنش‌ها */}
       <div className="px-4">
         <h2 className="text-gray-400 text-sm mb-2 flex items-center justify-between">
           <span>{t('wallet.activity')}</span>
@@ -399,44 +317,20 @@ const WalletPage = () => {
           )}
         </div>
         {filteredTransactions.length > 10 && (
-          <button 
-            onClick={() => navigate('/activity')}
-            className="w-full mt-3 text-center text-blue-400 text-sm hover:text-blue-300 transition"
-          >
+          <button onClick={() => navigate('/activity')} className="w-full mt-3 text-center text-blue-400 text-sm hover:text-blue-300 transition">
             {t('wallet.view_all')} <ChevronRight className="w-4 h-4 inline" />
           </button>
         )}
       </div>
 
-      {/* ===== انتخاب زبان (نمایش در پایین صفحه) ===== */}
-      <div className="px-4 mt-6 pb-4 flex justify-center">
-        <div className="flex items-center gap-2">
-          <span className="text-gray-500 text-xs">{t('common.language')}:</span>
-          <button
-            onClick={() => changeLanguage('en')}
-            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'en' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            EN
+      {/* انتخاب زبان */}
+      <div className="px-4 mt-6 pb-4 flex flex-wrap justify-center gap-1">
+        <span className="text-gray-500 text-xs flex items-center mr-1">{t('common.language')}:</span>
+        {['en', 'fa', 'tr', 'ar', 'ru', 'es', 'fr', 'de', 'id', 'ko', 'zh'].map((lang) => (
+          <button key={lang} onClick={() => changeLanguage(lang)} className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === lang ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-gray-200'}`}>
+            {lang.toUpperCase()}
           </button>
-          <button
-            onClick={() => changeLanguage('fa')}
-            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'fa' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            FA
-          </button>
-          <button
-            onClick={() => changeLanguage('tr')}
-            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'tr' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            TR
-          </button>
-          <button
-            onClick={() => changeLanguage('ar')}
-            className={`text-xs px-2 py-1 rounded ${currentLanguage?.code === 'ar' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            AR
-          </button>
-        </div>
+        ))}
       </div>
     </div>
   );
