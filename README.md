@@ -1021,7 +1021,18 @@ frontend-web/src/locales/
 
 
 
-
+frontend-web/src/
+├── config/
+│   └── i18n.js          ← ✅ فایل جدید و کامل
+├── utils/
+│   ├── assetMapper.js
+│   ├── currencyFormatter.js
+│   └── ...              ← ❌ فایل i18n.js دیگر اینجا نیست
+├── locales/
+│   ├── en.json
+│   ├── fa.json
+│   └── ...
+└── ...
 
 
 
