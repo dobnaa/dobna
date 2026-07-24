@@ -241,6 +241,66 @@
       "invalid_code": "Please enter a valid 6-digit code",
       "verification_failed": "Invalid verification code. Please try again.",
       "resend_failed": "Failed to resend code. Please try again."
+  },
+  "wallet": {
+    "title": "Wallet",
+    "total_assets": "Your Total Assets",
+    "daily_interest": "Daily Interest",
+    "monthly": "monthly",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "crypto": "Crypto",
+    "currency": "Currency",
+    "assets": "Assets",
+    "items": "items",
+    "no_assets": "No assets in this section",
+    "activity": "Activity",
+    "transactions": "transactions",
+    "no_transactions": "No transactions found",
+    "view_all": "View All",
+    "search": "Search...",
+    "recent_activity": "Recent Activity",
+    "link_copied": "Link copied successfully",
+    "did_copied": "DID copied successfully",
+    "interest_withdrawn": "Interest withdrawn successfully",
+    "balance": "Balance"
+  },
+  "currencies": {
+    "BTC": "Bitcoin",
+    "ETH": "Ethereum",
+    "USDT": "Tether",
+    "SOL": "Solana",
+    "BNB": "BNB",
+    "DOGE": "Dogecoin",
+    "TON": "Toncoin",
+    "IRT": "Iranian Toman",
+    "USD": "US Dollar",
+    "EUR": "Euro",
+    "GBP": "British Pound",
+    "TRY": "Turkish Lira",
+    "AED": "UAE Dirham",
+    "CAD": "Canadian Dollar",
+    "CHF": "Swiss Franc",
+    "AUD": "Australian Dollar",
+    "INR": "Indian Rupee",
+    "CNY": "Chinese Yuan"
+  },
+  "transaction_types": {
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "swap": "Swap",
+    "transfer": "Transfer",
+    "duel_win": "Duel Win",
+    "challenge_win": "Challenge Win",
+    "game_win": "Game Win",
+    "duel_create": "Duel Create",
+    "challenge_create": "Challenge Create",
+    "duel_refund": "Duel Refund",
+    "interest": "Interest"
+  }
+}
     }
   }
 }
