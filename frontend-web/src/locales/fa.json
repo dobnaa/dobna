@@ -229,7 +229,7 @@
     "contact": "راه‌های ارتباطی",
     "create_group": "ساخت گروه",
     "logout": "خروج"
-{
+  },
   "wallet": {
     "title": "کیف پول",
     "total_assets": "ارزش کل دارایی شما",
