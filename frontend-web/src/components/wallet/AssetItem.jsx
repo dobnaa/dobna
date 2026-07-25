@@ -1,66 +1,95 @@
 // components/wallet/AssetItem.jsx
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import { useTranslation } from '../../hooks/useTranslation';
 import { ChevronRight } from 'lucide-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
-import { getCryptoIcon } from '../../utils/assetMapper';
+import { getCryptoIcon, getFlagEmoji } from '../../utils/assetMapper';
+
+// ارزهایی که آیکون SVG رمزارز دارند؛ بقیه فیات محسوب شده و پرچم می‌گیرند
+const CRYPTO_CURRENCIES = [
+  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI',
+];
 
 const AssetItem = ({ asset, onPress }) => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'fa' || i18n.language === 'ar';
+  // isRTL مستقیماً از هوک گرفته می‌شود (منبع واحد حقیقت)، نه محاسبه‌ی دستی مجدد
+  const { t, isRTL } = useTranslation();
 
-  // نام ارز به زبان محلی
-  const getLocalizedName = (currency) => {
-    const names = {
-      BTC: { en: 'Bitcoin', fa: 'بیت‌کوین' },
-      ETH: { en: 'Ethereum', fa: 'اتریوم' },
-      USDT: { en: 'Tether', fa: 'تتر' },
-      SOL: { en: 'Solana', fa: 'سولانا' },
-      BNB: { en: 'BNB', fa: 'بایننس کوین' },
-      DOGE: { en: 'Dogecoin', fa: 'دوج‌کوین' },
-      TON: { en: 'Toncoin', fa: 'تون‌کوین' },
-      USD: { en: 'US Dollar', fa: 'دلار آمریکا' },
-      IRT: { en: 'Iranian Toman', fa: 'تومان ایران' },
-      EUR: { en: 'Euro', fa: 'یورو' },
-      TRY: { en: 'Turkish Lira', fa: 'لیر ترکیه' },
-      GBP: { en: 'British Pound', fa: 'پوند' },
-      AED: { en: 'UAE Dirham', fa: 'درهم امارات' },
-      CAD: { en: 'Canadian Dollar', fa: 'دلار کانادا' },
-      CHF: { en: 'Swiss Franc', fa: 'فرانک سوئیس' },
-      AUD: { en: 'Australian Dollar', fa: 'دلار استرالیا' },
-      INR: { en: 'Indian Rupee', fa: 'روپیه هند' },
-      CNY: { en: 'Chinese Yuan', fa: 'یوان چین' },
-    };
-    return names[currency]?.[isRTL ? 'fa' : 'en'] || currency;
-  };
+  // محافظت در برابر داده‌ی نامعتبر یا ناقص
+  if (!asset || !asset.currency) {
+    return null;
+  }
+
+  const isCrypto = CRYPTO_CURRENCIES.includes(asset.currency);
+
+  // نام ارز از فایل ترجمه (پشتیبانی خودکار از هر ۱۷ زبان)
+  const currencyName = t(`currencies.${asset.currency}`, { defaultValue: asset.currency });
+
+  // تبدیل امن change24h به عدد (ممکن است از API به‌صورت string بیاید)
+  const change = Number(asset.change24h);
+  const hasChange = asset.change24h !== undefined && asset.change24h !== null && !Number.isNaN(change);
 
   return (
     <button
       onClick={onPress}
       className="w-full bg-gray-800/30 rounded-xl p-3 flex items-center justify-between hover:bg-gray-700/30 transition border border-gray-700/20"
     >
-      <div className="flex items-center gap-3">
-        {/* آیکون ارز */}
-        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0">
-          {asset.icon || getCryptoIcon(asset.currency) || '💱'}
+      <div className="flex items-center gap-3 min-w-0">
+        {/* آیکون ارز: تصویر SVG برای کریپتو، ایموجی پرچم برای فیات */}
+        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
+          {isCrypto ? (
+            <img
+              src={getCryptoIcon(asset.currency)}
+              alt={asset.currency}
+              className="w-6 h-6"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement.textContent = '💱';
+              }}
+            />
+          ) : (
+            <span>{getFlagEmoji(asset.currency)}</span>
+          )}
         </div>
-        <div className="text-left">
+
+        <div className="text-left min-w-0">
           <p className="text-white font-medium">{asset.currency}</p>
-          <p className="text-gray-400 text-xs">{getLocalizedName(asset.currency)}</p>
+          <p className="text-gray-400 text-xs truncate">{currencyName}</p>
         </div>
       </div>
-      <div className="text-right">
-        <p className="text-white font-medium">{formatCurrency(asset.amount)}</p>
-        <p className="text-blue-400 text-xs">${formatCurrency(asset.usdValue || 0)}</p>
-        {asset.change24h !== undefined && (
-          <span className={`text-xs ${asset.change24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-            {asset.change24h >= 0 ? '+' : ''}{asset.change24h.toFixed(2)}%
-          </span>
-        )}
+
+      <div className="flex items-center gap-2 flex-shrink-0" dir={isRTL ? 'rtl' : 'ltr'}>
+        <div className="text-right">
+          <p className="text-white font-medium">{formatCurrency(asset.amount)}</p>
+          <p className="text-blue-400 text-xs" dir="ltr">
+            ${formatCurrency(asset.usdValue || 0)}
+          </p>
+          {hasChange && (
+            <span className={`text-xs ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {change >= 0 ? '+' : ''}
+              {change.toFixed(2)}%
+            </span>
+          )}
+        </div>
+        <ChevronRight className="w-4 h-4 text-gray-500 flex-shrink-0" />
       </div>
-      <ChevronRight className="w-4 h-4 text-gray-500 flex-shrink-0" />
     </button>
   );
+};
+
+AssetItem.propTypes = {
+  asset: PropTypes.shape({
+    currency: PropTypes.string.isRequired,
+    amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    usdValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    change24h: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  }).isRequired,
+  onPress: PropTypes.func,
+};
+
+AssetItem.defaultProps = {
+  onPress: () => {},
 };
 
 export default AssetItem;
