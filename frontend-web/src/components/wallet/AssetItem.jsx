@@ -61,9 +61,10 @@ const AssetItem = ({ asset, onPress }) => {
 
       <div className="flex items-center gap-2 flex-shrink-0" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-right">
-          <p className="text-white font-medium">{formatCurrency(asset.amount)}</p>
+          {/* نکته: currency باید پاس داده شود تا تعداد اعشار درست (مثلاً ۸ رقم برای BTC، ۰ رقم برای IRT) اعمال شود */}
+          <p className="text-white font-medium">{formatCurrency(asset.amount, asset.currency)}</p>
           <p className="text-blue-400 text-xs" dir="ltr">
-            ${formatCurrency(asset.usdValue || 0)}
+            ${formatCurrency(asset.usdValue || 0, 'USD')}
           </p>
           {hasChange && (
             <span className={`text-xs ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
