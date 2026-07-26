@@ -299,6 +299,11 @@
     "challenge_create": "Challenge Create",
     "duel_refund": "Duel Refund",
     "interest": "Interest"
+  {
+  "common": {
+    "compact_K": "K",
+    "compact_M": "M",
+    "compact_B": "B",
+    "compact_T": "T"
   }
 }
-  
