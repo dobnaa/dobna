@@ -287,6 +287,11 @@
     "challenge_create": "ایجاد چالش",
     "duel_refund": "بازگشت دوئل",
     "interest": "سود"
+  {
+  "common": {
+    "compact_K": "هزار",
+    "compact_M": "میلیون",
+    "compact_B": "میلیارد",
+    "compact_T": "تریلیون"
   }
 }
- 
