@@ -229,5 +229,11 @@
     "contact": "İletişim",
     "create_group": "Grup Oluştur",
     "logout": "Çıkış Yap"
+  {
+  "common": {
+    "compact_K": "bin",
+    "compact_M": "milyon",
+    "compact_B": "milyar",
+    "compact_T": "trilyon"
   }
 }
