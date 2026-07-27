@@ -305,5 +305,40 @@
     "compact_M": "M",
     "compact_B": "B",
     "compact_T": "T"
+{
+  "challenge": {
+    "title": "Challenges",
+    "create": "Create",
+    "join": "Join",
+    "level": "Level",
+    "by": "by",
+    "participants": "Participants",
+    "total_pool": "Total Pool",
+    "cards": "Cards",
+    "in_progress": "In Progress",
+    "ended": "Ended",
+    "expired": "Expired",
+    "waiting": "Waiting",
+    "active": "Active",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "cooldown": "Cooldown Period (6 hours)",
+    "unlocked_levels": "Unlocked Levels",
+    "level_hint": "Play in group rooms to unlock more levels",
+    "filter_all": "All",
+    "filter_waiting": "Waiting",
+    "filter_active": "Active",
+    "all_currencies": "All Currencies",
+    "active_challenges": "active challenges",
+    "no_challenges": "No active challenges found",
+    "create_first": "Create your first challenge and invite others to join!",
+    "cannot_create": "You cannot create a challenge right now",
+    "create_limit": "You can create a challenge every 6 hours",
+    "join_limit": "You have reached the maximum number of challenges",
+    "insufficient_balance": "Insufficient balance",
+    "level_locked": "This level is locked. Play more games to unlock it."
+  },
+  "common": {
+    "refresh": "Refresh"
   }
 }
