@@ -293,5 +293,40 @@
     "compact_M": "میلیون",
     "compact_B": "میلیارد",
     "compact_T": "تریلیون"
+{
+  "challenge": {
+    "title": "چالش‌ها",
+    "create": "ساخت",
+    "join": "شرکت",
+    "level": "سطح",
+    "by": "توسط",
+    "participants": "شرکت‌کنندگان",
+    "total_pool": "مجموع جایزه",
+    "cards": "کارت‌ها",
+    "in_progress": "در حال انجام",
+    "ended": "پایان یافته",
+    "expired": "منقضی شده",
+    "waiting": "در انتظار",
+    "active": "فعال",
+    "completed": "تکمیل شده",
+    "cancelled": "لغو شده",
+    "cooldown": "دوره انتظار (۶ ساعت)",
+    "unlocked_levels": "سطوح آزاد شده",
+    "level_hint": "برای آزادسازی سطوح بیشتر، در تالارهای گروه بازی کنید",
+    "filter_all": "همه",
+    "filter_waiting": "در انتظار",
+    "filter_active": "فعال",
+    "all_currencies": "همه ارزها",
+    "active_challenges": "چالش فعال",
+    "no_challenges": "هیچ چالش فعالی یافت نشد",
+    "create_first": "اولین چالش خود را بسازید و دیگران را دعوت کنید!",
+    "cannot_create": "در حال حاضر نمی‌توانید چالش بسازید",
+    "create_limit": "هر ۶ ساعت یک بار می‌توانید چالش بسازید",
+    "join_limit": "به حداکثر تعداد چالش‌ها رسیده‌اید",
+    "insufficient_balance": "موجودی کافی نیست",
+    "level_locked": "این سطح قفل است. برای آزادسازی، بازی بیشتری انجام دهید."
+  },
+  "common": {
+    "refresh": "بارگذاری مجدد"
   }
 }
