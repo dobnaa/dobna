@@ -1,21 +1,19 @@
 // pages/ChallengePage.jsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../hooks/useAuth';
 import { useChallenge } from '../hooks/useChallenge';
 import { useWallet } from '../hooks/useWallet';
-import { formatCompactNumber, formatCurrency } from '../utils/currencyFormatter';
+import { formatCurrency } from '../utils/currencyFormatter';
 import { getCryptoIcon, getFlagEmoji } from '../utils/assetMapper';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Clock, 
-  Users, 
-  Trophy, 
-  ChevronRight,
+import {
+  ArrowLeft,
+  Plus,
+  Clock,
+  Users,
+  Trophy,
   RefreshCw,
-  Filter,
   AlertCircle,
   CheckCircle,
   XCircle,
@@ -27,14 +25,14 @@ import {
 // لیست ارزهای کریپتو و فیات (برای نمایش آیکون مناسب)
 // ======================================================
 const CRYPTO_CURRENCIES = [
-  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 
-  'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI'
+  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON',
+  'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI',
 ];
 
 // ======================================================
 // کامپوننت نمایش کارت چالش
 // ======================================================
-const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
+const ChallengeCard = ({ challenge, onJoin, isJoiningThis }) => {
   const { t } = useTranslation();
   const isCrypto = CRYPTO_CURRENCIES.includes(challenge.currency);
 
@@ -77,7 +75,7 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           {/* آیکون ارز */}
-          <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
             {isCrypto ? (
               <img
                 src={getCryptoIcon(challenge.currency)}
@@ -96,8 +94,9 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
 
           <div>
             <div className="flex items-center gap-2">
+              {/* مبلغ چالش با تعداد اعشار درست برای هر ارز (نه formatCompactNumber که واحد را حذف می‌کرد) */}
               <p className="text-white font-bold text-lg">
-                {formatCompactNumber(challenge.amount).value} {challenge.currency}
+                {formatCurrency(challenge.amount, challenge.currency)} {challenge.currency}
               </p>
               <span className="text-xs text-gray-400 bg-gray-700 px-2 py-0.5 rounded-full">
                 {t('challenge.level')} {challenge.level}
@@ -140,7 +139,7 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
 
       {/* نوار پیشرفت */}
       <div className="mt-2 w-full bg-gray-700 rounded-full h-1.5 overflow-hidden">
-        <div 
+        <div
           className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-500"
           style={{ width: `${Math.min(progress, 100)}%` }}
         />
@@ -153,7 +152,7 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
           <span className="text-gray-500 text-xs">{t('challenge.cards')}:</span>
           <div className="flex -space-x-2">
             {challenge.participants?.slice(0, 5).map((p, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="w-6 h-8 bg-gray-700 rounded border border-gray-600 flex items-center justify-center text-[8px] text-gray-400"
               >
@@ -172,10 +171,10 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
         {challenge.status === 'waiting' && challenge.current_participants < challenge.max_participants ? (
           <button
             onClick={() => onJoin(challenge.id)}
-            disabled={isLoading}
+            disabled={isJoiningThis}
             className="bg-purple-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition disabled:opacity-50 flex items-center gap-1"
           >
-            {isLoading ? (
+            {isJoiningThis ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <span>{t('challenge.join')}</span>
@@ -198,10 +197,11 @@ const ChallengeCard = ({ challenge, onJoin, isLoading, isRTL }) => {
 // ======================================================
 const ChallengePage = () => {
   const navigate = useNavigate();
-  const { t, currentLanguage } = useTranslation();
+  // isRTL مستقیماً از هوک گرفته می‌شود (منبع واحد حقیقت)، نه محاسبه‌ی دستی از currentLanguage
+  const { t, isRTL } = useTranslation();
   const { user } = useAuth();
-  const { 
-    activeChallenges, 
+  const {
+    activeChallenges,
     userChallenges,
     unlockedLevels,
     cooldownRemaining,
@@ -214,10 +214,9 @@ const ChallengePage = () => {
 
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedCurrency, setSelectedCurrency] = useState('all');
-  const [isJoining, setIsJoining] = useState(false);
+  // شناسه‌ی چالشی که در حال پیوستن به آن هستیم؛ فقط همان کارت اسپینر نشان می‌دهد
+  const [joiningId, setJoiningId] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
-
-  const isRTL = currentLanguage?.dir === 'rtl';
 
   // ======================================================
   // بارگذاری اولیه
@@ -232,16 +231,17 @@ const ChallengePage = () => {
   // فیلتر چالش‌ها
   // ======================================================
   const filteredChallenges = useMemo(() => {
-    let result = activeChallenges || [];
+    // کپی آرایه گرفته می‌شود تا state اصلی activeChallenges دستکاری (mutate) نشود
+    let result = [...(activeChallenges || [])];
 
     // فیلتر بر اساس وضعیت
     if (selectedFilter !== 'all') {
-      result = result.filter(c => c.status === selectedFilter);
+      result = result.filter((c) => c.status === selectedFilter);
     }
 
     // فیلتر بر اساس ارز
     if (selectedCurrency !== 'all') {
-      result = result.filter(c => c.currency === selectedCurrency);
+      result = result.filter((c) => c.currency === selectedCurrency);
     }
 
     // مرتب‌سازی: چالش‌های در حال انتظار اول
@@ -260,22 +260,22 @@ const ChallengePage = () => {
   const availableCurrencies = useMemo(() => {
     if (!balances) return [];
     return balances
-      .filter(b => b.amount > 0)
-      .map(b => b.currency);
+      .filter((b) => b.amount > 0)
+      .map((b) => b.currency);
   }, [balances]);
 
   // ======================================================
   // هندلر پیوستن به چالش
   // ======================================================
   const handleJoinChallenge = async (challengeId) => {
-    setIsJoining(true);
+    setJoiningId(challengeId);
     try {
       await joinChallenge(challengeId);
       await fetchActiveChallenges();
     } catch (error) {
       console.error('Error joining challenge:', error);
     } finally {
-      setIsJoining(false);
+      setJoiningId(null);
     }
   };
 
@@ -305,8 +305,8 @@ const ChallengePage = () => {
       <div className="max-w-md mx-auto p-4">
         {/* ===== هدر ===== */}
         <div className="flex items-center justify-between mb-6">
-          <button 
-            onClick={() => navigate(-1)} 
+          <button
+            onClick={() => navigate(-1)}
             className="text-gray-400 hover:text-white transition p-2 rounded-lg hover:bg-gray-800"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -421,8 +421,7 @@ const ChallengePage = () => {
                 key={challenge.id}
                 challenge={challenge}
                 onJoin={handleJoinChallenge}
-                isLoading={isJoining}
-                isRTL={isRTL}
+                isJoiningThis={joiningId === challenge.id}
               />
             ))}
           </div>
