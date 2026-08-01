@@ -1,508 +1,110 @@
 // config/levels.js
 
 // ======================================================
-// ۱. تعریف سطوح برای تالار گروه (Game Rooms)
+// ۱. منبع واحد مبالغ سطوح (BASE) بر اساس ارز
 // ======================================================
-export const GAME_LEVELS = {
-  // بیت‌کوین (BTC)
-  BTC: {
-    1: { amount: 0.0000005, label: '0.0000005 BTC' },
-    2: { amount: 0.000002, label: '0.000002 BTC' },
-    3: { amount: 0.000005, label: '0.000005 BTC' },
-    4: { amount: 0.00001, label: '0.00001 BTC' },
-  },
-  // اتریوم (ETH)
-  ETH: {
-    1: { amount: 0.00001, label: '0.00001 ETH' },
-    2: { amount: 0.00005, label: '0.00005 ETH' },
-    3: { amount: 0.0001, label: '0.0001 ETH' },
-    4: { amount: 0.0002, label: '0.0002 ETH' },
-  },
-  // تتر (USDT)
-  USDT: {
-    1: { amount: 0.05, label: '0.05 USDT' },
-    2: { amount: 0.25, label: '0.25 USDT' },
-    3: { amount: 0.50, label: '0.50 USDT' },
-    4: { amount: 1.00, label: '1.00 USDT' },
-  },
-  // سولانا (SOL)
-  SOL: {
-    1: { amount: 0.001, label: '0.001 SOL' },
-    2: { amount: 0.005, label: '0.005 SOL' },
-    3: { amount: 0.01, label: '0.01 SOL' },
-    4: { amount: 0.02, label: '0.02 SOL' },
-  },
-  // بایننس کوین (BNB)
-  BNB: {
-    1: { amount: 0.00004, label: '0.00004 BNB' },
-    2: { amount: 0.00016, label: '0.00016 BNB' },
-    3: { amount: 0.0004, label: '0.0004 BNB' },
-    4: { amount: 0.0008, label: '0.0008 BNB' },
-  },
-  // دوج‌کوین (DOGE)
-  DOGE: {
-    1: { amount: 0.25, label: '0.25 DOGE' },
-    2: { amount: 1.00, label: '1.00 DOGE' },
-    3: { amount: 2.50, label: '2.50 DOGE' },
-    4: { amount: 5.00, label: '5.00 DOGE' },
-  },
-  // تون‌کوین (TON)
-  TON: {
-    1: { amount: 0.015, label: '0.015 TON' },
-    2: { amount: 0.060, label: '0.060 TON' },
-    3: { amount: 0.150, label: '0.150 TON' },
-    4: { amount: 0.30, label: '0.30 TON' },
-  },
-  // بونک (BONK)
-  BONK: {
-    1: { amount: 5, label: '5 BONK' },
-    2: { amount: 20, label: '20 BONK' },
-    3: { amount: 50, label: '50 BONK' },
-    4: { amount: 100, label: '100 BONK' },
-  },
-  // پپه (PEPE)
-  PEPE: {
-    1: { amount: 1000, label: '1000 PEPE' },
-    2: { amount: 4000, label: '4000 PEPE' },
-    3: { amount: 10000, label: '10000 PEPE' },
-    4: { amount: 20000, label: '20000 PEPE' },
-  },
-  // همستر (HMSTR)
-  HMSTR: {
-    1: { amount: 200, label: '200 HMSTR' },
-    2: { amount: 800, label: '800 HMSTR' },
-    3: { amount: 2000, label: '2000 HMSTR' },
-    4: { amount: 4000, label: '4000 HMSTR' },
-  },
-  // دلار آمریکا (USD)
-  USD: {
-    1: { amount: 0.05, label: '$0.05 USD' },
-    2: { amount: 0.25, label: '$0.25 USD' },
-    3: { amount: 0.50, label: '$0.50 USD' },
-    4: { amount: 1.00, label: '$1.00 USD' },
-  },
-  // تومان ایران (IRT)
-  IRT: {
-    1: { amount: 5000, label: '۵,۰۰۰ IRT' },
-    2: { amount: 20000, label: '۲۰,۰۰۰ IRT' },
-    3: { amount: 50000, label: '۵۰,۰۰۰ IRT' },
-    4: { amount: 100000, label: '۱۰۰,۰۰۰ IRT' },
-  },
-  // یورو (EUR)
-  EUR: {
-    1: { amount: 0.025, label: '€0.025 EUR' },
-    2: { amount: 0.10, label: '€0.10 EUR' },
-    3: { amount: 0.25, label: '€0.25 EUR' },
-    4: { amount: 0.50, label: '€0.50 EUR' },
-  },
-  // لیر ترکیه (TRY)
-  TRY: {
-    1: { amount: 0.5, label: '₺0.5 TRY' },
-    2: { amount: 2, label: '₺2 TRY' },
-    3: { amount: 5, label: '₺5 TRY' },
-    4: { amount: 10, label: '₺10 TRY' },
-  },
-  // پوند (GBP)
-  GBP: {
-    1: { amount: 0.02, label: '£0.02 GBP' },
-    2: { amount: 0.10, label: '£0.10 GBP' },
-    3: { amount: 0.25, label: '£0.25 GBP' },
-    4: { amount: 0.50, label: '£0.50 GBP' },
-  },
-  // درهم (AED)
-  AED: {
-    1: { amount: 0.2, label: 'د.إ0.2 AED' },
-    2: { amount: 1, label: 'د.إ1 AED' },
-    3: { amount: 2, label: 'د.إ2 AED' },
-    4: { amount: 3, label: 'د.إ3 AED' },
-  },
-  // یوان (CNY)
-  CNY: {
-    1: { amount: 0.5, label: '¥0.5 CNY' },
-    2: { amount: 2, label: '¥2 CNY' },
-    3: { amount: 5, label: '¥5 CNY' },
-    4: { amount: 10, label: '¥10 CNY' },
-  },
-  // روپیه (INR)
-  INR: {
-    1: { amount: 5, label: '₹5 INR' },
-    2: { amount: 20, label: '₹20 INR' },
-    3: { amount: 50, label: '₹50 INR' },
-    4: { amount: 100, label: '₹100 INR' },
-  },
-  // دلار کانادا (CAD)
-  CAD: {
-    1: { amount: 0.05, label: 'C$0.05 CAD' },
-    2: { amount: 0.25, label: 'C$0.25 CAD' },
-    3: { amount: 0.50, label: 'C$0.50 CAD' },
-    4: { amount: 1.00, label: 'C$1.00 CAD' },
-  },
-  // فرانک سوئیس (CHF)
-  CHF: {
-    1: { amount: 0.05, label: 'Fr.0.05 CHF' },
-    2: { amount: 0.10, label: 'Fr.0.10 CHF' },
-    3: { amount: 0.50, label: 'Fr.0.50 CHF' },
-    4: { amount: 1.00, label: 'Fr.1.00 CHF' },
-  },
-  // دلار استرالیا (AUD)
-  AUD: {
-    1: { amount: 0.05, label: 'A$0.05 AUD' },
-    2: { amount: 0.25, label: 'A$0.25 AUD' },
-    3: { amount: 0.50, label: 'A$0.50 AUD' },
-    4: { amount: 1.00, label: 'A$1.00 AUD' },
-  },
+// این مقادیر پایه برای هر سه دسته (تالار گروه، دوئل، چالش) استفاده می‌شود تا
+// اعداد در چند فایل مختلف تکرار/واگرا نشوند. اگر در آینده نیاز شد مبالغ یک
+// دسته با بقیه فرق کند، آن دسته را جدا از BASE_LEVEL_AMOUNTS تعریف کنید.
+//
+// نکته: مقادیر USDC و SUI فعلاً PLACEHOLDER هستند (USDC از روی USDT و SUI از
+// روی مقیاس SOL تخمین زده شده‌اند) و باید با اعداد واقعی جایگزین شوند.
+const BASE_LEVEL_AMOUNTS = {
+  BTC: { 1: 5e-07, 2: 2e-06, 3: 5e-06, 4: 1e-05 },
+  ETH: { 1: 1e-05, 2: 5e-05, 3: 0.0001, 4: 0.0002 },
+  USDT: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+  SOL: { 1: 0.001, 2: 0.005, 3: 0.01, 4: 0.02 },
+  BNB: { 1: 4e-05, 2: 0.00016, 3: 0.0004, 4: 0.0008 },
+  DOGE: { 1: 0.25, 2: 1.0, 3: 2.5, 4: 5.0 },
+  TON: { 1: 0.015, 2: 0.06, 3: 0.15, 4: 0.3 },
+  BONK: { 1: 5, 2: 20, 3: 50, 4: 100 },
+  PEPE: { 1: 1000, 2: 4000, 3: 10000, 4: 20000 },
+  HMSTR: { 1: 200, 2: 800, 3: 2000, 4: 4000 },
+  USDC: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+  SUI: { 1: 0.001, 2: 0.005, 3: 0.01, 4: 0.02 },
+  USD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+  IRT: { 1: 5000, 2: 20000, 3: 50000, 4: 100000 },
+  EUR: { 1: 0.025, 2: 0.1, 3: 0.25, 4: 0.5 },
+  TRY: { 1: 0.5, 2: 2, 3: 5, 4: 10 },
+  GBP: { 1: 0.02, 2: 0.1, 3: 0.25, 4: 0.5 },
+  AED: { 1: 0.2, 2: 1, 3: 2, 4: 3 },
+  CNY: { 1: 0.5, 2: 2, 3: 5, 4: 10 },
+  INR: { 1: 5, 2: 20, 3: 50, 4: 100 },
+  CAD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+  CHF: { 1: 0.05, 2: 0.1, 3: 0.5, 4: 1.0 },
+  AUD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
 };
 
 // ======================================================
-// ۲. تعریف سطوح برای دوئل (Duel)
+// ۲. ساخت آبجکت سطوح برای هر دسته از روی BASE_LEVEL_AMOUNTS
 // ======================================================
-export const DUEL_LEVELS = {
-  // بیت‌کوین (BTC)
-  BTC: {
-    1: { amount: 0.0000005, label: '0.0000005 BTC' },
-    2: { amount: 0.000002, label: '0.000002 BTC' },
-    3: { amount: 0.000005, label: '0.000005 BTC' },
-    4: { amount: 0.00001, label: '0.00001 BTC' },
-  },
-  // اتریوم (ETH)
-  ETH: {
-    1: { amount: 0.00001, label: '0.00001 ETH' },
-    2: { amount: 0.00005, label: '0.00005 ETH' },
-    3: { amount: 0.0001, label: '0.0001 ETH' },
-    4: { amount: 0.0002, label: '0.0002 ETH' },
-  },
-  // تتر (USDT)
-  USDT: {
-    1: { amount: 0.05, label: '0.05 USDT' },
-    2: { amount: 0.25, label: '0.25 USDT' },
-    3: { amount: 0.50, label: '0.50 USDT' },
-    4: { amount: 1.00, label: '1.00 USDT' },
-  },
-  // سولانا (SOL)
-  SOL: {
-    1: { amount: 0.001, label: '0.001 SOL' },
-    2: { amount: 0.005, label: '0.005 SOL' },
-    3: { amount: 0.01, label: '0.01 SOL' },
-    4: { amount: 0.02, label: '0.02 SOL' },
-  },
-  // بایننس کوین (BNB)
-  BNB: {
-    1: { amount: 0.00004, label: '0.00004 BNB' },
-    2: { amount: 0.00016, label: '0.00016 BNB' },
-    3: { amount: 0.0004, label: '0.0004 BNB' },
-    4: { amount: 0.0008, label: '0.0008 BNB' },
-  },
-  // دوج‌کوین (DOGE)
-  DOGE: {
-    1: { amount: 0.25, label: '0.25 DOGE' },
-    2: { amount: 1.00, label: '1.00 DOGE' },
-    3: { amount: 2.50, label: '2.50 DOGE' },
-    4: { amount: 5.00, label: '5.00 DOGE' },
-  },
-  // تون‌کوین (TON)
-  TON: {
-    1: { amount: 0.015, label: '0.015 TON' },
-    2: { amount: 0.060, label: '0.060 TON' },
-    3: { amount: 0.150, label: '0.150 TON' },
-    4: { amount: 0.30, label: '0.30 TON' },
-  },
-  // بونک (BONK)
-  BONK: {
-    1: { amount: 5, label: '5 BONK' },
-    2: { amount: 20, label: '20 BONK' },
-    3: { amount: 50, label: '50 BONK' },
-    4: { amount: 100, label: '100 BONK' },
-  },
-  // پپه (PEPE)
-  PEPE: {
-    1: { amount: 1000, label: '1000 PEPE' },
-    2: { amount: 4000, label: '4000 PEPE' },
-    3: { amount: 10000, label: '10000 PEPE' },
-    4: { amount: 20000, label: '20000 PEPE' },
-  },
-  // همستر (HMSTR)
-  HMSTR: {
-    1: { amount: 200, label: '200 HMSTR' },
-    2: { amount: 800, label: '800 HMSTR' },
-    3: { amount: 2000, label: '2000 HMSTR' },
-    4: { amount: 4000, label: '4000 HMSTR' },
-  },
-  // دلار آمریکا (USD)
-  USD: {
-    1: { amount: 0.05, label: '$0.05 USD' },
-    2: { amount: 0.25, label: '$0.25 USD' },
-    3: { amount: 0.50, label: '$0.50 USD' },
-    4: { amount: 1.00, label: '$1.00 USD' },
-  },
-  // تومان ایران (IRT)
-  IRT: {
-    1: { amount: 5000, label: '۵,۰۰۰ IRT' },
-    2: { amount: 20000, label: '۲۰,۰۰۰ IRT' },
-    3: { amount: 50000, label: '۵۰,۰۰۰ IRT' },
-    4: { amount: 100000, label: '۱۰۰,۰۰۰ IRT' },
-  },
-  // یورو (EUR)
-  EUR: {
-    1: { amount: 0.025, label: '€0.025 EUR' },
-    2: { amount: 0.10, label: '€0.10 EUR' },
-    3: { amount: 0.25, label: '€0.25 EUR' },
-    4: { amount: 0.50, label: '€0.50 EUR' },
-  },
-  // لیر ترکیه (TRY)
-  TRY: {
-    1: { amount: 0.5, label: '₺0.5 TRY' },
-    2: { amount: 2, label: '₺2 TRY' },
-    3: { amount: 5, label: '₺5 TRY' },
-    4: { amount: 10, label: '₺10 TRY' },
-  },
-  // پوند (GBP)
-  GBP: {
-    1: { amount: 0.02, label: '£0.02 GBP' },
-    2: { amount: 0.10, label: '£0.10 GBP' },
-    3: { amount: 0.25, label: '£0.25 GBP' },
-    4: { amount: 0.50, label: '£0.50 GBP' },
-  },
-  // درهم (AED)
-  AED: {
-    1: { amount: 0.2, label: 'د.إ0.2 AED' },
-    2: { amount: 1, label: 'د.إ1 AED' },
-    3: { amount: 2, label: 'د.إ2 AED' },
-    4: { amount: 3, label: 'د.إ3 AED' },
-  },
-  // یوان (CNY)
-  CNY: {
-    1: { amount: 0.5, label: '¥0.5 CNY' },
-    2: { amount: 2, label: '¥2 CNY' },
-    3: { amount: 5, label: '¥5 CNY' },
-    4: { amount: 10, label: '¥10 CNY' },
-  },
-  // روپیه (INR)
-  INR: {
-    1: { amount: 5, label: '₹5 INR' },
-    2: { amount: 20, label: '₹20 INR' },
-    3: { amount: 50, label: '₹50 INR' },
-    4: { amount: 100, label: '₹100 INR' },
-  },
-  // دلار کانادا (CAD)
-  CAD: {
-    1: { amount: 0.05, label: 'C$0.05 CAD' },
-    2: { amount: 0.25, label: 'C$0.25 CAD' },
-    3: { amount: 0.50, label: 'C$0.50 CAD' },
-    4: { amount: 1.00, label: 'C$1.00 CAD' },
-  },
-  // فرانک سوئیس (CHF)
-  CHF: {
-    1: { amount: 0.05, label: 'Fr.0.05 CHF' },
-    2: { amount: 0.10, label: 'Fr.0.10 CHF' },
-    3: { amount: 0.50, label: 'Fr.0.50 CHF' },
-    4: { amount: 1.00, label: 'Fr.1.00 CHF' },
-  },
-  // دلار استرالیا (AUD)
-  AUD: {
-    1: { amount: 0.05, label: 'A$0.05 AUD' },
-    2: { amount: 0.25, label: 'A$0.25 AUD' },
-    3: { amount: 0.50, label: 'A$0.50 AUD' },
-    4: { amount: 1.00, label: 'A$1.00 AUD' },
-  },
+const buildLevelsFromBase = () => {
+  const result = {};
+  Object.entries(BASE_LEVEL_AMOUNTS).forEach(([currency, amounts]) => {
+    result[currency] = {
+      1: { amount: amounts[0] },
+      2: { amount: amounts[1] },
+      3: { amount: amounts[2] },
+      4: { amount: amounts[3] },
+    };
+  });
+  return result;
 };
 
-// ======================================================
-// ۳. تعریف سطوح برای چالش (Challenge)
-// ======================================================
-export const CHALLENGE_LEVELS = {
-  // بیت‌کوین (BTC)
-  BTC: {
-    1: { amount: 0.0000005, label: '0.0000005 BTC' },
-    2: { amount: 0.000002, label: '0.000002 BTC' },
-    3: { amount: 0.000005, label: '0.000005 BTC' },
-    4: { amount: 0.00001, label: '0.00001 BTC' },
-  },
-  // اتریوم (ETH)
-  ETH: {
-    1: { amount: 0.00001, label: '0.00001 ETH' },
-    2: { amount: 0.00005, label: '0.00005 ETH' },
-    3: { amount: 0.0001, label: '0.0001 ETH' },
-    4: { amount: 0.0002, label: '0.0002 ETH' },
-  },
-  // تتر (USDT)
-  USDT: {
-    1: { amount: 0.05, label: '0.05 USDT' },
-    2: { amount: 0.25, label: '0.25 USDT' },
-    3: { amount: 0.50, label: '0.50 USDT' },
-    4: { amount: 1.00, label: '1.00 USDT' },
-  },
-  // سولانا (SOL)
-  SOL: {
-    1: { amount: 0.001, label: '0.001 SOL' },
-    2: { amount: 0.005, label: '0.005 SOL' },
-    3: { amount: 0.01, label: '0.01 SOL' },
-    4: { amount: 0.02, label: '0.02 SOL' },
-  },
-  // بایننس کوین (BNB)
-  BNB: {
-    1: { amount: 0.00004, label: '0.00004 BNB' },
-    2: { amount: 0.00016, label: '0.00016 BNB' },
-    3: { amount: 0.0004, label: '0.0004 BNB' },
-    4: { amount: 0.0008, label: '0.0008 BNB' },
-  },
-  // دوج‌کوین (DOGE)
-  DOGE: {
-    1: { amount: 0.25, label: '0.25 DOGE' },
-    2: { amount: 1.00, label: '1.00 DOGE' },
-    3: { amount: 2.50, label: '2.50 DOGE' },
-    4: { amount: 5.00, label: '5.00 DOGE' },
-  },
-  // تون‌کوین (TON)
-  TON: {
-    1: { amount: 0.015, label: '0.015 TON' },
-    2: { amount: 0.060, label: '0.060 TON' },
-    3: { amount: 0.150, label: '0.150 TON' },
-    4: { amount: 0.30, label: '0.30 TON' },
-  },
-  // بونک (BONK)
-  BONK: {
-    1: { amount: 5, label: '5 BONK' },
-    2: { amount: 20, label: '20 BONK' },
-    3: { amount: 50, label: '50 BONK' },
-    4: { amount: 100, label: '100 BONK' },
-  },
-  // پپه (PEPE)
-  PEPE: {
-    1: { amount: 1000, label: '1000 PEPE' },
-    2: { amount: 4000, label: '4000 PEPE' },
-    3: { amount: 10000, label: '10000 PEPE' },
-    4: { amount: 20000, label: '20000 PEPE' },
-  },
-  // همستر (HMSTR)
-  HMSTR: {
-    1: { amount: 200, label: '200 HMSTR' },
-    2: { amount: 800, label: '800 HMSTR' },
-    3: { amount: 2000, label: '2000 HMSTR' },
-    4: { amount: 4000, label: '4000 HMSTR' },
-  },
-  // دلار آمریکا (USD)
-  USD: {
-    1: { amount: 0.05, label: '$0.05 USD' },
-    2: { amount: 0.25, label: '$0.25 USD' },
-    3: { amount: 0.50, label: '$0.50 USD' },
-    4: { amount: 1.00, label: '$1.00 USD' },
-  },
-  // تومان ایران (IRT)
-  IRT: {
-    1: { amount: 5000, label: '۵,۰۰۰ IRT' },
-    2: { amount: 20000, label: '۲۰,۰۰۰ IRT' },
-    3: { amount: 50000, label: '۵۰,۰۰۰ IRT' },
-    4: { amount: 100000, label: '۱۰۰,۰۰۰ IRT' },
-  },
-  // یورو (EUR)
-  EUR: {
-    1: { amount: 0.025, label: '€0.025 EUR' },
-    2: { amount: 0.10, label: '€0.10 EUR' },
-    3: { amount: 0.25, label: '€0.25 EUR' },
-    4: { amount: 0.50, label: '€0.50 EUR' },
-  },
-  // لیر ترکیه (TRY)
-  TRY: {
-    1: { amount: 0.5, label: '₺0.5 TRY' },
-    2: { amount: 2, label: '₺2 TRY' },
-    3: { amount: 5, label: '₺5 TRY' },
-    4: { amount: 10, label: '₺10 TRY' },
-  },
-  // پوند (GBP)
-  GBP: {
-    1: { amount: 0.02, label: '£0.02 GBP' },
-    2: { amount: 0.10, label: '£0.10 GBP' },
-    3: { amount: 0.25, label: '£0.25 GBP' },
-    4: { amount: 0.50, label: '£0.50 GBP' },
-  },
-  // درهم (AED)
-  AED: {
-    1: { amount: 0.2, label: 'د.إ0.2 AED' },
-    2: { amount: 1, label: 'د.إ1 AED' },
-    3: { amount: 2, label: 'د.إ2 AED' },
-    4: { amount: 3, label: 'د.إ3 AED' },
-  },
-  // یوان (CNY)
-  CNY: {
-    1: { amount: 0.5, label: '¥0.5 CNY' },
-    2: { amount: 2, label: '¥2 CNY' },
-    3: { amount: 5, label: '¥5 CNY' },
-    4: { amount: 10, label: '¥10 CNY' },
-  },
-  // روپیه (INR)
-  INR: {
-    1: { amount: 5, label: '₹5 INR' },
-    2: { amount: 20, label: '₹20 INR' },
-    3: { amount: 50, label: '₹50 INR' },
-    4: { amount: 100, label: '₹100 INR' },
-  },
-  // دلار کانادا (CAD)
-  CAD: {
-    1: { amount: 0.05, label: 'C$0.05 CAD' },
-    2: { amount: 0.25, label: 'C$0.25 CAD' },
-    3: { amount: 0.50, label: 'C$0.50 CAD' },
-    4: { amount: 1.00, label: 'C$1.00 CAD' },
-  },
-  // فرانک سوئیس (CHF)
-  CHF: {
-    1: { amount: 0.05, label: 'Fr.0.05 CHF' },
-    2: { amount: 0.10, label: 'Fr.0.10 CHF' },
-    3: { amount: 0.50, label: 'Fr.0.50 CHF' },
-    4: { amount: 1.00, label: 'Fr.1.00 CHF' },
-  },
-  // دلار استرالیا (AUD)
-  AUD: {
-    1: { amount: 0.05, label: 'A$0.05 AUD' },
-    2: { amount: 0.25, label: 'A$0.25 AUD' },
-    3: { amount: 0.50, label: 'A$0.50 AUD' },
-    4: { amount: 1.00, label: 'A$1.00 AUD' },
-  },
-};
+// هر دسته یک کپی مستقل می‌گیرد (نه رفرنس مشترک) تا در آینده بتوانند از هم جدا شوند
+export const GAME_LEVELS = buildLevelsFromBase();
+export const DUEL_LEVELS = buildLevelsFromBase();
+export const CHALLENGE_LEVELS = buildLevelsFromBase();
 
 // ======================================================
-// ۴. توابع کمکی برای دریافت سطوح
+// ۳. توابع کمکی برای دریافت سطوح
 // ======================================================
+
+const LEVEL_MAP = {
+  game_room: GAME_LEVELS,
+  duel: DUEL_LEVELS,
+  challenge: CHALLENGE_LEVELS,
+};
 
 /**
  * دریافت سطوح یک ارز برای یک دسته‌بندی خاص
  * @param {string} currency - کد ارز (مثلاً 'BTC')
  * @param {string} category - دسته‌بندی ('game_room', 'duel', 'challenge')
- * @returns {Array} آرایه‌ای از سطوح مرتب‌شده
+ * @returns {Array<{level: number, amount: number}>} آرایه‌ای از سطوح مرتب‌شده
  */
 export const getLevels = (currency, category) => {
-  const levelMap = {
-    game_room: GAME_LEVELS,
-    duel: DUEL_LEVELS,
-    challenge: CHALLENGE_LEVELS,
-  };
-
-  const levels = levelMap[category]?.[currency];
+  const levels = LEVEL_MAP[category]?.[currency];
   if (!levels) return [];
 
-  return Object.entries(levels).map(([level, data]) => ({
-    level: parseInt(level),
-    ...data,
-  })).sort((a, b) => a.level - b.level);
+  return Object.entries(levels)
+    .map(([level, data]) => ({
+      level: parseInt(level, 10),
+      ...data,
+    }))
+    .sort((a, b) => a.level - b.level);
 };
 
 /**
- * دریافت یک سطح خاص
+ * دریافت یک سطح خاص.
+ * ورودی `level` می‌تواند عدد یا رشته باشد (مثلاً وقتی از useParams می‌آید)؛
+ * مقایسه با Number() انجام می‌شود تا "2" === 2 هم درست کار کند.
  * @param {string} currency - کد ارز
- * @param {number} level - شماره سطح (۱ تا ۴)
+ * @param {number|string} level - شماره سطح (۱ تا ۴)
  * @param {string} category - دسته‌بندی
- * @returns {Object|null} اطلاعات سطح یا null
+ * @returns {{level: number, amount: number}|null} اطلاعات سطح یا null
  */
 export const getLevel = (currency, level, category) => {
   const levels = getLevels(currency, category);
-  return levels.find(l => l.level === level) || null;
+  const target = Number(level);
+  return levels.find((l) => l.level === target) || null;
 };
 
 /**
- * دریافت مقدار سطح
+ * دریافت مقدار (amount) یک سطح خاص
  * @param {string} currency - کد ارز
- * @param {number} level - شماره سطح (۱ تا ۴)
+ * @param {number|string} level - شماره سطح (۱ تا ۴)
  * @param {string} category - دسته‌بندی
- * @returns {number} مقدار سطح
+ * @returns {number} مقدار سطح (۰ اگر یافت نشد)
  */
 export const getLevelAmount = (currency, level, category) => {
   const levelData = getLevel(currency, level, category);
@@ -510,25 +112,21 @@ export const getLevelAmount = (currency, level, category) => {
 };
 
 /**
- * دریافت لیست ارزهای پشتیبانی‌شده برای یک دسته‌بندی
+ * دریافت لیست ارزهای پشتیبانی‌شده برای یک دسته‌بندی.
+ * نکته: این تابع عمداً `getCurrenciesForCategory` نام‌گذاری شده (نه
+ * `getSupportedCurrencies`) چون utils/assetMapper.js از قبل تابعی دقیقاً با
+ * همین نام export می‌کند؛ نام یکسان در دو ماژول مختلف باعث تداخل import می‌شود.
  * @param {string} category - دسته‌بندی
  * @returns {string[]} لیست کد ارزها
  */
-export const getSupportedCurrencies = (category) => {
-  const levelMap = {
-    game_room: GAME_LEVELS,
-    duel: DUEL_LEVELS,
-    challenge: CHALLENGE_LEVELS,
-  };
-
-  const levels = levelMap[category];
+export const getCurrenciesForCategory = (category) => {
+  const levels = LEVEL_MAP[category];
   if (!levels) return [];
-
   return Object.keys(levels);
 };
 
 // ======================================================
-// ۵. خروجی پیش‌فرض
+// ۴. خروجی پیش‌فرض
 // ======================================================
 export default {
   GAME_LEVELS,
@@ -537,5 +135,5 @@ export default {
   getLevels,
   getLevel,
   getLevelAmount,
-  getSupportedCurrencies,
+  getCurrenciesForCategory,
 };
