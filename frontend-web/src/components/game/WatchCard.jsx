@@ -31,3 +31,8 @@ const WatchCard = ({ card, calledNumbers, isRTL }) => {
     </div>
   );
 };
+
+
+// به‌جای card.row1
+const cardData = card.dobna_cards;
+// سپس از cardData.row1, cardData.row2, cardData.row3 استفاده کنید
