@@ -1,53 +1,45 @@
--- ایجاد دوئل جدید
-CREATE OR REPLACE FUNCTION fn_create_duel(
-    p_creator_id UUID,
-    p_currency VARCHAR(10),
-    p_amount DECIMAL(20,8),
+-- ======================================================
+-- fn_create_room.sql
+-- ایجاد اتاق جدید در یک سطح تالار گروه
+-- ======================================================
+
+CREATE OR REPLACE FUNCTION public.fn_create_room(
+    p_community_id BIGINT,
     p_level INTEGER,
-    p_type VARCHAR(20),
-    p_opponent_id UUID DEFAULT NULL,
-    p_community_id BIGINT DEFAULT NULL
+    p_card_price DECIMAL(20,8),
+    p_currency VARCHAR(10)
 )
 RETURNS BIGINT AS $$
 DECLARE
-    v_duel_id BIGINT;
+    v_room_id BIGINT;
 BEGIN
-    -- بررسی موجودی
-    IF NOT fn_check_balance(p_creator_id, p_currency, p_amount) THEN
-        RAISE EXCEPTION 'موجودی کافی نیست';
-    END IF;
-
-    -- انتقال به حساب مرکزی
-    PERFORM fn_transfer_to_escrow(p_creator_id, p_currency, p_amount, 'duel_create');
-
-    -- ایجاد دوئل
-    INSERT INTO public.duels (
-        duel_id, creator_id, opponent_id, community_id, currency, amount,
-        level, duel_type, expires_at, status
+    INSERT INTO public.rooms (
+        community_id,
+        level,
+        card_price,
+        currency,
+        status,
+        created_at
     ) VALUES (
-        'DUL-' || LPAD(nextval('seq_duel_id')::TEXT, 6, '0'),
-        p_creator_id,
-        p_opponent_id,
         p_community_id,
-        p_currency,
-        p_amount,
         p_level,
-        p_type,
-        NOW() + INTERVAL '5 minutes',
-        'waiting'
-    ) RETURNING id INTO v_duel_id;
+        p_card_price,
+        p_currency,
+        'waiting',
+        NOW()
+    ) RETURNING id INTO v_room_id;
 
-    -- اگر دوئل خصوصی با حریف مشخص است، به او نوتیفیکیشن بده
-    IF p_type = 'private' AND p_opponent_id IS NOT NULL THEN
-        INSERT INTO public.notifications (user_id, type, content, related_id)
-        VALUES (
-            p_opponent_id,
-            'duel_request',
-            'درخواست دوئل از شما',
-            v_duel_id
-        );
-    END IF;
-
-    RETURN v_duel_id;
+    RETURN v_room_id;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON FUNCTION public.fn_create_room IS '
+ایجاد اتاق جدید در یک سطح تالار گروه.
+ورودی‌ها:
+- p_community_id: شناسه گروه
+- p_level: سطح تالار (۱ تا ۴)
+- p_card_price: قیمت هر کارت
+- p_currency: ارز اتاق
+
+خروجی: شناسه اتاق جدید
+';
