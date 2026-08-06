@@ -380,5 +380,20 @@
     "line_winners": "Line Winners",
     "full_house_winner": "Full House Winner!",
     "winner_declared": "🏆 Winner Declared!"
+  {
+  "challenge": {
+    "watch_title": "Watch Challenge",
+    "status": "Status",
+    "creator": "Creator",
+    "amount": "Amount",
+    "participants_cards": "Participants Cards",
+    "no_participants": "No participants yet",
+    "waiting_for_numbers": "Waiting for numbers...",
+    "winner_declared": "🏆 Winner Declared!",
+    "prize": "Prize",
+    "not_found": "Challenge not found"
+  },
+  "game": {
+    "called_numbers": "Called Numbers"
   }
 }
