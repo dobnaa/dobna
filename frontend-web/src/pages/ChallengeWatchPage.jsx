@@ -492,3 +492,22 @@ const { data: participantsData, error: participantsError } = await supabase
 const displayPool = challenge.status === 'completed' 
   ? challenge.total_pool 
   : challenge.amount * challenge.current_participants;
+
+
+const { data: participantsData, error: participantsError } = await supabase
+  .from('challenge_participants')
+  .select(`
+    *,
+    user:user_id (
+      id,
+      username,
+      avatar,
+      full_name
+    ),
+    dobna_cards!fk_challenge_participants_card_number (
+      row1,
+      row2,
+      row3
+    )
+  `)
+  .eq('challenge_id', challengeId);
