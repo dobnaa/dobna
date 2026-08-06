@@ -362,5 +362,23 @@
   },
   "game": {
     "called_numbers": "Called Numbers"
+  {
+  "game": {
+    "watch_title": "Watch Game",
+    "room": "Room",
+    "room_not_found": "Room not found",
+    "unknown_group": "Unknown Group",
+    "waiting": "Waiting",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "unknown": "Unknown",
+    "players_cards": "Players Cards",
+    "no_cards_yet": "No cards yet",
+    "winners": "🏆 Winners",
+    "full_house": "Full House",
+    "line_winners": "Line Winners",
+    "full_house_winner": "Full House Winner!",
+    "winner_declared": "🏆 Winner Declared!"
   }
 }
