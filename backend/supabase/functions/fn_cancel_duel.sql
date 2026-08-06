@@ -1,33 +1,77 @@
 -- ======================================================
 -- fn_cancel_duel.sql
--- لغو دوئل منقضی‌شده و بازگرداندن مبلغ از حساب مرکزی
+-- لغو دوئل منقضی‌شده و بازگشت وجه
 -- ======================================================
 
-CREATE OR REPLACE FUNCTION fn_cancel_duel(p_duel_id BIGINT)
-RETURNS VOID AS $$
+CREATE OR REPLACE FUNCTION public.fn_cancel_duel(p_duel_id BIGINT)
+RETURNS JSONB AS $$
 DECLARE
     v_duel RECORD;
 BEGIN
+    -- ======================================================
+    -- ۱. دریافت اطلاعات دوئل با قفل
+    -- ======================================================
     SELECT * INTO v_duel
     FROM public.duels
-    WHERE id = p_duel_id;
+    WHERE id = p_duel_id
+    FOR UPDATE;
 
     IF NOT FOUND OR v_duel.status != 'waiting' THEN
-        RAISE EXCEPTION '❌ دوئل قابل لغو نیست';
+        RETURN jsonb_build_object('success', false, 'error', 'DUEL_NOT_CANCELLABLE');
     END IF;
 
-    -- بازگرداندن مبلغ از حساب مرکزی به سازنده
+    -- ======================================================
+    -- ۲. بازگرداندن مبلغ به سازنده
+    -- ======================================================
     PERFORM fn_refund_from_escrow(
         v_duel.creator_id,
         v_duel.currency,
         v_duel.amount
     );
 
-    -- به‌روزرسانی وضعیت
+    -- ======================================================
+    -- ۳. به‌روزرسانی وضعیت دوئل
+    -- ======================================================
     UPDATE public.duels
-    SET status = 'cancelled', completed_at = NOW()
+    SET status = 'cancelled',
+        completed_at = NOW()
     WHERE id = p_duel_id;
 
-    RAISE NOTICE '✅ دوئل % لغو شد و مبلغ به سازنده برگردانده شد', v_duel.duel_id;
+    -- ======================================================
+    -- ۴. ثبت تراکنش برگشت
+    -- ======================================================
+    INSERT INTO public.transactions (
+        user_id,
+        type,
+        currency,
+        amount,
+        reference_id,
+        status
+    ) VALUES (
+        v_duel.creator_id,
+        'duel_refund',
+        v_duel.currency,
+        v_duel.amount,
+        p_duel_id,
+        'completed'
+    );
+
+    -- ======================================================
+    -- ۵. خروجی موفقیت
+    -- ======================================================
+    RETURN jsonb_build_object(
+        'success', true,
+        'duel_id', p_duel_id,
+        'refund_amount', v_duel.amount,
+        'creator_id', v_duel.creator_id
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'error', SQLERRM,
+            'duel_id', p_duel_id
+        );
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
