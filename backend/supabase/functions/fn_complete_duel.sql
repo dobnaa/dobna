@@ -1,78 +1,71 @@
 -- ======================================================
 -- fn_complete_duel.sql
--- اتمام دوئل و توزیع جایزه از حساب مرکزی (۱۱۱۱۱۱۱۱)
--- 
--- قوانین توزیع:
--- - ۵٪ کارمزد به حساب ۰۰۰۰۰۰۰۵
--- - ۹۵٪ به برنده دوئل
--- 
--- جریان مالی:
--- ۱. بررسی موجودی کافی در حساب مرکزی (۱۱۱۱۱۱۱۱)
--- ۲. کسر کل مبلغ دوئل از حساب مرکزی
--- ۳. واریز ۵٪ کارمزد به حساب ۰۰۰۰۰۰۰۵
--- ۴. واریز ۹۵٪ به برنده
--- ۵. ثبت تراکنش‌ها
+-- اتمام دوئل و توزیع جایزه (با قفل سطری)
 -- ======================================================
 
-CREATE OR REPLACE FUNCTION fn_complete_duel(
+CREATE OR REPLACE FUNCTION public.fn_complete_duel(
     p_duel_id BIGINT,
     p_winner_id UUID
 )
-RETURNS VOID AS $$
+RETURNS JSONB AS $$
 DECLARE
     v_duel RECORD;
     v_total_amount DECIMAL(20,8);
     v_fee DECIMAL(20,8);
     v_winner_amount DECIMAL(20,8);
-    v_escrow_balance DECIMAL(20,8);
 BEGIN
-    -- ۱. دریافت اطلاعات دوئل
+    -- ======================================================
+    -- ۱. دریافت اطلاعات دوئل با قفل (✅ اصلاح شد)
+    -- ======================================================
     SELECT * INTO v_duel
     FROM public.duels
-    WHERE id = p_duel_id;
+    WHERE id = p_duel_id
+    FOR UPDATE;  -- ✅ قفل سطری برای جلوگیری از دوبار پرداخت
 
     IF NOT FOUND THEN
-        RAISE EXCEPTION '❌ دوئل با شناسه % یافت نشد', p_duel_id;
+        RETURN jsonb_build_object('success', false, 'error', 'DUEL_NOT_FOUND');
     END IF;
 
-    -- بررسی وضعیت دوئل
-    IF v_duel.status NOT IN ('active') THEN
-        RAISE EXCEPTION '❌ دوئل در وضعیت فعال نیست (وضعیت فعلی: %)', v_duel.status;
+    -- بررسی وضعیت دوئل (فقط دوئل‌های فعال قابل تکمیل هستند)
+    IF v_duel.status != 'active' THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'error', 'DUEL_NOT_ACTIVE',
+            'current_status', v_duel.status
+        );
     END IF;
 
+    -- بررسی اینکه آیا برنده یکی از شرکت‌کنندگان است
+    IF v_duel.creator_id != p_winner_id AND v_duel.opponent_id != p_winner_id THEN
+        RETURN jsonb_build_object('success', false, 'error', 'WINNER_NOT_IN_DUEL');
+    END IF;
+
+    -- ======================================================
     -- ۲. محاسبه مبالغ
-    v_total_amount := v_duel.amount * 2; -- مبلغ دو نفر
-    v_fee := v_total_amount * 0.05; -- ۵٪ کارمزد
-    v_winner_amount := v_total_amount - v_fee; -- ۹۵٪ به برنده
+    -- ======================================================
+    v_total_amount := v_duel.amount * 2;
+    v_fee := v_total_amount * 0.05;
+    v_winner_amount := v_total_amount - v_fee;
 
-    -- ۳. بررسی و کسر از حساب مرکزی (۱۱۱۱۱۱۱۱)
-    SELECT balance INTO v_escrow_balance
-    FROM public.system_accounts
-    WHERE account_number = '11111111'
-      AND currency = v_duel.currency;
+    -- ======================================================
+    -- ۳. برداشت از حساب مرکزی با قفل و بررسی موجودی
+    -- ======================================================
+    PERFORM fn_withdraw_from_escrow('11111111', v_duel.currency, v_total_amount);
 
-    IF v_escrow_balance < v_total_amount THEN
-        RAISE EXCEPTION '❌ موجودی حساب مرکزی (۱۱۱۱۱۱۱۱) برای ارز % کافی نیست (موجودی: %، موردنیاز: %)',
-            v_duel.currency, v_escrow_balance, v_total_amount;
-    END IF;
-
-    -- کسر کل مبلغ از حساب مرکزی
-    UPDATE public.system_accounts
-    SET balance = balance - v_total_amount
-    WHERE account_number = '11111111'
-      AND currency = v_duel.currency;
-
+    -- ======================================================
     -- ۴. توزیع وجوه
-    -- ۴.۱ واریز کارمزد به حساب ۰۰۰۰۰۰۰۵
-    PERFORM fn_deposit_fee('00000005', v_duel.currency, v_fee);
-
-    -- ۴.۲ واریز جایزه به برنده (۹۵٪)
+    -- ======================================================
+    -- واریز به برنده (۹۵٪)
     UPDATE public.user_balances
     SET amount = amount + v_winner_amount
-    WHERE user_id = p_winner_id
-      AND currency = v_duel.currency;
+    WHERE user_id = p_winner_id AND currency = v_duel.currency;
 
-    -- ۵. به‌روزرسانی وضعیت دوئل
+    -- واریز کارمزد به ۰۰۰۰۰۰۰۵ (۵٪)
+    PERFORM fn_deposit_fee('00000005', v_duel.currency, v_fee);
+
+    -- ======================================================
+    -- ۵. به‌روزرسانی وضعیت دوئل (اتمیک)
+    -- ======================================================
     UPDATE public.duels
     SET status = 'completed',
         completed_at = NOW(),
@@ -80,51 +73,58 @@ BEGIN
         fee = v_fee
     WHERE id = p_duel_id;
 
+    -- ======================================================
     -- ۶. ثبت تراکنش‌ها
+    -- ======================================================
     INSERT INTO public.transactions (
         user_id,
         type,
         currency,
         amount,
         reference_id,
-        status,
-        description
-    ) VALUES 
-    (
-        '11111111',
-        'escrow_debit',
-        v_duel.currency,
-        -v_total_amount,
-        p_duel_id,
-        'completed',
-        '🔻 کسر کل مبلغ دوئل از حساب مرکزی - ' || v_duel.duel_id
-    ),
-    (
-        p_winner_id,
-        'duel_win',
-        v_duel.currency,
-        v_winner_amount,
-        p_duel_id,
-        'completed',
-        '🏆 جایزه برنده دوئل - ' || v_duel.duel_id
-    ),
-    (
-        '00000005',
-        'platform_fee',
-        v_duel.currency,
-        v_fee,
-        p_duel_id,
-        'completed',
-        '⚡ کارمزد پلتفرم دوئل - ' || v_duel.duel_id
+        status
+    ) VALUES
+        (p_winner_id, 'duel_win', v_duel.currency, v_winner_amount, p_duel_id, 'completed'),
+        (NULL, 'duel_fee', v_duel.currency, v_fee, p_duel_id, 'completed');
+
+    -- ======================================================
+    -- ۷. خروجی موفقیت
+    -- ======================================================
+    RETURN jsonb_build_object(
+        'success', true,
+        'duel_id', p_duel_id,
+        'winner_id', p_winner_id,
+        'total_amount', v_total_amount,
+        'fee', v_fee,
+        'winner_amount', v_winner_amount
     );
 
-    RAISE NOTICE '✅ دوئل % با موفقیت تکمیل شد. برنده: %، مبلغ جایزه: % %',
-        v_duel.duel_id, p_winner_id, v_winner_amount, v_duel.currency;
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'error', SQLERRM,
+            'duel_id', p_duel_id
+        );
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-COMMENT ON FUNCTION fn_complete_duel IS '
-اتمام دوئل و توزیع جایزه از حساب مرکزی:
-- ۵٪ کارمزد به حساب ۰۰۰۰۰۰۰۵
+COMMENT ON FUNCTION public.fn_complete_duel IS '
+اتمام دوئل و توزیع جایزه با قفل سطری.
+ورودی‌ها:
+- p_duel_id: شناسه دوئل
+- p_winner_id: شناسه کاربر برنده
+
+خروجی: JSONB شامل اطلاعات توزیع وجوه
+
+قوانین:
 - ۹۵٪ به برنده
+- ۵٪ کارمزد به حساب ۰۰۰۰۰۰۰۵
+
+خطاهای احتمالی:
+- DUEL_NOT_FOUND: دوئل یافت نشد
+- DUEL_NOT_ACTIVE: دوئل در وضعیت فعال نیست
+- WINNER_NOT_IN_DUEL: برنده در دوئل شرکت نداشته است
+- ESCROW_ACCOUNT_NOT_FOUND: حساب مرکزی یافت نشد
+- ESCROW_INSUFFICIENT_BALANCE: موجودی حساب مرکزی کافی نیست
 ';
