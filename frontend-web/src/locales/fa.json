@@ -328,5 +328,27 @@
   },
   "common": {
     "refresh": "بارگذاری مجدد"
+{
+  "duel": {
+    "watch_title": "مشاهده دوئل",
+    "status": "وضعیت",
+    "creator": "سازنده",
+    "opponent": "حریف",
+    "amount": "مبلغ",
+    "participants_cards": "کارت‌های شرکت‌کنندگان",
+    "no_participants_yet": "هنوز شرکت‌کننده‌ای وجود ندارد",
+    "waiting_for_numbers": "در انتظار اعداد...",
+    "winner_declared": "🏆 برنده اعلام شد!",
+    "prize": "جایزه",
+    "waiting": "در انتظار",
+    "in_progress": "در حال انجام",
+    "completed": "تکمیل شده",
+    "cancelled": "لغو شده",
+    "unknown": "نامشخص",
+    "level": "سطح",
+    "not_found": "دوئل یافت نشد"
+  },
+  "game": {
+    "called_numbers": "اعداد فراخوانی‌شده"
   }
 }
