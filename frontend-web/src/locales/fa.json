@@ -368,5 +368,20 @@
     "line_winners": "برندگان خطی",
     "full_house_winner": "برنده پر!",
     "winner_declared": "🏆 برنده اعلام شد!"
+  {
+  "challenge": {
+    "watch_title": "مشاهده چالش",
+    "status": "وضعیت",
+    "creator": "سازنده",
+    "amount": "مبلغ",
+    "participants_cards": "کارت‌های شرکت‌کنندگان",
+    "no_participants": "هنوز شرکت‌کننده‌ای وجود ندارد",
+    "waiting_for_numbers": "در انتظار اعداد...",
+    "winner_declared": "🏆 برنده اعلام شد!",
+    "prize": "جایزه",
+    "not_found": "چالش یافت نشد"
+  },
+  "game": {
+    "called_numbers": "اعداد فراخوانی‌شده"
   }
 }
