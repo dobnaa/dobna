@@ -533,3 +533,22 @@ const DuelWatchPage = () => {
 };
 
 export default DuelWatchPage;
+
+// اصلاح دریافت کارت‌ها در DuelWatchPage.jsx
+const { data: participantsData, error: participantsError } = await supabase
+  .from('duel_participants')
+  .select(`
+    *,
+    user:user_id (
+      id,
+      username,
+      avatar,
+      full_name
+    ),
+    card:card_number (
+      row1,
+      row2,
+      row3
+    )
+  `)
+  .eq('duel_id', duelId);
