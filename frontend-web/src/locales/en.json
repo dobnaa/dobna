@@ -395,5 +395,27 @@
   },
   "game": {
     "called_numbers": "Called Numbers"
+  {
+  "errors": {
+    "INSUFFICIENT_BALANCE": "Insufficient balance",
+    "DUEL_NOT_FOUND": "Duel not found",
+    "DUEL_NOT_ACTIVE": "Duel is not active",
+    "DUEL_NOT_AVAILABLE": "Duel is not available",
+    "DUEL_EXPIRED": "Duel has expired",
+    "DUEL_NOT_CANCELLABLE": "Duel cannot be cancelled",
+    "PRIVATE_DUEL_NOT_ALLOWED": "You are not allowed to join this private duel",
+    "NOT_GROUP_MEMBER": "You are not a member of this group",
+    "DUEL_ALREADY_TAKEN": "This duel has already been taken",
+    "WINNER_NOT_IN_DUEL": "Winner is not in this duel",
+    "ESCROW_ACCOUNT_NOT_FOUND": "Escrow account not found",
+    "ESCROW_INSUFFICIENT_BALANCE": "Insufficient escrow balance"
+  },
+  "notifications": {
+    "DUEL_REQUEST": "You have received a duel request"
+  },
+  "transaction_types": {
+    "duel_win": "Duel Win",
+    "duel_fee": "Duel Fee",
+    "duel_refund": "Duel Refund"
   }
 }
