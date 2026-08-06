@@ -340,5 +340,27 @@
   },
   "common": {
     "refresh": "Refresh"
+{
+  "duel": {
+    "watch_title": "Watch Duel",
+    "status": "Status",
+    "creator": "Creator",
+    "opponent": "Opponent",
+    "amount": "Amount",
+    "participants_cards": "Participants Cards",
+    "no_participants_yet": "No participants yet",
+    "waiting_for_numbers": "Waiting for numbers...",
+    "winner_declared": "🏆 Winner Declared!",
+    "prize": "Prize",
+    "waiting": "Waiting",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "unknown": "Unknown",
+    "level": "Level",
+    "not_found": "Duel not found"
+  },
+  "game": {
+    "called_numbers": "Called Numbers"
   }
 }
