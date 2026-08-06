@@ -383,5 +383,27 @@
   },
   "game": {
     "called_numbers": "اعداد فراخوانی‌شده"
+  {
+  "errors": {
+    "INSUFFICIENT_BALANCE": "موجودی کافی نیست",
+    "DUEL_NOT_FOUND": "دوئل یافت نشد",
+    "DUEL_NOT_ACTIVE": "دوئل فعال نیست",
+    "DUEL_NOT_AVAILABLE": "دوئل در دسترس نیست",
+    "DUEL_EXPIRED": "زمان دوئل به پایان رسیده است",
+    "DUEL_NOT_CANCELLABLE": "دوئل قابل لغو نیست",
+    "PRIVATE_DUEL_NOT_ALLOWED": "شما اجازه شرکت در این دوئل خصوصی را ندارید",
+    "NOT_GROUP_MEMBER": "شما عضو این گروه نیستید",
+    "DUEL_ALREADY_TAKEN": "این دوئل قبلاً توسط شخص دیگری گرفته شده است",
+    "WINNER_NOT_IN_DUEL": "برنده در این دوئل شرکت نداشته است",
+    "ESCROW_ACCOUNT_NOT_FOUND": "حساب مرکزی یافت نشد",
+    "ESCROW_INSUFFICIENT_BALANCE": "موجودی حساب مرکزی کافی نیست"
+  },
+  "notifications": {
+    "DUEL_REQUEST": "شما یک درخواست دوئل دریافت کرده‌اید"
+  },
+  "transaction_types": {
+    "duel_win": "برد دوئل",
+    "duel_fee": "کارمزد دوئل",
+    "duel_refund": "بازگشت دوئل"
   }
 }
