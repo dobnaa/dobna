@@ -123,3 +123,18 @@ COMMENT ON FUNCTION public.fn_check_and_cancel_room IS '
 - کسر از حساب GP گروه
 - تغییر وضعیت اتاق به cancelled
 ';
+
+
+
+
+
+-- ======================================================
+-- اضافه کردن fn_check_and_cancel_room به کرون‌جاب
+-- ======================================================
+SELECT cron.schedule(
+    'check-and-cancel-room',      -- نام کرون‌جاب
+    '* * * * *',                  -- هر دقیقه
+    $$
+    SELECT fn_check_and_cancel_room();
+    $$
+);
