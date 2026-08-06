@@ -1,5 +1,5 @@
 -- ======================================================
--- 4. COMMUNITIES TABLE (Groups with 4-level game rooms)
+-- 0004_create_communities.sql
 -- ======================================================
 CREATE TABLE IF NOT EXISTS public.communities (
     id BIGSERIAL PRIMARY KEY,
@@ -10,6 +10,10 @@ CREATE TABLE IF NOT EXISTS public.communities (
     description TEXT,
     currency VARCHAR(10) NOT NULL,
     owner_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+    
+    -- ✅ ستون جدید (به‌جای escrow_balance)
+    group_balance DECIMAL(20,8) DEFAULT 0,
+    
     bmc_amount DECIMAL(20,8) DEFAULT 0,
     bmc_initial DECIMAL(20,8) DEFAULT 0,
     bmc_added DECIMAL(20,8) DEFAULT 0,
@@ -27,14 +31,7 @@ CREATE TABLE IF NOT EXISTS public.communities (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-COMMENT ON TABLE public.communities IS 'Communities/groups with 4-level game rooms';
-COMMENT ON COLUMN public.communities.gp_id IS '6-digit GP account number (GP000001)';
-COMMENT ON COLUMN public.communities.username IS 'Group username with currency suffix (e.g., irancoin-BTC)';
-COMMENT ON COLUMN public.communities.bmc_amount IS 'Total Building Management Capital (BMC)';
-COMMENT ON COLUMN public.communities.lottery_amount IS 'Lottery fund amount (0.5% of game fees)';
-
-CREATE INDEX idx_communities_username ON public.communities(username);
-CREATE INDEX idx_communities_currency ON public.communities(currency);
-CREATE INDEX idx_communities_owner_id ON public.communities(owner_id);
-CREATE INDEX idx_communities_rank ON public.communities(rank);
-CREATE INDEX idx_communities_is_active ON public.communities(is_active);
+COMMENT ON COLUMN public.communities.group_balance IS 
+'موجودی حساب GP گروه (استخر نقدینگی موقت تالارهای بازی). 
+مبالغ کارت‌های خریداری‌شده توسط کاربران در این حساب جمع‌آوری می‌شود 
+و پس از پایان هر بازی، توزیع می‌گردد.';
