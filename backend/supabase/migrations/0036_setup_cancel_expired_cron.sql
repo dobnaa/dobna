@@ -159,3 +159,18 @@ $$;
 
 -- حذف Cron Job
 -- SELECT cron.unschedule('cancel-expired-every-minute');
+
+
+
+
+
+-- ======================================================
+-- اضافه کردن fn_check_and_cancel_room به کرون‌جاب
+-- ======================================================
+SELECT cron.schedule(
+    'check-and-cancel-room',      -- نام کرون‌جاب
+    '* * * * *',                  -- هر دقیقه
+    $$
+    SELECT fn_check_and_cancel_room();
+    $$
+);
