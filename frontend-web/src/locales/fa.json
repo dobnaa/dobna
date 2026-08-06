@@ -350,5 +350,23 @@
   },
   "game": {
     "called_numbers": "اعداد فراخوانی‌شده"
+{
+  "game": {
+    "watch_title": "مشاهده بازی",
+    "room": "اتاق",
+    "room_not_found": "اتاق یافت نشد",
+    "unknown_group": "گروه ناشناس",
+    "waiting": "در انتظار",
+    "in_progress": "در حال انجام",
+    "completed": "تکمیل شده",
+    "cancelled": "لغو شده",
+    "unknown": "نامشخص",
+    "players_cards": "کارت‌های بازیکنان",
+    "no_cards_yet": "هنوز کارتی وجود ندارد",
+    "winners": "🏆 برندگان",
+    "full_house": "پر",
+    "line_winners": "برندگان خطی",
+    "full_house_winner": "برنده پر!",
+    "winner_declared": "🏆 برنده اعلام شد!"
   }
 }
