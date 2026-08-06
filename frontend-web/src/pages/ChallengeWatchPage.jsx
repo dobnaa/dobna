@@ -467,3 +467,22 @@ const ChallengeWatchPage = () => {
 };
 
 export default ChallengeWatchPage;
+
+// اصلاح دریافت کارت‌ها در ChallengeWatchPage.jsx
+const { data: participantsData, error: participantsError } = await supabase
+  .from('challenge_participants')
+  .select(`
+    *,
+    user:user_id (
+      id,
+      username,
+      avatar,
+      full_name
+    ),
+    card:card_number (
+      row1,
+      row2,
+      row3
+    )
+  `)
+  .eq('challenge_id', challengeId);
