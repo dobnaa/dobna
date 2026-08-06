@@ -1,5 +1,5 @@
 -- ======================================================
--- 7. ROOMS TABLE (Game rooms in community levels)
+-- 0007_create_rooms.sql
 -- ======================================================
 CREATE TABLE IF NOT EXISTS public.rooms (
     id BIGSERIAL PRIMARY KEY,
@@ -16,13 +16,4 @@ CREATE TABLE IF NOT EXISTS public.rooms (
     winner_id UUID REFERENCES public.profiles(id),
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-COMMENT ON TABLE public.rooms IS 'Game rooms in community levels (up to 999 rooms per level)';
-COMMENT ON COLUMN public.rooms.level IS '1-4 (game levels)';
-COMMENT ON COLUMN public.rooms.called_numbers IS 'Array of called numbers (1-90)';
-COMMENT ON COLUMN public.rooms.max_cards IS 'Maximum 60 cards per room';
-
-CREATE INDEX idx_rooms_community_id ON public.rooms(community_id);
-CREATE INDEX idx_rooms_level ON public.rooms(level);
-CREATE INDEX idx_rooms_status ON public.rooms(status);
-CREATE INDEX idx_rooms_created_at ON public.rooms(created_at);
+-- ❌ ستون pot_amount وجود ندارد
