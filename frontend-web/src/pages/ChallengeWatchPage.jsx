@@ -486,3 +486,9 @@ const { data: participantsData, error: participantsError } = await supabase
     )
   `)
   .eq('challenge_id', challengeId);
+
+
+// به‌جای استفاده از challenge.total_pool
+const displayPool = challenge.status === 'completed' 
+  ? challenge.total_pool 
+  : challenge.amount * challenge.current_participants;
