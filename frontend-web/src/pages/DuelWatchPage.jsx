@@ -552,3 +552,21 @@ const { data: participantsData, error: participantsError } = await supabase
     )
   `)
   .eq('duel_id', duelId);
+
+const { data: participantsData, error: participantsError } = await supabase
+  .from('duel_participants')
+  .select(`
+    *,
+    user:user_id (
+      id,
+      username,
+      avatar,
+      full_name
+    ),
+    dobna_cards!fk_duel_participants_card_number (
+      row1,
+      row2,
+      row3
+    )
+  `)
+  .eq('duel_id', duelId);
