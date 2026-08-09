@@ -408,5 +408,8 @@
   {
   "currencies": {
     "DUS": "یونیت دوبنا"
+  {
+  "transaction_types": {
+    "dus_redemption": "تبدیل DUS"
   }
 }
