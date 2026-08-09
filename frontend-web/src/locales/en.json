@@ -420,5 +420,8 @@
   {
   "currencies": {
     "DUS": "Dobna Unit"
+  {
+  "transaction_types": {
+    "dus_redemption": "Redeemed DUS"
   }
 }
