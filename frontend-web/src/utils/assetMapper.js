@@ -44,3 +44,10 @@ export const getFlagIcon = (currency) => {
                     AED: 'AE', CNY: 'CN', INR: 'IN', CAD: 'CA', CHF: 'CH', AUD: 'AU' };
   return `/assets/icons/flags/${flagMap[currency] || 'default'}.svg`;
 };
+
+
+
+const CURRENCY_CONFIG = {
+  // ... سایر ارزها
+  DUS: { folder: 'dus/DUS', levels: ['0.05', '0.25', '0.50', '1.00'] },
+};
