@@ -417,5 +417,8 @@
     "duel_win": "Duel Win",
     "duel_fee": "Duel Fee",
     "duel_refund": "Duel Refund"
+  {
+  "currencies": {
+    "DUS": "Dobna Unit"
   }
 }
