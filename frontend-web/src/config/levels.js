@@ -137,3 +137,10 @@ export default {
   getLevelAmount,
   getCurrenciesForCategory,
 };
+
+
+
+const BASE_LEVEL_AMOUNTS = {
+  // ... سایر ارزها
+  DUS: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+};
