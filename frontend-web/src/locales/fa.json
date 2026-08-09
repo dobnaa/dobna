@@ -411,5 +411,14 @@
   {
   "transaction_types": {
     "dus_redemption": "تبدیل DUS"
+  {
+  "transaction_types": {
+    "dus_transfer": "انتقال DUS"
+  },
+  "errors": {
+    "SAME_USER": "نمی‌توانید DUS را به خودتان ارسال کنید",
+    "INVALID_AMOUNT": "مبلغ نامعتبر است",
+    "RECEIVER_NOT_FOUND": "گیرنده یافت نشد",
+    "INSUFFICIENT_BALANCE": "موجودی DUS کافی نیست"
   }
 }
