@@ -423,5 +423,14 @@
   {
   "transaction_types": {
     "dus_redemption": "Redeemed DUS"
+  {
+  "transaction_types": {
+    "dus_transfer": "DUS Transfer"
+  },
+  "errors": {
+    "SAME_USER": "You cannot send DUS to yourself",
+    "INVALID_AMOUNT": "Invalid amount",
+    "RECEIVER_NOT_FOUND": "Recipient not found",
+    "INSUFFICIENT_BALANCE": "Insufficient DUS balance"
   }
 }
