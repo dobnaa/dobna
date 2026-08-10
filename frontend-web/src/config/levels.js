@@ -10,6 +10,7 @@
 // نکته: مقادیر USDC و SUI فعلاً PLACEHOLDER هستند (USDC از روی USDT و SUI از
 // روی مقیاس SOL تخمین زده شده‌اند) و باید با اعداد واقعی جایگزین شوند.
 const BASE_LEVEL_AMOUNTS = {
+  // ===== رمزارزها (Crypto) =====
   BTC: { 1: 5e-07, 2: 2e-06, 3: 5e-06, 4: 1e-05 },
   ETH: { 1: 1e-05, 2: 5e-05, 3: 0.0001, 4: 0.0002 },
   USDT: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
@@ -22,6 +23,8 @@ const BASE_LEVEL_AMOUNTS = {
   HMSTR: { 1: 200, 2: 800, 3: 2000, 4: 4000 },
   USDC: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
   SUI: { 1: 0.001, 2: 0.005, 3: 0.01, 4: 0.02 },
+
+  // ===== فیات (Fiat) =====
   USD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
   IRT: { 1: 5000, 2: 20000, 3: 50000, 4: 100000 },
   EUR: { 1: 0.025, 2: 0.1, 3: 0.25, 4: 0.5 },
@@ -33,6 +36,10 @@ const BASE_LEVEL_AMOUNTS = {
   CAD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
   CHF: { 1: 0.05, 2: 0.1, 3: 0.5, 4: 1.0 },
   AUD: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
+
+  // ===== واحدهای داخلی دوبنا =====
+  DUS: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 }, // ۱ DUS = ۱ USD
+  STARS: { 1: 5, 2: 25, 3: 50, 4: 100 },    // ✅ Stars تلگرام
 };
 
 // ======================================================
@@ -42,10 +49,10 @@ const buildLevelsFromBase = () => {
   const result = {};
   Object.entries(BASE_LEVEL_AMOUNTS).forEach(([currency, amounts]) => {
     result[currency] = {
-      1: { amount: amounts[0] },
-      2: { amount: amounts[1] },
-      3: { amount: amounts[2] },
-      4: { amount: amounts[3] },
+      1: { amount: amounts[1] },
+      2: { amount: amounts[2] },
+      3: { amount: amounts[3] },
+      4: { amount: amounts[4] },
     };
   });
   return result;
@@ -136,11 +143,4 @@ export default {
   getLevel,
   getLevelAmount,
   getCurrenciesForCategory,
-};
-
-
-
-const BASE_LEVEL_AMOUNTS = {
-  // ... سایر ارزها
-  DUS: { 1: 0.05, 2: 0.25, 3: 0.5, 4: 1.0 },
 };
