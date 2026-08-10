@@ -420,5 +420,45 @@
     "INVALID_AMOUNT": "مبلغ نامعتبر است",
     "RECEIVER_NOT_FOUND": "گیرنده یافت نشد",
     "INSUFFICIENT_BALANCE": "موجودی DUS کافی نیست"
+  {
+  "errors": {
+    "ADDRESS_NOT_PROVIDED": "آدرس واریز ارائه نشده است",
+    "DEPOSIT_ADDRESS_NOT_FOUND": "آدرس واریز یافت نشد",
+    "DUPLICATE_DEPOSIT_TX": "این تراکنش قبلاً پردازش شده است",
+    "WITHDRAWAL_NOT_SUPPORTED": "برداشت برای این ارز پشتیبانی نمی‌شود",
+    "BELOW_MIN_WITHDRAW": "مبلغ کمتر از حداقل برداشت است (حداقل: {{min_withdraw}} {{currency}})",
+    "WITHDRAWAL_NOT_PENDING": "برداشت در وضعیت در انتظار نیست (وضعیت فعلی: {{current_status}})",
+    "INSUFFICIENT_LOCKED_BALANCE": "موجودی قفل‌شده کافی نیست",
+    "INVALID_ADDRESS": "آدرس برداشت نامعتبر است",
+    "NETWORK_NOT_SUPPORTED": "شبکه پشتیبانی نمی‌شود",
+    "INVALID_AMOUNT": "مبلغ نامعتبر است",
+    "INVALID_TX_HASH": "هش تراکنش نامعتبر است",
+    "TRANSACTION_NOT_FOUND": "تراکنش یافت نشد",
+    "BALANCE_NOT_FOUND": "موجودی یافت نشد"
+  },
+  "withdrawal": {
+    "request_success": "درخواست برداشت با موفقیت ثبت شد",
+    "confirm_success": "برداشت با موفقیت تأیید شد",
+    "cancel_success": "برداشت با موفقیت لغو شد",
+    "request_failed": "ثبت درخواست برداشت ناموفق بود",
+    "confirm_failed": "تأیید برداشت ناموفق بود",
+    "cancel_failed": "لغو برداشت ناموفق بود",
+    "min_amount": "حداقل برداشت: {{amount}} {{currency}}",
+    "fee": "کارمزد شبکه: {{fee}} {{currency}}",
+    "total": "مجموع کسر: {{total}} {{currency}}",
+    "address": "آدرس برداشت",
+    "network": "شبکه"
+  },
+  "deposit": {
+    "address_title": "آدرس واریز شما",
+    "address_copy": "کپی آدرس",
+    "address_copied": "آدرس در کلیپ‌بورد کپی شد",
+    "qr_title": "اسکن QR Code",
+    "save_qr": "ذخیره QR Code",
+    "min_deposit": "حداقل واریز: {{amount}} {{currency}}",
+    "warning": "فقط {{currency}} را به این آدرس ارسال کنید. ارسال هر دارایی دیگری باعث از دست رفتن دائمی آن می‌شود.",
+    "network_info": "لطفاً مطمئن شوید که از شبکه {{network}} برای این واریز استفاده می‌کنید.",
+    "generating_address": "در حال تولید آدرس واریز...",
+    "address_generated": "آدرس واریز با موفقیت تولید شد"
   }
 }
