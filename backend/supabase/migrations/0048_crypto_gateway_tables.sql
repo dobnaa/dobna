@@ -115,8 +115,8 @@ WHERE code = 'DOGE';
 -- Stars تلگرام (واریز و برداشت از طریق تلگرام فعال است)
 UPDATE public.currencies SET
     min_deposit = 1,
-    min_withdraw = NULL,
-    withdraw_fee = NULL,
+    min_withdraw = 1,
+    withdraw_fee = 0,
     is_deposit_enabled = TRUE,
     is_withdraw_enabled = TRUE,
     network_list = ARRAY['Telegram']
