@@ -5,7 +5,7 @@ import i18n from '../config/i18n';
 // ۱. تنظیمات تعداد اعشار برای هر ارز
 // ======================================================
 const CURRENCY_DECIMALS = {
-  // رمزارزها (Crypto)
+  // ===== رمزارزها (Crypto) =====
   BTC: 8,
   ETH: 8,
   SOL: 8,
@@ -19,7 +19,7 @@ const CURRENCY_DECIMALS = {
   USDT: 2,
   SUI: 8,
 
-  // فیات‌ها (Fiat)
+  // ===== فیات‌ها (Fiat) =====
   USD: 2,
   EUR: 2,
   GBP: 2,
@@ -31,6 +31,10 @@ const CURRENCY_DECIMALS = {
   INR: 2,
   CNY: 2,
   IRT: 0,
+
+  // ===== واحدهای داخلی دوبنا =====
+  DUS: 2,    // ✅ Dobna Unit (همیشه ۲ رقم اعشار)
+  STARS: 0,  // ✅ Telegram Stars (عدد صحیح، بدون اعشار)
 };
 
 // ======================================================
