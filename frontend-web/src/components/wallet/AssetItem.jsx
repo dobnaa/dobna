@@ -6,13 +6,20 @@ import { ChevronRight } from 'lucide-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import { getCryptoIcon, getFlagEmoji } from '../../utils/assetMapper';
 
+// ======================================================
 // ارزهایی که آیکون SVG رمزارز دارند؛ بقیه فیات محسوب شده و پرچم می‌گیرند
+// ======================================================
 const CRYPTO_CURRENCIES = [
-  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON', 'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI',
+  // رمزارزها
+  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON',
+  'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI',
+  // واحدهای داخلی دوبنا (با آیکون SVG)
+  'DUS',   // ✅ Dobna Unit
+  'STARS', // ✅ Telegram Stars
 ];
 
 const AssetItem = ({ asset, onPress }) => {
-  // isRTL مستقیماً از هوک گرفته می‌شود (منبع واحد حقیقت)، نه محاسبه‌ی دستی مجدد
+  // isRTL مستقیماً از هوک گرفته می‌شود (منبع واحد حقیقت)
   const { t, isRTL } = useTranslation();
 
   // محافظت در برابر داده‌ی نامعتبر یا ناقص
@@ -22,7 +29,7 @@ const AssetItem = ({ asset, onPress }) => {
 
   const isCrypto = CRYPTO_CURRENCIES.includes(asset.currency);
 
-  // نام ارز از فایل ترجمه (پشتیبانی خودکار از هر ۱۷ زبان)
+  // نام ارز از فایل ترجمه (پشتیبانی خودکار از همه زبان‌ها)
   const currencyName = t(`currencies.${asset.currency}`, { defaultValue: asset.currency });
 
   // تبدیل امن change24h به عدد (ممکن است از API به‌صورت string بیاید)
@@ -35,7 +42,7 @@ const AssetItem = ({ asset, onPress }) => {
       className="w-full bg-gray-800/30 rounded-xl p-3 flex items-center justify-between hover:bg-gray-700/30 transition border border-gray-700/20"
     >
       <div className="flex items-center gap-3 min-w-0">
-        {/* آیکون ارز: تصویر SVG برای کریپتو، ایموجی پرچم برای فیات */}
+        {/* آیکون ارز: تصویر SVG برای کریپتو/داخلی، ایموجی پرچم برای فیات */}
         <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
           {isCrypto ? (
             <img
@@ -61,7 +68,7 @@ const AssetItem = ({ asset, onPress }) => {
 
       <div className="flex items-center gap-2 flex-shrink-0" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-right">
-          {/* نکته: currency باید پاس داده شود تا تعداد اعشار درست (مثلاً ۸ رقم برای BTC، ۰ رقم برای IRT) اعمال شود */}
+          {/* نکته: currency باید پاس داده شود تا تعداد اعشار درست اعمال شود */}
           <p className="text-white font-medium">{formatCurrency(asset.amount, asset.currency)}</p>
           <p className="text-blue-400 text-xs" dir="ltr">
             ${formatCurrency(asset.usdValue || 0, 'USD')}
