@@ -2,85 +2,66 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from '../../hooks/useTranslation';
-import { ChevronRight } from 'lucide-react';
 import { formatCurrency } from '../../utils/currencyFormatter';
-import { getCryptoIcon, getFlagEmoji } from '../../utils/assetMapper';
-
-// ======================================================
-// ارزهایی که آیکون SVG رمزارز دارند؛ بقیه فیات محسوب شده و پرچم می‌گیرند
-// ======================================================
-const CRYPTO_CURRENCIES = [
-  // رمزارزها
-  'BTC', 'ETH', 'USDT', 'SOL', 'BNB', 'DOGE', 'TON',
-  'BONK', 'PEPE', 'HMSTR', 'USDC', 'SUI',
-  // واحدهای داخلی دوبنا (با آیکون SVG)
-  'DUS',   // ✅ Dobna Unit
-  'STARS', // ✅ Telegram Stars
-];
+import { getAssetDisplay } from '../../utils/assetMapper';
 
 const AssetItem = ({ asset, onPress }) => {
-  // isRTL مستقیماً از هوک گرفته می‌شود (منبع واحد حقیقت)
-  const { t, isRTL } = useTranslation();
+  const { t } = useTranslation();
 
-  // محافظت در برابر داده‌ی نامعتبر یا ناقص
   if (!asset || !asset.currency) {
     return null;
   }
 
-  const isCrypto = CRYPTO_CURRENCIES.includes(asset.currency);
+  const currency = String(asset.currency).toUpperCase();
+  const display = getAssetDisplay(currency);
 
-  // نام ارز از فایل ترجمه (پشتیبانی خودکار از همه زبان‌ها)
-  const currencyName = t(`currencies.${asset.currency}`, { defaultValue: asset.currency });
+  const currencyName = t(`currencies.${currency}`, {
+    defaultValue: currency,
+  });
 
-  // تبدیل امن change24h به عدد (ممکن است از API به‌صورت string بیاید)
-  const change = Number(asset.change24h);
-  const hasChange = asset.change24h !== undefined && asset.change24h !== null && !Number.isNaN(change);
+  const isImageIcon = display.iconType === 'crypto';
 
   return (
     <button
+      type="button"
       onClick={onPress}
       className="w-full bg-gray-800/30 rounded-xl p-3 flex items-center justify-between hover:bg-gray-700/30 transition border border-gray-700/20"
     >
       <div className="flex items-center gap-3 min-w-0">
-        {/* آیکون ارز: تصویر SVG برای کریپتو/داخلی، ایموجی پرچم برای فیات */}
-        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-lg flex-shrink-0 overflow-hidden">
-          {isCrypto ? (
+        {/* Asset Icon */}
+        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0 overflow-hidden">
+          {isImageIcon && display.icon ? (
             <img
-              src={getCryptoIcon(asset.currency)}
-              alt={asset.currency}
+              src={display.icon}
+              alt={currency}
               className="w-6 h-6"
               loading="lazy"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement.textContent = '💱';
+              onError={(event) => {
+                event.currentTarget.style.display = 'none';
               }}
             />
           ) : (
-            <span>{getFlagEmoji(asset.currency)}</span>
+            <span className="text-2xl" role="img" aria-label={currency}>
+              {display.icon || '🏳️'}
+            </span>
           )}
         </div>
 
         <div className="text-left min-w-0">
-          <p className="text-white font-medium">{asset.currency}</p>
-          <p className="text-gray-400 text-xs truncate">{currencyName}</p>
+          <p className="text-white font-medium">
+            {currency}
+          </p>
+
+          <p className="text-gray-400 text-xs truncate">
+            {currencyName}
+          </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0" dir={isRTL ? 'rtl' : 'ltr'}>
-        <div className="text-right">
-          {/* نکته: currency باید پاس داده شود تا تعداد اعشار درست اعمال شود */}
-          <p className="text-white font-medium">{formatCurrency(asset.amount, asset.currency)}</p>
-          <p className="text-blue-400 text-xs" dir="ltr">
-            ${formatCurrency(asset.usdValue || 0, 'USD')}
-          </p>
-          {hasChange && (
-            <span className={`text-xs ${change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-              {change >= 0 ? '+' : ''}
-              {change.toFixed(2)}%
-            </span>
-          )}
-        </div>
-        <ChevronRight className="w-4 h-4 text-gray-500 flex-shrink-0" />
+      <div className="text-right flex-shrink-0">
+        <p className="text-white font-medium">
+          {formatCurrency(asset.amount, currency)}
+        </p>
       </div>
     </button>
   );
@@ -89,9 +70,10 @@ const AssetItem = ({ asset, onPress }) => {
 AssetItem.propTypes = {
   asset: PropTypes.shape({
     currency: PropTypes.string.isRequired,
-    amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    usdValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    change24h: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    amount: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string,
+    ]),
   }).isRequired,
   onPress: PropTypes.func,
 };
