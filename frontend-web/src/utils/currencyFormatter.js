@@ -1,245 +1,303 @@
 // utils/currencyFormatter.js
+
 import i18n from '../config/i18n';
+import { getAssetDecimals } from '../config/assets';
 
 // ======================================================
-// ۱. تنظیمات تعداد اعشار برای هر ارز
+// دریافت Locale فعلی
 // ======================================================
-const CURRENCY_DECIMALS = {
-  // ===== رمزارزها (Crypto) =====
-  BTC: 8,
-  ETH: 8,
-  SOL: 8,
-  BNB: 8,
-  DOGE: 8,
-  TON: 8,
-  BONK: 8,
-  PEPE: 8,
-  HMSTR: 8,
-  USDC: 2,
-  USDT: 2,
-  SUI: 8,
 
-  // ===== فیات‌ها (Fiat) =====
-  USD: 2,
-  EUR: 2,
-  GBP: 2,
-  TRY: 2,
-  AED: 2,
-  CAD: 2,
-  CHF: 2,
-  AUD: 2,
-  INR: 2,
-  CNY: 2,
-  IRT: 0,
-
-  // ===== واحدهای داخلی دوبنا =====
-  DUS: 2,    // ✅ Dobna Unit (همیشه ۲ رقم اعشار)
-  STARS: 0,  // ✅ Telegram Stars (عدد صحیح، بدون اعشار)
+const LOCALE_MAP = {
+  fa: 'fa-IR',
+  ar: 'ar-SA',
+  en: 'en-US',
+  tr: 'tr-TR',
+  ru: 'ru-RU',
+  hi: 'hi-IN',
+  fr: 'fr-FR',
+  zh: 'zh-CN',
+  id: 'id-ID',
+  ko: 'ko-KR',
+  es: 'es-ES',
+  cs: 'cs-CZ',
+  fi: 'fi-FI',
+  pt: 'pt-BR',
+  uz: 'uz-UZ',
+  vi: 'vi-VN',
+  sv: 'sv-SE',
 };
 
-// ======================================================
-// ۲. دریافت تعداد اعشار ارز
-// ======================================================
-export const getCurrencyDecimals = (currency) => {
-  return CURRENCY_DECIMALS[currency] ?? 2;
-};
-
-// ======================================================
-// ۳. دریافت لوکال فعلی
-// ======================================================
-// نکته: این نگاشت باید دقیقاً با کلیدهای SUPPORTED_LANGUAGES در config/i18n.js هماهنگ باشد
 const getCurrentLocale = () => {
-  const lang = i18n.language || 'en';
-  const localeMap = {
-    fa: 'fa-IR',
-    ar: 'ar-SA',
-    en: 'en-US',
-    tr: 'tr-TR',
-    ru: 'ru-RU',
-    hi: 'hi-IN',
-    fr: 'fr-FR',
-    zh: 'zh-CN',
-    id: 'id-ID',
-    ko: 'ko-KR',
-    es: 'es-ES',
-    cs: 'cs-CZ',
-    fi: 'fi-FI',
-    pt: 'pt-BR',
-    uz: 'uz-UZ',
-    vi: 'vi-VN',
-    sv: 'sv-SE',
-  };
-  return localeMap[lang] || 'en-US';
+  const language = i18n.language || 'en';
+
+  // پشتیبانی از مواردی مثل:
+  // en-US
+  // fa-IR
+  // pt-BR
+  const baseLanguage = language.split('-')[0].toLowerCase();
+
+  return LOCALE_MAP[baseLanguage] || 'en-US';
 };
 
 // ======================================================
-// ۴. فرمت‌کننده اصلی اعداد (با locale و اعشار)
+// تبدیل امن مقدار به Number
 // ======================================================
-export const formatNumber = (value, decimals = 2, locale = null) => {
-  if (value === undefined || value === null || isNaN(value)) {
+
+const toNumber = (value) => {
+  if (value === undefined || value === null || value === '') {
+    return null;
+  }
+
+  const number = typeof value === 'string'
+    ? Number.parseFloat(value)
+    : Number(value);
+
+  return Number.isFinite(number) ? number : null;
+};
+
+// ======================================================
+// فرمت‌کننده اصلی اعداد
+// ======================================================
+
+export const formatNumber = (
+  value,
+  decimals = 2,
+  locale = null
+) => {
+  const number = toNumber(value);
+
+  if (number === null) {
     return '0';
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
+  const safeDecimals = Math.max(
+    0,
+    Math.min(20, Number(decimals) || 0)
+  );
+
   const finalLocale = locale || getCurrentLocale();
 
   try {
     return new Intl.NumberFormat(finalLocale, {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(num);
+      minimumFractionDigits: safeDecimals,
+      maximumFractionDigits: safeDecimals,
+    }).format(number);
   } catch (error) {
     return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(num);
+      minimumFractionDigits: safeDecimals,
+      maximumFractionDigits: safeDecimals,
+    }).format(number);
   }
 };
 
 // ======================================================
-// ۵. فرمت‌کننده ارز (با نام ارز و اعشار مناسب)
+// فرمت‌کننده Asset / Currency
 // ======================================================
-// نکته مهم: همیشه پارامتر currency را صراحتاً پاس دهید (مثلاً formatCurrency(amount, asset.currency))
-// در غیر این صورت پیش‌فرض 'USD' اعمال می‌شود و تعداد اعشار برای ارزهایی مثل BTC (۸ رقم) یا IRT (۰ رقم) غلط خواهد بود.
-export const formatCurrency = (amount, currency = 'USD', locale = null) => {
-  if (amount === undefined || amount === null || isNaN(amount)) {
+//
+// تعداد اعشار فقط از config/assets.js گرفته می‌شود.
+// این تابع هیچ Registry جداگانه‌ای از ارزها ندارد.
+// ======================================================
+
+export const formatCurrency = (
+  amount,
+  currency = 'USD',
+  locale = null
+) => {
+  const number = toNumber(amount);
+
+  if (number === null) {
     return '0';
   }
 
-  const decimals = getCurrencyDecimals(currency);
-  return formatNumber(amount, decimals, locale);
+  const decimals = getAssetDecimals(currency);
+
+  return formatNumber(
+    number,
+    decimals,
+    locale
+  );
 };
 
 // ======================================================
-// ۶. فرمت فشرده (Compact) برای اعداد بزرگ - بدون هاردکد
+// فرمت Compact
 // ======================================================
-export const formatCompactNumber = (value, locale = null) => {
-  if (value === undefined || value === null || isNaN(value)) {
-    return { value: 0, unit: '' };
-  }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  const absNum = Math.abs(num);
-  const sign = num < 0 ? -1 : 1;
-  const finalNum = Math.abs(num);
+export const formatCompactNumber = (
+  value,
+  locale = null
+) => {
+  const number = toNumber(value);
 
-  let formattedValue = 0;
-  let unit = '';
-
-  if (absNum >= 1_000_000_000_000) {
-    formattedValue = finalNum / 1_000_000_000_000;
-    unit = 'T';
-  } else if (absNum >= 1_000_000_000) {
-    formattedValue = finalNum / 1_000_000_000;
-    unit = 'B';
-  } else if (absNum >= 1_000_000) {
-    formattedValue = finalNum / 1_000_000;
-    unit = 'M';
-  } else if (absNum >= 1_000) {
-    formattedValue = finalNum / 1_000;
-    unit = 'K';
-  } else {
-    // اعداد کوچک بدون واحد
+  if (number === null) {
     return {
-      value: num,
+      value: 0,
       unit: '',
     };
   }
 
-  // گرد کردن به ۱ اعشار
-  const rounded = Number(formattedValue.toFixed(1));
+  const absNumber = Math.abs(number);
+
+  let divisor = 1;
+  let unit = '';
+
+  if (absNumber >= 1_000_000_000_000) {
+    divisor = 1_000_000_000_000;
+    unit = 'T';
+  } else if (absNumber >= 1_000_000_000) {
+    divisor = 1_000_000_000;
+    unit = 'B';
+  } else if (absNumber >= 1_000_000) {
+    divisor = 1_000_000;
+    unit = 'M';
+  } else if (absNumber >= 1_000) {
+    divisor = 1_000;
+    unit = 'K';
+  }
+
+  if (!unit) {
+    return {
+      value: number,
+      unit: '',
+    };
+  }
+
+  const formatted = number / divisor;
 
   return {
-    value: sign * rounded,
-    unit: unit,
+    value: Number(formatted.toFixed(1)),
+    unit,
   };
 };
 
 // ======================================================
-// ۷. فرمت فشرده به صورت رشته (با استفاده از تابع بالا)
+// Compact به صورت String
 // ======================================================
-export const formatCompactString = (value, locale = null) => {
+
+export const formatCompactString = (
+  value,
+  locale = null
+) => {
   const result = formatCompactNumber(value, locale);
+
   if (result.unit) {
     return `${formatNumber(result.value, 1, locale)} ${result.unit}`;
   }
+
   return formatNumber(result.value, 2, locale);
 };
 
 // ======================================================
-// ۸. فرمت با نماد دلار (برای نمایش سریع)
+// فرمت USD
 // ======================================================
-export const formatUSD = (value, decimals = 2) => {
-  if (value === undefined || value === null || isNaN(value)) {
+
+export const formatUSD = (
+  value,
+  decimals = 2
+) => {
+  const number = toNumber(value);
+
+  if (number === null) {
     return '$0.00';
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
   const locale = getCurrentLocale();
+
+  const safeDecimals = Math.max(
+    0,
+    Math.min(20, Number(decimals) || 0)
+  );
 
   try {
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(num);
+      minimumFractionDigits: safeDecimals,
+      maximumFractionDigits: safeDecimals,
+    }).format(number);
   } catch (error) {
-    return `$${formatNumber(num, decimals, 'en-US')}`;
+    return `$${formatNumber(
+      number,
+      safeDecimals,
+      'en-US'
+    )}`;
   }
 };
 
 // ======================================================
-// ۹. فرمت با نماد ارز (با پشتیبانی از ارزهای مختلف)
+// فرمت Currency با Symbol
 // ======================================================
-// نکته: برای کدهای غیر ISO-4217 (مثل BTC, PEPE, IRT) Intl.NumberFormat خطا می‌دهد
-// و به‌صورت خودکار fallback به فرمت ساده‌ی "CODE مقدار" می‌افتد.
-export const formatCurrencyWithSymbol = (amount, currency = 'USD', locale = null) => {
-  if (amount === undefined || amount === null || isNaN(amount)) {
+
+export const formatCurrencyWithSymbol = (
+  amount,
+  currency = 'USD',
+  locale = null
+) => {
+  const number = toNumber(amount);
+
+  if (number === null) {
     return `${currency} 0`;
   }
 
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+  const decimals = getAssetDecimals(currency);
   const finalLocale = locale || getCurrentLocale();
+  const code = String(currency).toUpperCase();
 
   try {
     return new Intl.NumberFormat(finalLocale, {
       style: 'currency',
-      currency: currency,
-      minimumFractionDigits: getCurrencyDecimals(currency),
-      maximumFractionDigits: getCurrencyDecimals(currency),
-    }).format(num);
+      currency: code,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(number);
   } catch (error) {
-    const formatted = formatNumber(num, getCurrencyDecimals(currency), 'en-US');
-    return `${currency} ${formatted}`;
+    return `${code} ${formatNumber(
+      number,
+      decimals,
+      'en-US'
+    )}`;
   }
 };
 
 // ======================================================
-// ۱۰. فرمت درصد
+// فرمت درصد
 // ======================================================
-export const formatPercent = (value, decimals = 2) => {
-  if (value === undefined || value === null || isNaN(value)) {
+
+export const formatPercent = (
+  value,
+  decimals = 2
+) => {
+  const number = toNumber(value);
+
+  if (number === null) {
     return '0%';
   }
 
-  const num = typeof value === 'string' ? parseFloat(value) : value;
   const locale = getCurrentLocale();
+
+  const safeDecimals = Math.max(
+    0,
+    Math.min(20, Number(decimals) || 0)
+  );
 
   try {
     return new Intl.NumberFormat(locale, {
       style: 'percent',
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(num / 100);
+      minimumFractionDigits: safeDecimals,
+      maximumFractionDigits: safeDecimals,
+    }).format(number / 100);
   } catch (error) {
-    return `${formatNumber(num, decimals, 'en-US')}%`;
+    return `${formatNumber(
+      number,
+      safeDecimals,
+      'en-US'
+    )}%`;
   }
 };
 
 // ======================================================
-// ۱۱. خروجی پیش‌فرض
+// خروجی پیش‌فرض
 // ======================================================
+
 export default {
   formatNumber,
   formatCurrency,
@@ -248,5 +306,4 @@ export default {
   formatUSD,
   formatCurrencyWithSymbol,
   formatPercent,
-  getCurrencyDecimals,
 };
