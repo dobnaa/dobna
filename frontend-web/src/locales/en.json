@@ -432,5 +432,45 @@
     "INVALID_AMOUNT": "Invalid amount",
     "RECEIVER_NOT_FOUND": "Recipient not found",
     "INSUFFICIENT_BALANCE": "Insufficient DUS balance"
+  {
+  "errors": {
+    "ADDRESS_NOT_PROVIDED": "Deposit address not provided",
+    "DEPOSIT_ADDRESS_NOT_FOUND": "Deposit address not found",
+    "DUPLICATE_DEPOSIT_TX": "This transaction has already been processed",
+    "WITHDRAWAL_NOT_SUPPORTED": "Withdrawal is not supported for this currency",
+    "BELOW_MIN_WITHDRAW": "Amount is below minimum withdrawal limit ({{min_withdraw}} {{currency}})",
+    "WITHDRAWAL_NOT_PENDING": "Withdrawal is not in pending status (current: {{current_status}})",
+    "INSUFFICIENT_LOCKED_BALANCE": "Insufficient locked balance",
+    "INVALID_ADDRESS": "Invalid withdrawal address",
+    "NETWORK_NOT_SUPPORTED": "Network is not supported",
+    "INVALID_AMOUNT": "Invalid amount",
+    "INVALID_TX_HASH": "Invalid transaction hash",
+    "TRANSACTION_NOT_FOUND": "Transaction not found",
+    "BALANCE_NOT_FOUND": "Balance not found"
+  },
+  "withdrawal": {
+    "request_success": "Withdrawal request submitted successfully",
+    "confirm_success": "Withdrawal confirmed successfully",
+    "cancel_success": "Withdrawal cancelled successfully",
+    "request_failed": "Failed to submit withdrawal request",
+    "confirm_failed": "Failed to confirm withdrawal",
+    "cancel_failed": "Failed to cancel withdrawal",
+    "min_amount": "Minimum withdrawal: {{amount}} {{currency}}",
+    "fee": "Network fee: {{fee}} {{currency}}",
+    "total": "Total deduction: {{total}} {{currency}}",
+    "address": "Withdrawal address",
+    "network": "Network"
+  },
+  "deposit": {
+    "address_title": "Your Deposit Address",
+    "address_copy": "Copy Address",
+    "address_copied": "Address copied to clipboard",
+    "qr_title": "Scan QR Code",
+    "save_qr": "Save QR Code",
+    "min_deposit": "Minimum deposit: {{amount}} {{currency}}",
+    "warning": "Only send {{currency}} to this address. Sending any other asset will result in permanent loss.",
+    "network_info": "Please ensure you are using the {{network}} network for this deposit.",
+    "generating_address": "Generating deposit address...",
+    "address_generated": "Deposit address generated successfully"
   }
 }
