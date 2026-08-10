@@ -112,13 +112,13 @@ UPDATE public.currencies SET
     network_list = ARRAY['DOGE']
 WHERE code = 'DOGE';
 
--- Stars تلگرام (فقط واریز دارد)
+-- Stars تلگرام (واریز و برداشت از طریق تلگرام فعال است)
 UPDATE public.currencies SET
     min_deposit = 1,
     min_withdraw = NULL,
     withdraw_fee = NULL,
     is_deposit_enabled = TRUE,
-    is_withdraw_enabled = FALSE,
+    is_withdraw_enabled = TRUE,
     network_list = ARRAY['Telegram']
 WHERE code = 'STARS';
 
