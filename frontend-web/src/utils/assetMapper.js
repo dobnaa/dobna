@@ -1,14 +1,16 @@
 // utils/assetMapper.js
 import {
   getAssetConfig,
-  usesCryptoIcon,
+  usesSvgIcon,
   usesFlagIcon,
   getAssetFlag,
-  ASSET_ICON_TYPES,
 } from '../config/assets';
 
 // ======================================================
 // FLAG EMOJI MAP
+// ======================================================
+// فقط mapping فنی کد پرچم به Emoji است.
+// نام یا متن قابل ترجمه در این فایل وجود ندارد.
 // ======================================================
 const FLAG_EMOJI = {
   US: '🇺🇸',
@@ -25,7 +27,7 @@ const FLAG_EMOJI = {
 };
 
 // ======================================================
-// دریافت آیکون Crypto / Internal
+// دریافت آیکون SVG برای Crypto / Internal
 // ======================================================
 export const getCryptoIcon = (currency) => {
   if (!currency) return null;
@@ -36,21 +38,26 @@ export const getCryptoIcon = (currency) => {
 };
 
 // ======================================================
-// دریافت ایموجی پرچم
+// دریافت ایموجی پرچم برای Fiat
 // ======================================================
 export const getFlagEmoji = (currency) => {
+  if (!currency) return '🏳️';
+
   const flagKey = getAssetFlag(currency);
 
   return FLAG_EMOJI[flagKey] || '🏳️';
 };
 
 // ======================================================
-// دریافت آیکون مناسب Asset
+// دریافت آیکون مناسب برای هر Asset
+// ======================================================
+// SVG → مسیر فایل SVG
+// FLAG → Emoji پرچم
 // ======================================================
 export const getAssetIcon = (currency) => {
   if (!currency) return null;
 
-  if (usesCryptoIcon(currency)) {
+  if (usesSvgIcon(currency)) {
     return getCryptoIcon(currency);
   }
 
@@ -88,6 +95,9 @@ export const getAssetDisplay = (currency) => {
   };
 };
 
+// ======================================================
+// خروجی
+// ======================================================
 export default {
   getCryptoIcon,
   getFlagEmoji,
