@@ -385,4 +385,87 @@ dobna/                                    ← ریشه پروژه (ریپازی�
 
 
 
+
+
+dobna/
+│
+├── frontend-web/
+│   └── src/
+│       │
+│       ├── config/
+│       │   ├── assets.js
+│       │   ├── payment.js              ⭐ جدید
+│       │   └── i18n.js
+│       │
+│       ├── services/
+│       │   ├── api.js
+│       │   ├── walletService.js
+│       │   ├── payment/
+│       │   │     ├── index.js
+│       │   │     ├── paymentProvider.js
+│       │   │     ├── oneXGateProvider.js
+│       │   │     └── paymentMapper.js
+│       │
+│       ├── hooks/
+│       │     └── usePayment.js
+│       │
+│       ├── stores/
+│       │     └── paymentStore.js
+│       │
+│       ├── utils/
+│       │     ├── assetMapper.js
+│       │     ├── currencyFormatter.js
+│       │     ├── networkMapper.js      ⭐ جدید
+│       │     └── paymentFormatter.js   ⭐ جدید
+│       │
+│       ├── components/
+│       │     └── wallet/
+│       │           ├── DepositAddress.jsx
+│       │           ├── DepositQRCode.jsx
+│       │           ├── NetworkSelector.jsx
+│       │           ├── WithdrawForm.jsx
+│       │           ├── FeeInfo.jsx
+│       │           ├── PaymentStatus.jsx
+│       │           └── TransactionNetwork.jsx
+│       │
+│       └── pages/
+│             ├── DepositPage.jsx
+│             ├── WithdrawPage.jsx
+│             ├── TransferPage.jsx
+│             └── CoinDetailPage.jsx
+│
+│
+├── backend/
+│
+│   ├── config/
+│   │      payment.py
+│   │
+│   ├── providers/
+│   │      payment/
+│   │          __init__.py
+│   │          base.py
+│   │          onexgate.py
+│   │
+│   ├── services/
+│   │      payment_service.py
+│   │
+│   ├── api/
+│   │      payment.py
+│   │
+│   ├── webhooks/
+│   │      onexgate.py
+│   │
+│   ├── models/
+│   │      deposit.py
+│   │      withdraw.py
+│   │
+│   └── tasks/
+│          payment_sync.py
+│
+└── .env
+
+
+
+
+
 ```
