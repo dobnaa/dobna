@@ -468,6 +468,50 @@ dobna/                                    ← ریشه پروژه (ریپازی�
 
 
 
+assets/icons/crypto/
+├── btc.svg
+├── eth.svg
+├── usdt.svg
+├── sol.svg
+├── ...
+├── stars.svg          ← ✅ آیکون Stars (طراحی یک ستاره تلگرامی)
+└── dus.svg            ← ✅ آیکون DUS (در صورت نیاز)
+
+
+
+
+
+
+
+
+
+assets/images/notes/
+├── fiat/
+│   ├── USD/
+│   ├── IRT/
+│   └── ...
+├── crypto/
+│   ├── BTC/
+│   ├── ETH/
+│   ├── USDT/
+│   ├── SOL/
+│   ├── ...
+│   └── STARS/               ← ✅ جدید
+│       ├── 5.webp
+│       ├── 25.webp
+│       ├── 50.webp
+│       └── 100.webp
+└── dus/
+    └── DUS/                 ← ✅ موجود
+        ├── 0.05.webp
+        ├── 0.25.webp
+        ├── 0.50.webp
+        └── 1.00.webp
+
+
+
+
+
 
 
 
