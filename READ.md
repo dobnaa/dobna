@@ -1003,7 +1003,7 @@ src/
 ├── styles/
 │
 └── public/
-    └── assets/ -> ../../assets  // استفاده از سمبلیک لینک 
+    └── assets/ -> ../../assets                {/* استفاده از سمبولیک لینک Symlink */}
    
 
 
