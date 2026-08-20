@@ -1002,11 +1002,9 @@ src/
 │
 ├── styles/
 │
-└── assets/
-    ├── icons/
-    ├── images/
-    └── animations/
-
+└── public/
+    └── assets/ -> ../../assets  // استفاده از سمبلیک لینک 
+   
 
 
 
