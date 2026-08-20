@@ -601,5 +601,462 @@ dobna/
 
 
 
+Backend
+--------
+api
+domain
+services
+repositories
+providers
+models
+dto
+events
+notifications
+tasks
+utils
+config
+
+Frontend Web
+-------------
+api
+services
+repositories
+stores
+hooks
+models
+dto
+events
+notifications
+utils
+config
+
+Frontend Mobile
+----------------
+api
+services
+repositories
+stores
+hooks
+models
+dto
+events
+notifications
+utils
+config
+
+
+
+
+
+
+
+
+
+
+# backend/
+│
+├── app.py
+├── main.py
+├── requirements.txt
+├── .env
+├── .env.example
+│
+├── api/
+│   ├── __init__.py
+│   ├── auth.py
+│   ├── users.py
+│   ├── wallets.py
+│   ├── assets.py
+│   ├── currencies.py
+│   ├── networks.py
+│   ├── balances.py
+│   ├── transactions.py
+│   ├── deposits.py
+│   ├── withdrawals.py
+│   ├── transfers.py
+│   ├── swaps.py
+│   ├── exchange.py
+│   ├── payments.py
+│   ├── cards.py
+│   ├── notifications.py
+│   ├── settings.py
+│   ├── security.py
+│   ├── kyc.py
+│   ├── admin.py
+│   ├── health.py
+│   └── webhooks.py
+│
+├── domain/
+│   ├── assets/
+│   │   ├── asset_registry.py
+│   │   ├── asset_validator.py
+│   │   └── asset_rules.py
+│   │
+│   ├── currencies/
+│   │   ├── currency_registry.py
+│   │   ├── currency_rules.py
+│   │   └── currency_validator.py
+│   │
+│   ├── networks/
+│   │   ├── network_registry.py
+│   │   ├── network_mapper.py
+│   │   ├── network_rules.py
+│   │   └── network_validator.py
+│   │
+│   ├── payment/
+│   │   ├── payment_rules.py
+│   │   ├── payment_validator.py
+│   │   ├── fee_engine.py
+│   │   ├── confirmation_engine.py
+│   │   └── payment_policy.py
+│   │
+│   ├── wallet/
+│   │   ├── wallet_rules.py
+│   │   ├── balance_engine.py
+│   │   └── address_allocator.py
+│   │
+│   └── swap/
+│       ├── swap_engine.py
+│       ├── swap_rules.py
+│       └── rate_engine.py
+│
+├── services/
+│   ├── auth_service.py
+│   ├── user_service.py
+│   ├── wallet_service.py
+│   ├── balance_service.py
+│   ├── payment_service.py
+│   ├── deposit_service.py
+│   ├── withdrawal_service.py
+│   ├── transfer_service.py
+│   ├── swap_service.py
+│   ├── exchange_service.py
+│   ├── notification_service.py
+│   ├── audit_service.py
+│   ├── blockchain_service.py
+│   └── webhook_service.py
+│
+├── repositories/
+│   ├── user_repository.py
+│   ├── wallet_repository.py
+│   ├── asset_repository.py
+│   ├── balance_repository.py
+│   ├── transaction_repository.py
+│   ├── payment_repository.py
+│   ├── deposit_repository.py
+│   ├── withdrawal_repository.py
+│   ├── transfer_repository.py
+│   ├── swap_repository.py
+│   ├── notification_repository.py
+│   └── audit_repository.py
+│
+├── providers/
+│   ├── payment/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── factory.py
+│   │   ├── onexgate.py
+│   │   ├── nowpayments.py
+│   │   ├── coinpayments.py
+│   │   └── mock.py
+│   │
+│   ├── exchange/
+│   │   ├── base.py
+│   │   ├── binance.py
+│   │   ├── bybit.py
+│   │   └── mock.py
+│   │
+│   ├── sms/
+│   │   ├── base.py
+│   │   ├── twilio.py
+│   │   └── mock.py
+│   │
+│   ├── email/
+│   │   ├── base.py
+│   │   ├── resend.py
+│   │   └── smtp.py
+│   │
+│   └── push/
+│       ├── firebase.py
+│       └── onesignal.py
+│
+├── webhooks/
+│   ├── onexgate.py
+│   ├── nowpayments.py
+│   ├── binance.py
+│   ├── stripe.py
+│   └── telegram.py
+│
+├── tasks/
+│   ├── payment_sync.py
+│   ├── confirmation_checker.py
+│   ├── expired_deposit.py
+│   ├── reconcile.py
+│   ├── wallet_balance_sync.py
+│   ├── exchange_rate_sync.py
+│   ├── notification_retry.py
+│   └── cleanup.py
+│
+├── models/
+│   ├── user.py
+│   ├── wallet.py
+│   ├── asset.py
+│   ├── currency.py
+│   ├── network.py
+│   ├── wallet_address.py
+│   ├── balance.py
+│   ├── payment.py
+│   ├── transaction.py
+│   ├── deposit.py
+│   ├── withdrawal.py
+│   ├── transfer.py
+│   ├── swap.py
+│   ├── exchange_rate.py
+│   ├── payment_event.py
+│   ├── notification.py
+│   ├── audit_log.py
+│   └── kyc.py
+│
+├── dto/
+│   ├── auth/
+│   ├── wallet/
+│   ├── payment/
+│   │   ├── deposit_request.py
+│   │   ├── deposit_response.py
+│   │   ├── withdraw_request.py
+│   │   ├── withdraw_response.py
+│   │   ├── payment_status.py
+│   │   └── estimate_fee.py
+│   ├── swap/
+│   └── transfer/
+│
+├── config/
+│   ├── app.py
+│   ├── database.py
+│   ├── auth.py
+│   ├── payment.py
+│   ├── providers.py
+│   ├── assets.py
+│   ├── currencies.py
+│   ├── networks.py
+│   ├── fees.py
+│   ├── limits.py
+│   ├── confirmations.py
+│   ├── notifications.py
+│   └── security.py
+│
+├── utils/
+│   ├── asset_mapper.py
+│   ├── currency_formatter.py
+│   ├── network_mapper.py
+│   ├── address_validator.py
+│   ├── crypto.py
+│   ├── qr.py
+│   ├── hash.py
+│   ├── datetime.py
+│   ├── pagination.py
+│   ├── validator.py
+│   ├── logger.py
+│   └── response.py
+│
+├── events/
+│   ├── event_bus.py
+│   ├── payment_events.py
+│   ├── wallet_events.py
+│   ├── notification_events.py
+│   ├── audit_events.py
+│   └── handlers/
+│       ├── payment_handler.py
+│       ├── wallet_handler.py
+│       ├── notification_handler.py
+│       └── audit_handler.py
+│
+└── notifications/
+    ├── email_templates/
+    │   ├── deposit_success.html
+    │   ├── withdraw_success.html
+    │   ├── swap_completed.html
+    │   └── verification.html
+    │
+    ├── push_templates/
+    │   ├── deposit.json
+    │   ├── withdraw.json
+    │   └── transfer.json
+    │
+    ├── sms_templates/
+    │   ├── otp.txt
+    │   └── payment.txt
+    │
+    └── telegram_templates/
+        ├── deposit.txt
+        └── withdraw.txt
+
+
+
+
+
+# frontend-web/
+src/
+│
+├── api/
+│   ├── client.js
+│   ├── authApi.js
+│   ├── walletApi.js
+│   ├── paymentApi.js
+│   ├── transactionApi.js
+│   ├── marketApi.js
+│   ├── notificationApi.js
+│   └── userApi.js
+│
+├── config/
+│   ├── api.js
+│   ├── assets.js
+│   ├── payment.js
+│   ├── networks.js
+│   ├── routes.js
+│   ├── constants.js
+│   ├── environment.js
+│   └── i18n.js
+│
+├── services/
+│   ├── authService.js
+│   ├── walletService.js
+│   ├── paymentService.js
+│   ├── marketService.js
+│   ├── notificationService.js
+│   │
+│   └── payment/
+│       ├── paymentProvider.js
+│       ├── oneXGateProvider.js
+│       ├── providerFactory.js
+│       └── index.js
+│
+├── repositories/
+│   ├── authRepository.js
+│   ├── walletRepository.js
+│   ├── paymentRepository.js
+│   ├── transactionRepository.js
+│   └── marketRepository.js
+│
+├── hooks/
+│   ├── useAuth.js
+│   ├── useWallet.js
+│   ├── usePayment.js
+│   ├── useMarket.js
+│   ├── useTransactions.js
+│   └── useTranslation.js
+│
+├── stores/
+│   ├── authStore.js
+│   ├── walletStore.js
+│   ├── paymentStore.js
+│   ├── marketStore.js
+│   ├── notificationStore.js
+│   └── settingsStore.js
+│
+├── models/
+│   ├── Asset.js
+│   ├── Network.js
+│   ├── Deposit.js
+│   ├── Withdraw.js
+│   ├── Transaction.js
+│   ├── Wallet.js
+│   └── User.js
+│
+├── dto/
+│   ├── CreateDepositDto.js
+│   ├── CreateWithdrawDto.js
+│   ├── DepositResponseDto.js
+│   ├── WithdrawResponseDto.js
+│   ├── WalletDto.js
+│   └── TransactionDto.js
+│
+├── utils/
+│   ├── assetMapper.js
+│   ├── networkMapper.js
+│   ├── currencyFormatter.js
+│   ├── paymentFormatter.js
+│   ├── validation.js
+│   ├── qr.js
+│   ├── clipboard.js
+│   ├── date.js
+│   └── helpers.js
+│
+├── events/
+│   ├── paymentEvents.js
+│   ├── walletEvents.js
+│   └── notificationEvents.js
+│
+├── notifications/
+│   ├── notificationService.js
+│   ├── toast.js
+│   └── push.js
+│
+├── components/
+│
+├── pages/
+│
+├── layouts/
+│
+├── routes/
+│
+├── styles/
+│
+└── assets/
+    ├── icons/
+    ├── images/
+    └── animations/
+
+
+
+
+# frontend-mobile/
+src/
+│
+├── api/
+│
+├── config/
+│
+├── services/
+│   └── payment/
+│       ├── paymentProvider.js
+│       ├── oneXGateProvider.js
+│       ├── providerFactory.js
+│       └── index.js
+│
+├── repositories/
+│
+├── hooks/
+│
+├── stores/
+│
+├── models/
+│
+├── dto/
+│
+├── utils/
+│
+├── events/
+│
+├── notifications/
+│
+├── navigation/
+│
+├── screens/
+│
+├── components/
+│
+├── assets/
+│
+└── localization/
+
+
+
+
+
+
+
+
+
 
 ```
