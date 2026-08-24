@@ -1,3 +1,4 @@
+```
 scripts/
 │
 ├── setup/
@@ -51,3 +52,4 @@ scripts/
 └── utils/
     ├── logger.ts
     └── shell.ts
+```
