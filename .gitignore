@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+*.log
+*.lock
+
+# Build
+dist/
+build/
+.next/
+out/
+.vercel/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Mobile
+ios/Pods/
+android/.gradle/
+android/app/build/
+
+# Supabase
+supabase/.env
+supabase/.temp
+
+# Backend
+backend/dist/
+backend/node_modules/
+backend/.env
+
+# Keys
+*.pem
+*.key
+*.keystore
+*.jks
