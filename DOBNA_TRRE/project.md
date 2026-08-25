@@ -2718,18 +2718,30 @@ dobna/
 📊 آمار کلی ساختار
 
 بخش تعداد پوشه‌ها تعداد فایل‌های تخمینی
-.github/ ۴ ۲۰+
-apps/dobna-web/ ۱۵ ۲۰۰+
-apps/dobna-mobile/ ۲۰ ۳۰۰+
-apps/dobna-admin/ ۱۲ ۱۵۰+
-backend/ ۱۸ ۱۵۰+
-packages/ (۲۲ پکیج) ۱۱۰+ ۵۰۰+
-supabase/ ۱۲ ۱۰۰+
-docker/ ۱۰ ۳۰+
-docs/ ۱۸ ۵۰+
-scripts/ ۱ ۷
-فایل‌های ریشه - ۱۲
-جمع کل ۲۰۰+ ۱۵۰۰+
+
+.github/ ۴تعداد پوشه‌ها۲۰+      فایل‌های تخمینی
+
+apps/dobna-web/
+
+apps/dobna-mobile/ 
+
+apps/dobna-admin/ 
+
+backend/ 
+
+packages/ (۲۲ پکیج) 
+
+supabase/ 
+
+docker/ 
+
+docs/ 
+
+scripts/ 
+
+فایل‌های ریشه 
+
+جمع کل +
 
 ---
 
