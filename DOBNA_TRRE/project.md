@@ -1,9 +1,30 @@
 ```
-dobna/                                    ← ریشه پروژه
+dobna/
 │
-├── apps/                                 ← 🚀 اپلیکیشن‌های نهایی (Presentation Layer)
-│   │
-│   ├── dobna-web/                        ← وب‌اپ (Next.js App Router)
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   ├── test.yml
+│   │   ├── lint.yml
+│   │   ├── release.yml
+│   │   ├── docker.yml
+│   │   ├── docs.yml
+│   │   └── deploy.yml
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.yml
+│   │   ├── feature_request.yml
+│   │   ├── documentation.yml
+│   │   └── config.yml
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── CODEOWNERS
+│   ├── CONTRIBUTING.md
+│   ├── SECURITY.md
+│   ├── CODE_OF_CONDUCT.md
+│   ├── dependabot.yml
+│   └── FUNDING.yml
+│
+├── apps/
+│   ├── dobna-web/
 │   │   ├── public/
 │   │   │   ├── favicon.ico
 │   │   │   ├── robots.txt
@@ -267,6 +288,10 @@ dobna/                                    ← ریشه پروژه
 │   │   │   │       └── forms.css
 │   │   │   ├── middleware.ts
 │   │   │   └── instrumentation.ts
+│   │   ├── test/
+│   │   │   ├── unit/
+│   │   │   ├── integration/
+│   │   │   └── fixtures/
 │   │   ├── package.json
 │   │   ├── next.config.ts
 │   │   ├── tsconfig.json
@@ -275,7 +300,7 @@ dobna/                                    ← ریشه پروژه
 │   │   ├── eslint.config.js
 │   │   └── .env.local
 │   │
-│   ├── dobna-mobile/                        ← اپ موبایل (React Native)
+│   ├── dobna-mobile/
 │   │   ├── android/
 │   │   │   ├── app/
 │   │   │   │   ├── build.gradle
@@ -365,7 +390,6 @@ dobna/                                    ← ریشه پروژه
 │   │   │   │   │   ├── Splash.imageset/
 │   │   │   │   │   └── Contents.json
 │   │   │   │   ├── Fonts/
-│   │   │   │   │   └── *.ttf
 │   │   │   │   ├── Config/
 │   │   │   │   │   ├── GoogleService-Info.plist
 │   │   │   │   │   ├── Environment.swift
@@ -633,6 +657,10 @@ dobna/                                    ← ریشه پروژه
 │   │   │   ├── images/
 │   │   │   ├── icons/
 │   │   │   └── animations/
+│   │   ├── test/
+│   │   │   ├── unit/
+│   │   │   ├── integration/
+│   │   │   └── fixtures/
 │   │   ├── package.json
 │   │   ├── tsconfig.json
 │   │   ├── metro.config.js
@@ -645,7 +673,7 @@ dobna/                                    ← ریشه پروژه
 │   │   ├── README.md
 │   │   └── Gemfile
 │   │
-│   └── dobna-admin/                        ← پنل مدیریت (Next.js)
+│   └── dobna-admin/
 │       ├── app/
 │       │   ├── layout.tsx
 │       │   ├── page.tsx
@@ -815,6 +843,10 @@ dobna/                                    ← ریشه پروژه
 │       │   └── components/
 │       │       ├── tables.css
 │       │       └── forms.css
+│       ├── test/
+│       │   ├── unit/
+│       │   ├── integration/
+│       │   └── fixtures/
 │       ├── middleware.ts
 │       ├── instrumentation.ts
 │       ├── next.config.js
@@ -825,7 +857,7 @@ dobna/                                    ← ریشه پروژه
 │       ├── eslint.config.js
 │       └── .env
 │
-├── backend/                                 ← 🖥️ Backend اصلی
+├── backend/
 │   ├── src/
 │   │   ├── main.ts
 │   │   ├── app.ts
@@ -1113,8 +1145,10 @@ dobna/                                    ← ریشه پروژه
 │   │   ├── integration/
 │   │   │   ├── duel.test.ts
 │   │   │   └── challenge.test.ts
-│   │   └── e2e/
-│   │       └── game.test.ts
+│   │   ├── api/
+│   │   ├── benchmark/
+│   │   ├── fixtures/
+│   │   └── mocks/
 │   ├── scripts/
 │   │   ├── migrate.ts
 │   │   ├── seed.ts
@@ -1129,41 +1163,249 @@ dobna/                                    ← ریشه پروژه
 │   ├── .gitignore
 │   └── README.md
 │
-├── packages/                                 ← 📦 Shared Packages (Business Logic)
-│   │
-│   ├── shared-resources/                     ← فایل‌های استاتیک
+├── packages/
+│   ├── shared-resources/
 │   │   ├── src/
-│   │   │   ├── animations/ (فایل‌های Lottie JSON)
-│   │   │   ├── fonts/ (فونت‌های TTF)
+│   │   │   ├── animations/
+│   │   │   │   ├── empty-wallet.json
+│   │   │   │   ├── loading_main.json
+│   │   │   │   ├── network_error.json
+│   │   │   │   ├── pulse_loader.json
+│   │   │   │   ├── scanning_line.json
+│   │   │   │   ├── security-scan.json
+│   │   │   │   ├── success-check.json
+│   │   │   │   ├── success_burst.json
+│   │   │   │   └── transaction-sending.json
+│   │   │   ├── fonts/
+│   │   │   │   ├── Vazirmatn-Regular.ttf
+│   │   │   │   ├── Vazirmatn-Bold.ttf
+│   │   │   │   ├── Vazirmatn-ExtraBold.ttf
+│   │   │   │   ├── Cairo-Regular.ttf
+│   │   │   │   ├── Cairo-Bold.ttf
+│   │   │   │   ├── Orbitron-Regular.ttf
+│   │   │   │   └── Orbitron-Bold.ttf
 │   │   │   ├── icons/
-│   │   │   │   ├── crypto/ (آیکون‌های رمزارزها)
-│   │   │   │   ├── flags/ (پرچم‌ها)
-│   │   │   │   ├── ui/ (آیکون‌های رابط کاربری)
-│   │   │   │   └── social/ (آیکون‌های شبکه‌های اجتماعی)
+│   │   │   │   ├── crypto/
+│   │   │   │   │   ├── btc.svg
+│   │   │   │   │   ├── eth.svg
+│   │   │   │   │   ├── usdt.svg
+│   │   │   │   │   ├── sol.svg
+│   │   │   │   │   ├── bnb.svg
+│   │   │   │   │   ├── doge.svg
+│   │   │   │   │   ├── ton.svg
+│   │   │   │   │   ├── pepe.svg
+│   │   │   │   │   ├── bonk.svg
+│   │   │   │   │   ├── hmstr.svg
+│   │   │   │   │   ├── usdc.svg
+│   │   │   │   │   ├── stars.svg
+│   │   │   │   │   └── dus.svg
+│   │   │   │   ├── flags/
+│   │   │   │   ├── ui/
+│   │   │   │   │   ├── logo-dobna.svg
+│   │   │   │   │   ├── back-arrow.svg
+│   │   │   │   │   ├── chat.svg
+│   │   │   │   │   ├── home.svg
+│   │   │   │   │   ├── wallet.svg
+│   │   │   │   │   ├── trophy.svg
+│   │   │   │   │   ├── users.svg
+│   │   │   │   │   ├── gift.svg
+│   │   │   │   │   ├── share.svg
+│   │   │   │   │   └── ...
+│   │   │   │   └── social/
+│   │   │   │       ├── instagram.svg
+│   │   │   │       ├── telegram.svg
+│   │   │   │       └── whatsapp.svg
 │   │   │   ├── images/
-│   │   │   │   ├── (فایل‌های اصلی: icon.png, splash.png, logo.png, ...)
+│   │   │   │   ├── icon.png
+│   │   │   │   ├── splash.png
+│   │   │   │   ├── adaptive-icon.png
+│   │   │   │   ├── favicon.png
+│   │   │   │   ├── logo.png
 │   │   │   │   ├── avatars/
+│   │   │   │   │   ├── avatar-1.png
+│   │   │   │   │   ├── avatar-2.png
+│   │   │   │   │   ├── ...
+│   │   │   │   │   └── avatar-default.png
 │   │   │   │   ├── badges/
+│   │   │   │   │   ├── verified.png
+│   │   │   │   │   ├── winner.png
+│   │   │   │   │   ├── vip.png
+│   │   │   │   │   └── admin.png
 │   │   │   │   ├── backgrounds/
 │   │   │   │   ├── cards/
+│   │   │   │   │   ├── card-back.png
+│   │   │   │   │   ├── card-frame.png
+│   │   │   │   │   └── card-glow.png
 │   │   │   │   └── notes/
-│   │   │   │       ├── crypto/ (BTC, ETH, USDT, ...)
-│   │   │   │       ├── fiat/ (USD, EUR, IRT, ...)
+│   │   │   │       ├── crypto/
+│   │   │   │       │   ├── BTC/
+│   │   │   │       │   │   ├── 0.0000005.webp
+│   │   │   │       │   │   ├── 0.000002.webp
+│   │   │   │       │   │   ├── 0.000005.webp
+│   │   │   │       │   │   └── 0.00001.webp
+│   │   │   │       │   ├── ETH/
+│   │   │   │       │   │   ├── 0.00001.webp
+│   │   │   │       │   │   ├── 0.00005.webp
+│   │   │   │       │   │   ├── 0.0001.webp
+│   │   │   │       │   │   └── 0.0002.webp
+│   │   │   │       │   ├── USDT/
+│   │   │   │       │   │   ├── 0.05.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   ├── 0.50.webp
+│   │   │   │       │   │   └── 1.00.webp
+│   │   │   │       │   ├── SOL/
+│   │   │   │       │   │   ├── 0.001.webp
+│   │   │   │       │   │   ├── 0.005.webp
+│   │   │   │       │   │   ├── 0.01.webp
+│   │   │   │       │   │   └── 0.02.webp
+│   │   │   │       │   ├── BNB/
+│   │   │   │       │   │   ├── 0.00004.webp
+│   │   │   │       │   │   ├── 0.00016.webp
+│   │   │   │       │   │   ├── 0.0004.webp
+│   │   │   │       │   │   └── 0.0008.webp
+│   │   │   │       │   ├── DOGE/
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   ├── 1.00.webp
+│   │   │   │       │   │   ├── 2.50.webp
+│   │   │   │       │   │   └── 5.00.webp
+│   │   │   │       │   ├── TON/
+│   │   │   │       │   │   ├── 0.015.webp
+│   │   │   │       │   │   ├── 0.060.webp
+│   │   │   │       │   │   ├── 0.150.webp
+│   │   │   │       │   │   └── 0.30.webp
+│   │   │   │       │   ├── BONK/
+│   │   │   │       │   │   ├── 5.webp
+│   │   │   │       │   │   ├── 20.webp
+│   │   │   │       │   │   ├── 50.webp
+│   │   │   │       │   │   └── 100.webp
+│   │   │   │       │   ├── PEPE/
+│   │   │   │       │   │   ├── 1000.webp
+│   │   │   │       │   │   ├── 4000.webp
+│   │   │   │       │   │   ├── 10000.webp
+│   │   │   │       │   │   └── 20000.webp
+│   │   │   │       │   ├── HMSTR/
+│   │   │   │       │   │   ├── 200.webp
+│   │   │   │       │   │   ├── 800.webp
+│   │   │   │       │   │   ├── 2000.webp
+│   │   │   │       │   │   └── 4000.webp
+│   │   │   │       │   ├── USDC/
+│   │   │   │       │   │   ├── 0.05.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   ├── 0.50.webp
+│   │   │   │       │   │   └── 1.00.webp
+│   │   │   │       │   └── STARS/
+│   │   │   │       │       ├── 5.webp
+│   │   │   │       │       ├── 25.webp
+│   │   │   │       │       ├── 50.webp
+│   │   │   │       │       └── 100.webp
+│   │   │   │       ├── fiat/
+│   │   │   │       │   ├── USD/
+│   │   │   │       │   │   ├── 0.05.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   ├── 0.50.webp
+│   │   │   │       │   │   └── 1.00.webp
+│   │   │   │       │   ├── IRT/
+│   │   │   │       │   │   ├── 5000.webp
+│   │   │   │       │   │   ├── 20000.webp
+│   │   │   │       │   │   ├── 50000.webp
+│   │   │   │       │   │   └── 100000.webp
+│   │   │   │       │   ├── EUR/
+│   │   │   │       │   │   ├── 0.025.webp
+│   │   │   │       │   │   ├── 0.10.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   └── 0.50.webp
+│   │   │   │       │   ├── TRY/
+│   │   │   │       │   │   ├── 0.5.webp
+│   │   │   │       │   │   ├── 2.webp
+│   │   │   │       │   │   ├── 5.webp
+│   │   │   │       │   │   └── 10.webp
+│   │   │   │       │   ├── GBP/
+│   │   │   │       │   │   ├── 0.02.webp
+│   │   │   │       │   │   ├── 0.10.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   └── 0.50.webp
+│   │   │   │       │   ├── AED/
+│   │   │   │       │   │   ├── 0.2.webp
+│   │   │   │       │   │   ├── 1.webp
+│   │   │   │       │   │   ├── 2.webp
+│   │   │   │       │   │   └── 3.webp
+│   │   │   │       │   ├── CNY/
+│   │   │   │       │   │   ├── 0.5.webp
+│   │   │   │       │   │   ├── 2.webp
+│   │   │   │       │   │   ├── 5.webp
+│   │   │   │       │   │   └── 10.webp
+│   │   │   │       │   ├── INR/
+│   │   │   │       │   │   ├── 5.webp
+│   │   │   │       │   │   ├── 20.webp
+│   │   │   │       │   │   ├── 50.webp
+│   │   │   │       │   │   └── 100.webp
+│   │   │   │       │   ├── CAD/
+│   │   │   │       │   │   ├── 0.05.webp
+│   │   │   │       │   │   ├── 0.25.webp
+│   │   │   │       │   │   ├── 0.50.webp
+│   │   │   │       │   │   └── 1.00.webp
+│   │   │   │       │   ├── CHF/
+│   │   │   │       │   │   ├── 0.05.webp
+│   │   │   │       │   │   ├── 0.10.webp
+│   │   │   │       │   │   ├── 0.50.webp
+│   │   │   │       │   │   └── 1.00.webp
+│   │   │   │       │   └── AUD/
+│   │   │   │       │       ├── 0.05.webp
+│   │   │   │       │       ├── 0.25.webp
+│   │   │   │       │       ├── 0.50.webp
+│   │   │   │       │       └── 1.00.webp
 │   │   │   │       └── DUS/
+│   │   │   │           ├── 0.05.webp
+│   │   │   │           ├── 0.25.webp
+│   │   │   │           ├── 0.50.webp
+│   │   │   │           └── 1.00.webp
 │   │   │   ├── audio/
 │   │   │   │   ├── ui/
+│   │   │   │   │   ├── click.mp3
+│   │   │   │   │   ├── dark-click.mp3
+│   │   │   │   │   ├── digital_click.mp3
+│   │   │   │   │   ├── light-tap.mp3
+│   │   │   │   │   └── unlock.mp3
 │   │   │   │   ├── game/
+│   │   │   │   │   ├── number-called.mp3
+│   │   │   │   │   ├── line-win.mp3
+│   │   │   │   │   ├── full-house.mp3
+│   │   │   │   │   ├── bingo.mp3
+│   │   │   │   │   ├── card-mark.mp3
+│   │   │   │   │   └── countdown.mp3
 │   │   │   │   ├── transaction/
+│   │   │   │   │   ├── tx_charge.mp3
+│   │   │   │   │   ├── tx_success.mp3
+│   │   │   │   │   ├── tx_failed.mp3
+│   │   │   │   │   ├── coin-drop.mp3
+│   │   │   │   │   └── cash-register.mp3
 │   │   │   │   ├── notification/
+│   │   │   │   │   ├── notification.mp3
+│   │   │   │   │   ├── notify_beep.mp3
+│   │   │   │   │   ├── msg_send.mp3
+│   │   │   │   │   └── msg_receive.mp3
 │   │   │   │   ├── auth/
+│   │   │   │   │   ├── auth_pass.mp3
+│   │   │   │   │   ├── login-success.mp3
+│   │   │   │   │   └── login-failed.mp3
 │   │   │   │   ├── effects/
+│   │   │   │   │   ├── heartbeat_fast.mp3
+│   │   │   │   │   ├── refresh_glitch.mp3
+│   │   │   │   │   ├── scan_beep.mp3
+│   │   │   │   │   ├── matrix-glitch.mp3
+│   │   │   │   │   └── sword_clash.mp3
 │   │   │   │   └── ambient/
+│   │   │   │       ├── casino-ambient.mp3
+│   │   │   │       ├── game-start.mp3
+│   │   │   │       ├── game-end.mp3
+│   │   │   │       └── waiting-room.mp3
 │   │   │   ├── lottie/
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-finance/                       ← اطلاعات مالی
+│   ├── shared-finance/
 │   │   ├── src/
 │   │   │   ├── assets/
 │   │   │   │   ├── registry.ts
@@ -1180,36 +1422,59 @@ dobna/                                    ← ریشه پروژه
 │   │   │   │   ├── feeConfigs.ts
 │   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-i18n/                           ← ترجمه‌ها (۱۷ زبان)
+│   ├── shared-i18n/
 │   │   ├── src/
 │   │   │   ├── locales/
-│   │   │   │   ├── en/ (۲۱ فایل JSON)
-│   │   │   │   ├── fa/ (۲۱ فایل JSON)
-│   │   │   │   ├── tr/ (۲۱ فایل JSON)
-│   │   │   │   ├── ar/ (۲۱ فایل JSON)
-│   │   │   │   ├── ru/ (۲۱ فایل JSON)
-│   │   │   │   ├── hi/ (۲۱ فایل JSON)
-│   │   │   │   ├── fr/ (۲۱ فایل JSON)
-│   │   │   │   ├── zh/ (۲۱ فایل JSON)
-│   │   │   │   ├── id/ (۲۱ فایل JSON)
-│   │   │   │   ├── ko/ (۲۱ فایل JSON)
-│   │   │   │   ├── es/ (۲۱ فایل JSON)
-│   │   │   │   ├── cs/ (۲۱ فایل JSON)
-│   │   │   │   ├── fi/ (۲۱ فایل JSON)
-│   │   │   │   ├── pt/ (۲۱ فایل JSON)
-│   │   │   │   ├── uz/ (۲۱ فایل JSON)
-│   │   │   │   ├── vi/ (۲۱ فایل JSON)
-│   │   │   │   └── sv/ (۲۱ فایل JSON)
+│   │   │   │   ├── en/
+│   │   │   │   │   ├── common.json
+│   │   │   │   │   ├── auth.json
+│   │   │   │   │   ├── home.json
+│   │   │   │   │   ├── game.json
+│   │   │   │   │   ├── duel.json
+│   │   │   │   │   ├── challenge.json
+│   │   │   │   │   ├── wallet.json
+│   │   │   │   │   ├── payment.json
+│   │   │   │   │   ├── profile.json
+│   │   │   │   │   ├── community.json
+│   │   │   │   │   ├── chat.json
+│   │   │   │   │   ├── settings.json
+│   │   │   │   │   ├── notification.json
+│   │   │   │   │   ├── errors.json
+│   │   │   │   │   ├── currencies.json
+│   │   │   │   │   ├── transaction.json
+│   │   │   │   │   ├── deposit.json
+│   │   │   │   │   ├── withdraw.json
+│   │   │   │   │   ├── swap.json
+│   │   │   │   │   ├── transfer.json
+│   │   │   │   │   └── lottery.json
+│   │   │   │   ├── fa/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── tr/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── ar/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── ru/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── hi/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── fr/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── zh/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── id/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── ko/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── es/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── cs/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── fi/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── pt/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── uz/ (۲۱ فایل JSON مشابه)
+│   │   │   │   ├── vi/ (۲۱ فایل JSON مشابه)
+│   │   │   │   └── sv/ (۲۱ فایل JSON مشابه)
 │   │   │   ├── i18n.ts
 │   │   │   ├── types.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-types/                         ← TypeScript Types
+│   ├── shared-types/
 │   │   ├── src/
 │   │   │   ├── auth/
 │   │   │   │   ├── User.ts
@@ -1246,10 +1511,11 @@ dobna/                                    ← ریشه پروژه
 │   │   │   │   ├── Network.ts
 │   │   │   │   └── Address.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-utils/                         ← Utility Functions
+│   ├── shared-utils/
 │   │   ├── src/
 │   │   │   ├── format/
 │   │   │   │   ├── currencyFormatter.ts
@@ -1273,10 +1539,11 @@ dobna/                                    ← ریشه پروژه
 │   │   │   ├── finance/
 │   │   │   │   └── interestCalculator.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-constants/                     ← مقادیر کاملاً ثابت
+│   ├── shared-constants/
 │   │   ├── src/
 │   │   │   ├── currencies.ts
 │   │   │   ├── countries.ts
@@ -1290,232 +1557,822 @@ dobna/                                    ← ریشه پروژه
 │   │   │   ├── storageKeys.ts
 │   │   │   ├── networks.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-config/                        ← تنظیمات
+│   ├── shared-config/
 │   │   ├── src/
 │   │   │   ├── env.ts
 │   │   │   ├── api.ts
 │   │   │   ├── featureFlags.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-auth/                          ← احراز هویت
+│   ├── shared-auth/
 │   │   ├── src/
-│   │   │   ├── auth/ (login, logout, register, refreshToken, verifyOtp, ...)
-│   │   │   ├── session/ (sessionManager, tokenManager, storage, permissions)
-│   │   │   ├── oauth/ (google, apple, telegram, github)
-│   │   │   ├── validators/ (email, phone, username, password, otp, did)
-│   │   │   ├── types/ (AuthUser, AuthSession, LoginRequest, ...)
-│   │   │   ├── interfaces/ (IAuthProvider, ITokenStorage, ...)
-│   │   │   ├── utils/ (jwt, token, otp, hash, crypto, device, authHeaders)
-│   │   │   ├── constants/ (auth, roles, permissions, scopes)
-│   │   │   ├── errors/ (AuthError, SessionError, TokenError)
-│   │   │   ├── hooks/ (useSession, useCurrentUser, useAuthState)
-│   │   │   └── index.ts
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   ├── shared-wallet/                        ← مدیریت کیف پول
-│   │   ├── src/
-│   │   │   ├── balances/ (getBalances, refreshBalance)
-│   │   │   ├── deposit/ (createAddress, confirmDeposit)
-│   │   │   ├── withdraw/ (createWithdraw, cancelWithdraw)
-│   │   │   ├── transfer/ (transfer, transferByDid)
-│   │   │   ├── swap/ (quote, swap)
-│   │   │   ├── transaction/ (history, detail)
-│   │   │   ├── assets/ (registry, helpers, types)
-│   │   │   ├── hooks/ (useWallet)
-│   │   │   ├── providers/ (WalletProvider, WalletContext)
-│   │   │   ├── types/ (wallet.types)
-│   │   │   └── index.ts
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   │
-│   ├── shared-payment/                       ← درگاه پرداخت
-│   │   ├── src/
-│   │   │   ├── core/ (PaymentGateway, PaymentFactory, PaymentManager, types, constants, errors)
-│   │   │   ├── onexgate/
-│   │   │   │   ├── auth/ (auth.api, auth.service, auth.mapper, auth.types, auth.interfaces)
-│   │   │   │   ├── wallet/ (wallet.api, wallet.service, wallet.mapper, wallet.types, wallet.interfaces)
-│   │   │   │   ├── deposit/
-│   │   │   │   ├── withdraw/
-│   │   │   │   ├── transfer/
-│   │   │   │   ├── swap/
-│   │   │   │   ├── order/
-│   │   │   │   ├── transaction/
+│   │   │   ├── auth/
+│   │   │   │   ├── login.ts
+│   │   │   │   ├── logout.ts
+│   │   │   │   ├── register.ts
+│   │   │   │   ├── refreshToken.ts
+│   │   │   │   ├── verifyOtp.ts
+│   │   │   │   ├── resendOtp.ts
+│   │   │   │   ├── forgotPassword.ts
+│   │   │   │   ├── resetPassword.ts
+│   │   │   │   ├── changePassword.ts
+│   │   │   │   ├── deleteAccount.ts
 │   │   │   │   └── index.ts
-│   │   │   ├── interfaces/ (IAuthService, IWalletService, ...)
-│   │   │   ├── types/ (Auth, Wallet, Balance, Deposit, Withdraw, Transfer, Swap, Order, Transaction)
-│   │   │   ├── utils/ (amount, currency, network, address, validator, signer, qr)
+│   │   │   ├── session/
+│   │   │   │   ├── sessionManager.ts
+│   │   │   │   ├── tokenManager.ts
+│   │   │   │   ├── storage.ts
+│   │   │   │   ├── permissions.ts
+│   │   │   │   ├── biometric.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── oauth/
+│   │   │   │   ├── google.ts
+│   │   │   │   ├── apple.ts
+│   │   │   │   ├── telegram.ts
+│   │   │   │   ├── github.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validators/
+│   │   │   │   ├── email.ts
+│   │   │   │   ├── phone.ts
+│   │   │   │   ├── username.ts
+│   │   │   │   ├── password.ts
+│   │   │   │   ├── otp.ts
+│   │   │   │   ├── did.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── AuthUser.ts
+│   │   │   │   ├── AuthSession.ts
+│   │   │   │   ├── LoginRequest.ts
+│   │   │   │   ├── LoginResponse.ts
+│   │   │   │   ├── RegisterRequest.ts
+│   │   │   │   ├── RegisterResponse.ts
+│   │   │   │   ├── RefreshToken.ts
+│   │   │   │   ├── OtpRequest.ts
+│   │   │   │   ├── PasswordReset.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── IAuthProvider.ts
+│   │   │   │   ├── ITokenStorage.ts
+│   │   │   │   ├── ISessionStorage.ts
+│   │   │   │   ├── IBiometricProvider.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── jwt.ts
+│   │   │   │   ├── token.ts
+│   │   │   │   ├── otp.ts
+│   │   │   │   ├── hash.ts
+│   │   │   │   ├── crypto.ts
+│   │   │   │   ├── device.ts
+│   │   │   │   ├── authHeaders.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── auth.ts
+│   │   │   │   ├── roles.ts
+│   │   │   │   ├── permissions.ts
+│   │   │   │   ├── scopes.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── errors/
+│   │   │   │   ├── AuthError.ts
+│   │   │   │   ├── SessionError.ts
+│   │   │   │   ├── TokenError.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── hooks/
+│   │   │   │   ├── useSession.ts
+│   │   │   │   ├── useCurrentUser.ts
+│   │   │   │   ├── useAuthState.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-community/                     ← مدیریت انجمن‌ها
+│   ├── shared-wallet/
 │   │   ├── src/
-│   │   │   ├── types/ (Community, CommunityMember, CommunityRole, CommunityRank, GroupSettings, GroupStats)
-│   │   │   ├── interfaces/ (CommunityRepository, CommunityService, MemberService)
-│   │   │   ├── constants/ (communityRoles, communityLimits, rankLevels)
-│   │   │   ├── services/ (communityService, memberService, rankingService, groupStatsService)
-│   │   │   ├── validators/ (communityValidator, groupNameValidator, usernameValidator)
-│   │   │   ├── mappers/ (communityMapper, memberMapper)
-│   │   │   ├── permissions/ (communityPermissions, rolePermissions)
-│   │   │   ├── events/ (communityEvents, memberEvents)
-│   │   │   ├── utils/ (communityFormatter, rankCalculator, memberCounter)
+│   │   │   ├── balances/
+│   │   │   │   ├── getBalances.ts
+│   │   │   │   └── refreshBalance.ts
+│   │   │   ├── deposit/
+│   │   │   │   ├── createAddress.ts
+│   │   │   │   └── confirmDeposit.ts
+│   │   │   ├── withdraw/
+│   │   │   │   ├── createWithdraw.ts
+│   │   │   │   └── cancelWithdraw.ts
+│   │   │   ├── transfer/
+│   │   │   │   ├── transfer.ts
+│   │   │   │   └── transferByDid.ts
+│   │   │   ├── swap/
+│   │   │   │   ├── quote.ts
+│   │   │   │   └── swap.ts
+│   │   │   ├── transaction/
+│   │   │   │   ├── history.ts
+│   │   │   │   └── detail.ts
+│   │   │   ├── assets/
+│   │   │   │   ├── registry.ts
+│   │   │   │   ├── helpers.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── hooks/
+│   │   │   │   └── useWallet.ts
+│   │   │   ├── providers/
+│   │   │   │   ├── WalletProvider.tsx
+│   │   │   │   └── WalletContext.ts
+│   │   │   ├── types/
+│   │   │   │   └── wallet.types.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-chat/                          ← منطق چت
+│   ├── shared-payment/
 │   │   ├── src/
-│   │   │   ├── messages/ (sendMessage, editMessage, deleteMessage, replyMessage, forwardMessage, pinMessage, unpinMessage, markAsRead)
-│   │   │   ├── conversations/ (createConversation, getConversation, listConversations, archiveConversation, muteConversation)
-│   │   │   ├── groups/ (createGroupChat, addMember, removeMember, promoteAdmin, leaveGroup)
-│   │   │   ├── realtime/ (subscribeMessages, subscribeTyping, subscribePresence, realtimeEvents)
-│   │   │   ├── presence/ (onlineStatus, lastSeen)
-│   │   │   ├── media/ (uploadImage, uploadAudio, voiceMessage)
-│   │   │   ├── moderation/ (reportMessage, blockUser, filterContent)
-│   │   │   ├── notifications/ (chatNotification, mentionNotification)
-│   │   │   ├── types/ (Message, Conversation, ChatMember, ChatRoom, Attachment, Reaction, Presence)
-│   │   │   ├── interfaces/ (IChatProvider, IMessageRepository, IRealtimeProvider, IMediaStorage)
-│   │   │   ├── constants/ (messageTypes, chatTypes, limits)
-│   │   │   ├── validators/ (messageValidator, attachmentValidator)
-│   │   │   ├── errors/ (ChatError, MessageError)
-│   │   │   ├── utils/ (messageFormatter, mentionParser, emojiParser, timeGrouping)
+│   │   │   ├── core/
+│   │   │   │   ├── PaymentGateway.ts
+│   │   │   │   ├── PaymentFactory.ts
+│   │   │   │   ├── PaymentManager.ts
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── constants.ts
+│   │   │   │   └── errors.ts
+│   │   │   ├── onexgate/
+│   │   │   │   ├── auth/
+│   │   │   │   │   ├── auth.api.ts
+│   │   │   │   │   ├── auth.service.ts
+│   │   │   │   │   ├── auth.mapper.ts
+│   │   │   │   │   ├── auth.types.ts
+│   │   │   │   │   ├── auth.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── wallet/
+│   │   │   │   │   ├── wallet.api.ts
+│   │   │   │   │   ├── wallet.service.ts
+│   │   │   │   │   ├── wallet.mapper.ts
+│   │   │   │   │   ├── wallet.types.ts
+│   │   │   │   │   ├── wallet.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── deposit/
+│   │   │   │   │   ├── deposit.api.ts
+│   │   │   │   │   ├── deposit.service.ts
+│   │   │   │   │   ├── deposit.mapper.ts
+│   │   │   │   │   ├── deposit.types.ts
+│   │   │   │   │   ├── deposit.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── withdraw/
+│   │   │   │   │   ├── withdraw.api.ts
+│   │   │   │   │   ├── withdraw.service.ts
+│   │   │   │   │   ├── withdraw.mapper.ts
+│   │   │   │   │   ├── withdraw.types.ts
+│   │   │   │   │   ├── withdraw.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── transfer/
+│   │   │   │   │   ├── transfer.api.ts
+│   │   │   │   │   ├── transfer.service.ts
+│   │   │   │   │   ├── transfer.mapper.ts
+│   │   │   │   │   ├── transfer.types.ts
+│   │   │   │   │   ├── transfer.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── swap/
+│   │   │   │   │   ├── swap.api.ts
+│   │   │   │   │   ├── swap.service.ts
+│   │   │   │   │   ├── swap.mapper.ts
+│   │   │   │   │   ├── swap.types.ts
+│   │   │   │   │   ├── swap.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── order/
+│   │   │   │   │   ├── order.api.ts
+│   │   │   │   │   ├── order.service.ts
+│   │   │   │   │   ├── order.mapper.ts
+│   │   │   │   │   ├── order.types.ts
+│   │   │   │   │   ├── order.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── transaction/
+│   │   │   │   │   ├── transaction.api.ts
+│   │   │   │   │   ├── transaction.service.ts
+│   │   │   │   │   ├── transaction.mapper.ts
+│   │   │   │   │   ├── transaction.types.ts
+│   │   │   │   │   ├── transaction.interfaces.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── client.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── IAuthService.ts
+│   │   │   │   ├── IWalletService.ts
+│   │   │   │   ├── IDepositService.ts
+│   │   │   │   ├── IWithdrawService.ts
+│   │   │   │   ├── ITransferService.ts
+│   │   │   │   ├── ISwapService.ts
+│   │   │   │   ├── IOrderService.ts
+│   │   │   │   ├── ITransactionService.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── Auth.ts
+│   │   │   │   ├── Wallet.ts
+│   │   │   │   ├── Balance.ts
+│   │   │   │   ├── Deposit.ts
+│   │   │   │   ├── Withdraw.ts
+│   │   │   │   ├── Transfer.ts
+│   │   │   │   ├── Swap.ts
+│   │   │   │   ├── Order.ts
+│   │   │   │   ├── Transaction.ts
+│   │   │   │   ├── ApiResponse.ts
+│   │   │   │   ├── Pagination.ts
+│   │   │   │   ├── Error.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── amount.ts
+│   │   │   │   ├── currency.ts
+│   │   │   │   ├── network.ts
+│   │   │   │   ├── address.ts
+│   │   │   │   ├── validator.ts
+│   │   │   │   ├── signer.ts
+│   │   │   │   ├── qr.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-game/                          ← منطق بازی
+│   ├── shared-community/
 │   │   ├── src/
-│   │   │   ├── card/ (generate, validate, mark)
-│   │   │   ├── level/ (levels, progression)
-│   │   │   ├── winner/ (checkWinner, fullHouse)
-│   │   │   ├── timer/ (gameTimer)
-│   │   │   ├── hooks/ (useGame)
-│   │   │   ├── providers/ (GameProvider, GameContext)
-│   │   │   ├── types/ (Game, Card, Level)
+│   │   │   ├── types/
+│   │   │   │   ├── Community.ts
+│   │   │   │   ├── CommunityMember.ts
+│   │   │   │   ├── CommunityRole.ts
+│   │   │   │   ├── CommunityRank.ts
+│   │   │   │   ├── GroupSettings.ts
+│   │   │   │   ├── GroupStats.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── CommunityRepository.ts
+│   │   │   │   ├── CommunityService.ts
+│   │   │   │   ├── MemberService.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── communityRoles.ts
+│   │   │   │   ├── communityLimits.ts
+│   │   │   │   ├── rankLevels.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── services/
+│   │   │   │   ├── communityService.ts
+│   │   │   │   ├── memberService.ts
+│   │   │   │   ├── rankingService.ts
+│   │   │   │   ├── groupStatsService.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validators/
+│   │   │   │   ├── communityValidator.ts
+│   │   │   │   ├── groupNameValidator.ts
+│   │   │   │   ├── usernameValidator.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── communityMapper.ts
+│   │   │   │   ├── memberMapper.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── permissions/
+│   │   │   │   ├── communityPermissions.ts
+│   │   │   │   ├── rolePermissions.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── events/
+│   │   │   │   ├── communityEvents.ts
+│   │   │   │   ├── memberEvents.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── communityFormatter.ts
+│   │   │   │   ├── rankCalculator.ts
+│   │   │   │   ├── memberCounter.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-duel/                          ← مدیریت دوئل‌ها
+│   ├── shared-chat/
 │   │   ├── src/
-│   │   │   ├── types/ (Duel, DuelStatus, DuelType, DuelParticipant, DuelResult, DuelPrize, DuelSettings, DuelCard)
-│   │   │   ├── interfaces/ (DuelRepository, DuelService, DuelEngine)
-│   │   │   ├── constants/ (duelLimits, duelStatus, duelFees, duelLevels)
-│   │   │   ├── services/ (duelService, duelCreationService, duelJoinService, duelCancelService, duelResultService, duelRewardService)
-│   │   │   ├── engine/ (duelEngine, winnerCalculator, cardMatcher, numberChecker)
-│   │   │   ├── validators/ (duelValidator, createDuelValidator, joinDuelValidator)
-│   │   │   ├── mappers/ (duelMapper, participantMapper)
-│   │   │   ├── permissions/ (duelPermissions)
-│   │   │   ├── events/ (duelEvents)
-│   │   │   ├── utils/ (duelFormatter, duelTimer, prizeCalculator)
+│   │   │   ├── messages/
+│   │   │   │   ├── sendMessage.ts
+│   │   │   │   ├── editMessage.ts
+│   │   │   │   ├── deleteMessage.ts
+│   │   │   │   ├── replyMessage.ts
+│   │   │   │   ├── forwardMessage.ts
+│   │   │   │   ├── pinMessage.ts
+│   │   │   │   ├── unpinMessage.ts
+│   │   │   │   ├── markAsRead.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── conversations/
+│   │   │   │   ├── createConversation.ts
+│   │   │   │   ├── getConversation.ts
+│   │   │   │   ├── listConversations.ts
+│   │   │   │   ├── archiveConversation.ts
+│   │   │   │   ├── muteConversation.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── groups/
+│   │   │   │   ├── createGroupChat.ts
+│   │   │   │   ├── addMember.ts
+│   │   │   │   ├── removeMember.ts
+│   │   │   │   ├── promoteAdmin.ts
+│   │   │   │   ├── leaveGroup.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── realtime/
+│   │   │   │   ├── subscribeMessages.ts
+│   │   │   │   ├── subscribeTyping.ts
+│   │   │   │   ├── subscribePresence.ts
+│   │   │   │   ├── realtimeEvents.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── presence/
+│   │   │   │   ├── onlineStatus.ts
+│   │   │   │   ├── lastSeen.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── media/
+│   │   │   │   ├── uploadImage.ts
+│   │   │   │   ├── uploadAudio.ts
+│   │   │   │   ├── voiceMessage.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── moderation/
+│   │   │   │   ├── reportMessage.ts
+│   │   │   │   ├── blockUser.ts
+│   │   │   │   ├── filterContent.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── notifications/
+│   │   │   │   ├── chatNotification.ts
+│   │   │   │   ├── mentionNotification.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── Message.ts
+│   │   │   │   ├── Conversation.ts
+│   │   │   │   ├── ChatMember.ts
+│   │   │   │   ├── ChatRoom.ts
+│   │   │   │   ├── Attachment.ts
+│   │   │   │   ├── Reaction.ts
+│   │   │   │   ├── Presence.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── IChatProvider.ts
+│   │   │   │   ├── IMessageRepository.ts
+│   │   │   │   ├── IRealtimeProvider.ts
+│   │   │   │   ├── IMediaStorage.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── messageTypes.ts
+│   │   │   │   ├── chatTypes.ts
+│   │   │   │   ├── limits.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validators/
+│   │   │   │   ├── messageValidator.ts
+│   │   │   │   ├── attachmentValidator.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── errors/
+│   │   │   │   ├── ChatError.ts
+│   │   │   │   ├── MessageError.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── messageFormatter.ts
+│   │   │   │   ├── mentionParser.ts
+│   │   │   │   ├── emojiParser.ts
+│   │   │   │   ├── timeGrouping.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-challenge/                     ← مدیریت چالش‌ها
+│   ├── shared-game/
 │   │   ├── src/
-│   │   │   ├── types/ (Challenge, ChallengeStatus, ChallengeParticipant, ChallengeLevel, ChallengePrize, ChallengePool, ChallengeSettings, ChallengeCard)
-│   │   │   ├── interfaces/ (ChallengeRepository, ChallengeService, ChallengeEngine)
-│   │   │   ├── constants/ (challengeLimits, challengeLevels, challengeFees, challengeCooldown)
-│   │   │   ├── services/ (challengeService, challengeCreationService, challengeJoinService, challengeCancelService, challengeParticipantService, challengeRewardService, challengeLevelService)
-│   │   │   ├── engine/ (challengeEngine, winnerCalculator, rankingCalculator, cardMatcher)
-│   │   │   ├── validators/ (challengeValidator, createChallengeValidator, joinChallengeValidator, participantValidator)
-│   │   │   ├── mappers/ (challengeMapper, participantMapper)
-│   │   │   ├── permissions/ (challengePermissions)
-│   │   │   ├── events/ (challengeEvents)
-│   │   │   ├── utils/ (challengeFormatter, challengeTimer, poolCalculator, participantCounter)
+│   │   │   ├── card/
+│   │   │   │   ├── generate.ts
+│   │   │   │   ├── validate.ts
+│   │   │   │   └── mark.ts
+│   │   │   ├── level/
+│   │   │   │   ├── levels.ts
+│   │   │   │   └── progression.ts
+│   │   │   ├── winner/
+│   │   │   │   ├── checkWinner.ts
+│   │   │   │   └── fullHouse.ts
+│   │   │   ├── timer/
+│   │   │   │   └── gameTimer.ts
+│   │   │   ├── hooks/
+│   │   │   │   └── useGame.ts
+│   │   │   ├── providers/
+│   │   │   │   ├── GameProvider.tsx
+│   │   │   │   └── GameContext.ts
+│   │   │   ├── types/
+│   │   │   │   ├── Game.ts
+│   │   │   │   ├── Card.ts
+│   │   │   │   ├── Level.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-services/                     ← سرویس‌های عمومی
+│   ├── shared-duel/
 │   │   ├── src/
-│   │   │   ├── api/ (client, authApi, walletApi)
-│   │   │   ├── websocket/ (socket, realtime)
-│   │   │   ├── storage/ (localStorage, asyncStorage)
-│   │   │   ├── notification/ (push, inApp, toast)
-│   │   │   ├── upload/ (upload)
-│   │   │   ├── download/ (download)
+│   │   │   ├── types/
+│   │   │   │   ├── Duel.ts
+│   │   │   │   ├── DuelStatus.ts
+│   │   │   │   ├── DuelType.ts
+│   │   │   │   ├── DuelParticipant.ts
+│   │   │   │   ├── DuelResult.ts
+│   │   │   │   ├── DuelPrize.ts
+│   │   │   │   ├── DuelSettings.ts
+│   │   │   │   ├── DuelCard.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── DuelRepository.ts
+│   │   │   │   ├── DuelService.ts
+│   │   │   │   ├── DuelEngine.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── duelLimits.ts
+│   │   │   │   ├── duelStatus.ts
+│   │   │   │   ├── duelFees.ts
+│   │   │   │   ├── duelLevels.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── services/
+│   │   │   │   ├── duelService.ts
+│   │   │   │   ├── duelCreationService.ts
+│   │   │   │   ├── duelJoinService.ts
+│   │   │   │   ├── duelCancelService.ts
+│   │   │   │   ├── duelResultService.ts
+│   │   │   │   ├── duelRewardService.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── engine/
+│   │   │   │   ├── duelEngine.ts
+│   │   │   │   ├── winnerCalculator.ts
+│   │   │   │   ├── cardMatcher.ts
+│   │   │   │   ├── numberChecker.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validators/
+│   │   │   │   ├── duelValidator.ts
+│   │   │   │   ├── createDuelValidator.ts
+│   │   │   │   ├── joinDuelValidator.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── duelMapper.ts
+│   │   │   │   ├── participantMapper.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── permissions/
+│   │   │   │   ├── duelPermissions.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── events/
+│   │   │   │   ├── duelEvents.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── duelFormatter.ts
+│   │   │   │   ├── duelTimer.ts
+│   │   │   │   ├── prizeCalculator.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-database/                     ← Supabase Client
+│   ├── shared-challenge/
 │   │   ├── src/
-│   │   │   ├── supabase/ (client, types)
-│   │   │   ├── repositories/ (UserRepository, WalletRepository, TransactionRepository, ...)
-│   │   │   ├── queries/ (users, wallets, transactions)
-│   │   │   ├── mutations/ (createWallet, createTransaction)
-│   │   │   ├── types/ (Database, Tables)
-│   │   │   ├── generated/ (database.types.ts)
+│   │   │   ├── types/
+│   │   │   │   ├── Challenge.ts
+│   │   │   │   ├── ChallengeStatus.ts
+│   │   │   │   ├── ChallengeParticipant.ts
+│   │   │   │   ├── ChallengeLevel.ts
+│   │   │   │   ├── ChallengePrize.ts
+│   │   │   │   ├── ChallengePool.ts
+│   │   │   │   ├── ChallengeSettings.ts
+│   │   │   │   ├── ChallengeCard.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── ChallengeRepository.ts
+│   │   │   │   ├── ChallengeService.ts
+│   │   │   │   ├── ChallengeEngine.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── challengeLimits.ts
+│   │   │   │   ├── challengeLevels.ts
+│   │   │   │   ├── challengeFees.ts
+│   │   │   │   ├── challengeCooldown.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── services/
+│   │   │   │   ├── challengeService.ts
+│   │   │   │   ├── challengeCreationService.ts
+│   │   │   │   ├── challengeJoinService.ts
+│   │   │   │   ├── challengeCancelService.ts
+│   │   │   │   ├── challengeParticipantService.ts
+│   │   │   │   ├── challengeRewardService.ts
+│   │   │   │   ├── challengeLevelService.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── engine/
+│   │   │   │   ├── challengeEngine.ts
+│   │   │   │   ├── winnerCalculator.ts
+│   │   │   │   ├── rankingCalculator.ts
+│   │   │   │   ├── cardMatcher.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── validators/
+│   │   │   │   ├── challengeValidator.ts
+│   │   │   │   ├── createChallengeValidator.ts
+│   │   │   │   ├── joinChallengeValidator.ts
+│   │   │   │   ├── participantValidator.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── challengeMapper.ts
+│   │   │   │   ├── participantMapper.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── permissions/
+│   │   │   │   ├── challengePermissions.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── events/
+│   │   │   │   ├── challengeEvents.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── challengeFormatter.ts
+│   │   │   │   ├── challengeTimer.ts
+│   │   │   │   ├── poolCalculator.ts
+│   │   │   │   ├── participantCounter.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-validators/                   ← Zod Schemas
+│   ├── shared-services/
 │   │   ├── src/
-│   │   │   ├── auth/ (email, phone, username, password, otp, did)
-│   │   │   ├── wallet/ (amount, balance, currency, network, address)
-│   │   │   ├── payment/ (order, invoice, paymentLink)
-│   │   │   ├── transfer/ (receiver, amount, memo)
-│   │   │   ├── swap/ (pair, amount)
-│   │   │   ├── game/ (card, room, level, duel, challenge)
-│   │   │   ├── community/ (groupName, username, community)
-│   │   │   ├── profile/ (displayName, bio, avatar)
-│   │   │   ├── common/ (uuid, url, image, file, json, date, number, string)
-│   │   │   ├── schemas/ (auth, wallet, payment, profile, community, game)
-│   │   │   ├── errors/ (ValidationError, ErrorCodes)
+│   │   │   ├── api/
+│   │   │   │   ├── client.ts
+│   │   │   │   ├── authApi.ts
+│   │   │   │   ├── walletApi.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── websocket/
+│   │   │   │   ├── socket.ts
+│   │   │   │   └── realtime.ts
+│   │   │   ├── storage/
+│   │   │   │   ├── localStorage.ts
+│   │   │   │   └── asyncStorage.ts
+│   │   │   ├── notification/
+│   │   │   │   ├── push.ts
+│   │   │   │   ├── inApp.ts
+│   │   │   │   └── toast.ts
+│   │   │   ├── upload/
+│   │   │   │   └── upload.ts
+│   │   │   ├── download/
+│   │   │   │   └── download.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-errors/                       ← مدیریت خطاها
+│   ├── shared-database/
 │   │   ├── src/
-│   │   │   ├── codes/ (authErrors, walletErrors, paymentErrors, transactionErrors, duelErrors, challengeErrors, gameErrors, communityErrors, chatErrors, systemErrors)
-│   │   │   ├── classes/ (AppError, ValidationError, AuthenticationError, AuthorizationError, NotFoundError, PaymentError, WalletError, TransactionError)
-│   │   │   ├── formatters/ (errorFormatter, apiErrorFormatter, i18nErrorMapper)
-│   │   │   ├── handlers/ (errorHandler, asyncErrorHandler)
-│   │   │   ├── types/ (ErrorCode, ErrorResponse, ErrorMetadata)
-│   │   │   ├── utils/ (isAppError, getErrorCode, normalizeError)
+│   │   │   ├── supabase/
+│   │   │   │   ├── client.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── repositories/
+│   │   │   │   ├── UserRepository.ts
+│   │   │   │   ├── WalletRepository.ts
+│   │   │   │   ├── TransactionRepository.ts
+│   │   │   │   ├── DuelRepository.ts
+│   │   │   │   ├── ChallengeRepository.ts
+│   │   │   │   ├── CommunityRepository.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── queries/
+│   │   │   │   ├── users.ts
+│   │   │   │   ├── wallets.ts
+│   │   │   │   ├── transactions.ts
+│   │   │   │   ├── games.ts
+│   │   │   │   └── communities.ts
+│   │   │   ├── mutations/
+│   │   │   │   ├── createWallet.ts
+│   │   │   │   ├── createTransaction.ts
+│   │   │   │   ├── joinDuel.ts
+│   │   │   │   └── joinChallenge.ts
+│   │   │   ├── types/
+│   │   │   │   ├── Database.ts
+│   │   │   │   ├── Tables.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── generated/
+│   │   │   │   └── database.types.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-logger/                       ← Logger
+│   ├── shared-validators/
 │   │   ├── src/
-│   │   │   ├── logger/ (logger, levels, formatters)
-│   │   │   ├── transports/ (consoleTransport, fileTransport, remoteTransport)
-│   │   │   ├── context/ (requestContext, userContext, traceContext)
-│   │   │   ├── types/ (LogLevel, LogEvent, LoggerConfig)
-│   │   │   ├── constants/ (logEvents)
-│   │   │   ├── adapters/ (sentry, telemetry, analytics)
+│   │   │   ├── auth/
+│   │   │   │   ├── email.ts
+│   │   │   │   ├── phone.ts
+│   │   │   │   ├── username.ts
+│   │   │   │   ├── password.ts
+│   │   │   │   ├── otp.ts
+│   │   │   │   ├── did.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── wallet/
+│   │   │   │   ├── amount.ts
+│   │   │   │   ├── balance.ts
+│   │   │   │   ├── currency.ts
+│   │   │   │   ├── network.ts
+│   │   │   │   ├── address.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── payment/
+│   │   │   │   ├── order.ts
+│   │   │   │   ├── invoice.ts
+│   │   │   │   ├── paymentLink.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── transfer/
+│   │   │   │   ├── receiver.ts
+│   │   │   │   ├── amount.ts
+│   │   │   │   ├── memo.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── swap/
+│   │   │   │   ├── pair.ts
+│   │   │   │   ├── amount.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── game/
+│   │   │   │   ├── card.ts
+│   │   │   │   ├── room.ts
+│   │   │   │   ├── level.ts
+│   │   │   │   ├── duel.ts
+│   │   │   │   ├── challenge.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── community/
+│   │   │   │   ├── groupName.ts
+│   │   │   │   ├── username.ts
+│   │   │   │   ├── community.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── profile/
+│   │   │   │   ├── displayName.ts
+│   │   │   │   ├── bio.ts
+│   │   │   │   ├── avatar.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── common/
+│   │   │   │   ├── uuid.ts
+│   │   │   │   ├── url.ts
+│   │   │   │   ├── image.ts
+│   │   │   │   ├── file.ts
+│   │   │   │   ├── json.ts
+│   │   │   │   ├── date.ts
+│   │   │   │   ├── number.ts
+│   │   │   │   ├── string.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── schemas/
+│   │   │   │   ├── auth.ts
+│   │   │   │   ├── wallet.ts
+│   │   │   │   ├── payment.ts
+│   │   │   │   ├── profile.ts
+│   │   │   │   ├── community.ts
+│   │   │   │   ├── game.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── errors/
+│   │   │   │   ├── ValidationError.ts
+│   │   │   │   ├── ErrorCodes.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── shared-telemetry/                    ← مشاهده‌پذیری
+│   ├── shared-errors/
 │   │   ├── src/
-│   │   │   ├── logger/ (logger, levels, formatter, consoleTransport, remoteTransport)
-│   │   │   ├── metrics/ (counter, gauge, histogram, timer)
-│   │   │   ├── tracing/ (tracer, span, context)
-│   │   │   ├── events/ (analyticsEvent, eventTracker, eventNames)
-│   │   │   ├── crash/ (crashReporter, errorBoundary)
-│   │   │   ├── providers/ (sentry, datadog, firebase)
-│   │   │   ├── interfaces/ (ILogger, IMetrics, ITracer, ICrashReporter)
-│   │   │   ├── types/ (LogEntry, Metric, Trace, Event)
-│   │   │   ├── constants/ (environments, logLevels)
-│   │   │   ├── utils/ (sanitize, maskSensitive, deviceInfo, sessionInfo)
+│   │   │   ├── codes/
+│   │   │   │   ├── authErrors.ts
+│   │   │   │   ├── walletErrors.ts
+│   │   │   │   ├── paymentErrors.ts
+│   │   │   │   ├── transactionErrors.ts
+│   │   │   │   ├── duelErrors.ts
+│   │   │   │   ├── challengeErrors.ts
+│   │   │   │   ├── gameErrors.ts
+│   │   │   │   ├── communityErrors.ts
+│   │   │   │   ├── chatErrors.ts
+│   │   │   │   ├── systemErrors.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── classes/
+│   │   │   │   ├── AppError.ts
+│   │   │   │   ├── ValidationError.ts
+│   │   │   │   ├── AuthenticationError.ts
+│   │   │   │   ├── AuthorizationError.ts
+│   │   │   │   ├── NotFoundError.ts
+│   │   │   │   ├── PaymentError.ts
+│   │   │   │   ├── WalletError.ts
+│   │   │   │   ├── TransactionError.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── formatters/
+│   │   │   │   ├── errorFormatter.ts
+│   │   │   │   ├── apiErrorFormatter.ts
+│   │   │   │   ├── i18nErrorMapper.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── handlers/
+│   │   │   │   ├── errorHandler.ts
+│   │   │   │   ├── asyncErrorHandler.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── ErrorCode.ts
+│   │   │   │   ├── ErrorResponse.ts
+│   │   │   │   ├── ErrorMetadata.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── isAppError.ts
+│   │   │   │   ├── getErrorCode.ts
+│   │   │   │   ├── normalizeError.ts
+│   │   │   │   └── index.ts
 │   │   │   └── index.ts
+│   │   ├── test/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   └── shared-hooks/                        ← React Hooks
+│   ├── shared-logger/
+│   │   ├── src/
+│   │   │   ├── logger/
+│   │   │   │   ├── logger.ts
+│   │   │   │   ├── levels.ts
+│   │   │   │   ├── formatters.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── transports/
+│   │   │   │   ├── consoleTransport.ts
+│   │   │   │   ├── fileTransport.ts
+│   │   │   │   ├── remoteTransport.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── context/
+│   │   │   │   ├── requestContext.ts
+│   │   │   │   ├── userContext.ts
+│   │   │   │   ├── traceContext.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── LogLevel.ts
+│   │   │   │   ├── LogEvent.ts
+│   │   │   │   ├── LoggerConfig.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   └── logEvents.ts
+│   │   │   ├── adapters/
+│   │   │   │   ├── sentry.ts
+│   │   │   │   ├── telemetry.ts
+│   │   │   │   ├── analytics.ts
+│   │   │   │   └── index.ts
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   ├── shared-telemetry/
+│   │   ├── src/
+│   │   │   ├── logger/
+│   │   │   │   ├── logger.ts
+│   │   │   │   ├── levels.ts
+│   │   │   │   ├── formatter.ts
+│   │   │   │   ├── consoleTransport.ts
+│   │   │   │   ├── remoteTransport.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── metrics/
+│   │   │   │   ├── counter.ts
+│   │   │   │   ├── gauge.ts
+│   │   │   │   ├── histogram.ts
+│   │   │   │   ├── timer.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── tracing/
+│   │   │   │   ├── tracer.ts
+│   │   │   │   ├── span.ts
+│   │   │   │   ├── context.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── events/
+│   │   │   │   ├── analyticsEvent.ts
+│   │   │   │   ├── eventTracker.ts
+│   │   │   │   ├── eventNames.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── crash/
+│   │   │   │   ├── crashReporter.ts
+│   │   │   │   ├── errorBoundary.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── providers/
+│   │   │   │   ├── sentry.ts
+│   │   │   │   ├── datadog.ts
+│   │   │   │   ├── firebase.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── interfaces/
+│   │   │   │   ├── ILogger.ts
+│   │   │   │   ├── IMetrics.ts
+│   │   │   │   ├── ITracer.ts
+│   │   │   │   ├── ICrashReporter.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── types/
+│   │   │   │   ├── LogEntry.ts
+│   │   │   │   ├── Metric.ts
+│   │   │   │   ├── Trace.ts
+│   │   │   │   ├── Event.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── constants/
+│   │   │   │   ├── environments.ts
+│   │   │   │   ├── logLevels.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── utils/
+│   │   │   │   ├── sanitize.ts
+│   │   │   │   ├── maskSensitive.ts
+│   │   │   │   ├── deviceInfo.ts
+│   │   │   │   ├── sessionInfo.ts
+│   │   │   │   └── index.ts
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   │
+│   └── shared-hooks/
 │       ├── src/
 │       │   ├── useAuth.ts
 │       │   ├── useWallet.ts
@@ -1528,30 +2385,311 @@ dobna/                                    ← ریشه پروژه
 │       │   ├── useChallenge.ts
 │       │   ├── useTranslation.ts
 │       │   └── index.ts
+│       ├── test/
 │       ├── package.json
 │       └── tsconfig.json
 │
-├── supabase/                                 ← 🗄️ Supabase (در ریشه)
-│   ├── migrations/
-│   │   ├── shared/ (Migration‌های عمومی)
-│   │   ├── dobna/ (Migration‌های مختص دوبنا)
-│   │   └── poplan/ (Migration‌های مختص پاپلان – آینده)
-│   ├── functions/
-│   │   ├── shared/ (توابع عمومی)
-│   │   ├── dobna/ (توابع مختص دوبنا)
-│   │   └── poplan/ (توابع مختص پاپلان – آینده)
+├── supabase/
+│   ├── config.toml
 │   ├── seed.sql
-│   └── config.toml
+│   ├── .gitignore
+│   ├── migrations/
+│   │   ├── 0001_create_extensions.sql
+│   │   ├── 0002_create_profiles.sql
+│   │   ├── 0003_create_wallets.sql
+│   │   ├── 0004_create_transactions.sql
+│   │   ├── 0005_create_games.sql
+│   │   ├── 0006_create_duels.sql
+│   │   ├── 0007_create_challenges.sql
+│   │   ├── 0008_create_communities.sql
+│   │   ├── 0009_create_chat.sql
+│   │   ├── 0010_create_notifications.sql
+│   │   ├── ...
+│   │   └── 0036_setup_cancel_expired_cron.sql
+│   ├── functions/
+│   │   ├── payment-webhook/
+│   │   │   ├── index.ts
+│   │   │   └── deno.json
+│   │   ├── notifications/
+│   │   │   ├── index.ts
+│   │   │   └── deno.json
+│   │   ├── image-upload/
+│   │   │   ├── index.ts
+│   │   │   └── deno.json
+│   │   ├── auth-webhook/
+│   │   │   ├── index.ts
+│   │   │   └── deno.json
+│   │   ├── game-processor/
+│   │   │   ├── index.ts
+│   │   │   └── deno.json
+│   │   └── _shared/
+│   │       ├── cors.ts
+│   │       ├── auth.ts
+│   │       ├── supabase.ts
+│   │       ├── utils.ts
+│   │       └── types.ts
+│   ├── sql/
+│   │   ├── functions/
+│   │   │   ├── fn_add_member_to_group.sql
+│   │   │   ├── fn_calculate_daily_interest.sql
+│   │   │   ├── fn_call_number.sql
+│   │   │   ├── fn_cancel_challenge.sql
+│   │   │   ├── fn_cancel_duel.sql
+│   │   │   ├── fn_check_challenge_cooldown.sql
+│   │   │   ├── fn_check_room_timer.sql
+│   │   │   ├── fn_check_winner.sql
+│   │   │   ├── fn_complete_challenge.sql
+│   │   │   ├── fn_complete_duel.sql
+│   │   │   ├── fn_complete_room_game.sql
+│   │   │   ├── fn_create_challenge.sql
+│   │   │   ├── fn_create_duel.sql
+│   │   │   ├── fn_create_room.sql
+│   │   │   ├── fn_deactivate_user.sql
+│   │   │   ├── fn_follow_user.sql
+│   │   │   ├── fn_generate_account_number.sql
+│   │   │   ├── fn_generate_did.sql
+│   │   │   ├── fn_generate_gp_id.sql
+│   │   │   ├── fn_get_exchange_rate.sql
+│   │   │   ├── fn_get_mutual_friends.sql
+│   │   │   ├── fn_get_stories.sql
+│   │   │   ├── fn_get_unread_count.sql
+│   │   │   ├── fn_join_challenge.sql
+│   │   │   ├── fn_join_duel.sql
+│   │   │   ├── fn_join_room.sql
+│   │   │   ├── fn_mark_messages_read.sql
+│   │   │   ├── fn_pin_message.sql
+│   │   │   ├── fn_process_referral_reward.sql
+│   │   │   ├── fn_purchase_card.sql
+│   │   │   ├── fn_remove_member_from_group.sql
+│   │   │   ├── fn_send_message.sql
+│   │   │   ├── fn_start_challenge.sql
+│   │   │   ├── fn_start_challenge_game.sql
+│   │   │   ├── fn_start_duel_game.sql
+│   │   │   ├── fn_start_game.sql
+│   │   │   ├── fn_start_room_game.sql
+│   │   │   ├── fn_submit_report.sql
+│   │   │   ├── fn_transfer_to_escrow.sql
+│   │   │   ├── fn_unfollow_user.sql
+│   │   │   ├── fn_update_balance.sql
+│   │   │   └── fn_update_group_rank.sql
+│   │   ├── triggers/
+│   │   │   ├── trg_update_timestamp.sql
+│   │   │   ├── trg_balance_update.sql
+│   │   │   ├── trg_audit_log.sql
+│   │   │   └── ...
+│   │   ├── views/
+│   │   │   ├── vw_leaderboard.sql
+│   │   │   ├── vw_user_stats.sql
+│   │   │   ├── vw_community_rank.sql
+│   │   │   ├── vw_transaction_summary.sql
+│   │   │   └── ...
+│   │   ├── policies/
+│   │   │   ├── profiles.sql
+│   │   │   ├── rooms.sql
+│   │   │   ├── wallets.sql
+│   │   │   ├── transactions.sql
+│   │   │   ├── games.sql
+│   │   │   ├── duels.sql
+│   │   │   ├── challenges.sql
+│   │   │   ├── communities.sql
+│   │   │   ├── chat.sql
+│   │   │   └── ...
+│   │   ├── indexes/
+│   │   │   ├── profiles.sql
+│   │   │   ├── rooms.sql
+│   │   │   ├── wallets.sql
+│   │   │   ├── transactions.sql
+│   │   │   └── ...
+│   │   ├── types/
+│   │   │   ├── enums.sql
+│   │   │   ├── domains.sql
+│   │   │   └── composite_types.sql
+│   │   ├── extensions/
+│   │   │   ├── pgcrypto.sql
+│   │   │   ├── pg_cron.sql
+│   │   │   ├── pgjwt.sql
+│   │   │   └── pg_net.sql
+│   │   └── helpers/
+│   │       ├── constants.sql
+│   │       ├── utilities.sql
+│   │       └── permissions.sql
+│   ├── tests/
+│   │   ├── pgtap/
+│   │   │   ├── test_functions.sql
+│   │   │   ├── test_triggers.sql
+│   │   │   └── test_policies.sql
+│   │   ├── integration/
+│   │   │   ├── auth.test.sql
+│   │   │   ├── wallet.test.sql
+│   │   │   └── game.test.sql
+│   │   └── fixtures/
+│   │       └── data.sql
+│   ├── types/
+│   │   └── database.types.ts
+│   ├── scripts/
+│   │   ├── reset.sh
+│   │   ├── generate-types.sh
+│   │   ├── backup.sh
+│   │   └── restore.sh
+│   └── README.md
 │
-├── docs/                                     ← 📄 مستندات
-│   ├── api.md
-│   ├── architecture.md
-│   ├── database-schema.md
-│   ├── game-rules.md
-│   ├── deployment.md
-│   └── assets-guide.md
+├── docker/
+│   ├── nginx/
+│   │   ├── nginx.conf
+│   │   ├── default.conf
+│   │   └── ssl/
+│   │       ├── cert.pem
+│   │       └── key.pem
+│   ├── postgres/
+│   │   ├── init.sql
+│   │   ├── migrations/
+│   │   └── conf/
+│   │       └── postgresql.conf
+│   ├── redis/
+│   │   └── redis.conf
+│   ├── mysql/ (اختیاری)
+│   │   ├── init.sql
+│   │   └── my.cnf
+│   ├── mongodb/ (اختیاری)
+│   │   ├── init.js
+│   │   └── mongod.conf
+│   ├── scripts/
+│   │   ├── wait-for-db.sh
+│   │   ├── healthcheck.sh
+│   │   ├── backup.sh
+│   │   ├── restore.sh
+│   │   └── entrypoint.sh
+│   ├── env/
+│   │   ├── development.env
+│   │   ├── staging.env
+│   │   ├── production.env
+│   │   └── testing.env
+│   ├── compose/
+│   │   ├── docker-compose.dev.yml
+│   │   ├── docker-compose.test.yml
+│   │   ├── docker-compose.prod.yml
+│   │   └── docker-compose.monitoring.yml
+│   ├── monitoring/
+│   │   ├── prometheus.yml
+│   │   ├── grafana/
+│   │   │   ├── dashboards/
+│   │   │   └── datasources/
+│   │   └── loki/
+│   │       └── loki-config.yml
+│   ├── traefik/
+│   │   ├── traefik.yml
+│   │   └── dynamic.yml
+│   ├── logs/
+│   ├── volumes/
+│   └── README.md
 │
-├── scripts/                                  ← 📜 اسکریپت‌ها
+├── docs/
+│   ├── README.md
+│   ├── index.md
+│   ├── architecture/
+│   │   ├── overview.md
+│   │   ├── system-design.md
+│   │   ├── components.md
+│   │   ├── database.md
+│   │   ├── api-flow.md
+│   │   └── diagrams/
+│   │       ├── architecture.drawio
+│   │       ├── erd.drawio
+│   │       ├── sequence.drawio
+│   │       └── deployment.drawio
+│   ├── api/
+│   │   ├── authentication.md
+│   │   ├── endpoints.md
+│   │   ├── errors.md
+│   │   ├── examples.md
+│   │   ├── rate-limiting.md
+│   │   └── openapi.yaml
+│   ├── development/
+│   │   ├── setup.md
+│   │   ├── coding-style.md
+│   │   ├── project-structure.md
+│   │   ├── testing.md
+│   │   ├── debugging.md
+│   │   ├── contributing.md
+│   │   └── git-workflow.md
+│   ├── deployment/
+│   │   ├── docker.md
+│   │   ├── kubernetes.md
+│   │   ├── production.md
+│   │   ├── staging.md
+│   │   ├── backup.md
+│   │   ├── monitoring.md
+│   │   └── ci-cd.md
+│   ├── security/
+│   │   ├── authentication.md
+│   │   ├── authorization.md
+│   │   ├── secrets.md
+│   │   ├── vulnerabilities.md
+│   │   ├── encryption.md
+│   │   ├── security-checklist.md
+│   │   └── gdpr.md
+│   ├── database/
+│   │   ├── schema.md
+│   │   ├── migrations.md
+│   │   ├── indexes.md
+│   │   ├── queries.md
+│   │   ├── seed-data.md
+│   │   └── backup-strategy.md
+│   ├── guides/
+│   │   ├── getting-started.md
+│   │   ├── faq.md
+│   │   ├── troubleshooting.md
+│   │   ├── migration-guide.md
+│   │   ├── best-practices.md
+│   │   └── performance-tuning.md
+│   ├── releases/
+│   │   ├── CHANGELOG.md
+│   │   ├── roadmap.md
+│   │   ├── release-process.md
+│   │   └── versioning.md
+│   ├── assets/
+│   │   ├── images/
+│   │   │   ├── architecture/
+│   │   │   ├── screenshots/
+│   │   │   └── diagrams/
+│   │   ├── icons/
+│   │   ├── logos/
+│   │   └── videos/
+│   ├── templates/
+│   │   ├── issue-template.md
+│   │   ├── pr-template.md
+│   │   ├── adr-template.md
+│   │   └── rfc-template.md
+│   ├── adr/
+│   │   ├── 0001-use-monorepo.md
+│   │   ├── 0002-use-supabase.md
+│   │   ├── 0003-use-react-native.md
+│   │   └── index.md
+│   ├── rfcs/
+│   │   ├── 0001-duel-system.md
+│   │   ├── 0002-payment-gateway.md
+│   │   └── index.md
+│   ├── runbooks/
+│   │   ├── database-failure.md
+│   │   ├── payment-failure.md
+│   │   ├── performance-issue.md
+│   │   └── security-incident.md
+│   ├── performance/
+│   │   ├── benchmarks.md
+│   │   ├── load-testing.md
+│   │   └── optimization.md
+│   ├── compliance/
+│   │   ├── iso-27001.md
+│   │   ├── gdpr.md
+│   │   ├── pci-dss.md
+│   │   └── audit-logs.md
+│   └── localization/
+│       ├── en/
+│       ├── fa/
+│       ├── tr/
+│       └── ar/
+│
+├── scripts/
 │   ├── copy-assets.sh
 │   ├── deploy-web.sh
 │   ├── deploy-mobile.sh
@@ -1560,22 +2698,48 @@ dobna/                                    ← ریشه پروژه
 │   ├── healthcheck.sh
 │   └── backup.sh
 │
-├── .github/                                  ← 🔄 GitHub Actions
-│   └── workflows/
-│       ├── deploy-assets.yml
-│       ├── deploy-web.yml
-│       ├── deploy-mobile.yml
-│       ├── deploy-backend.yml
-│       ├── deploy-supabase.yml
-│       └── test.yml
-│
 ├── .env.example
 ├── .gitignore
+├── .dockerignore
+├── Dockerfile
+├── Dockerfile.dev
+├── Dockerfile.prod
+├── docker-compose.yml
+├── docker-compose.override.yml
 ├── pnpm-workspace.yaml
 ├── package.json
 ├── tsconfig.json
 ├── LICENSE
 └── README.md
-
-
 ```
+
+---
+
+📊 آمار کلی ساختار
+
+بخش تعداد پوشه‌ها تعداد فایل‌های تخمینی
+.github/ ۴ ۲۰+
+apps/dobna-web/ ۱۵ ۲۰۰+
+apps/dobna-mobile/ ۲۰ ۳۰۰+
+apps/dobna-admin/ ۱۲ ۱۵۰+
+backend/ ۱۸ ۱۵۰+
+packages/ (۲۲ پکیج) ۱۱۰+ ۵۰۰+
+supabase/ ۱۲ ۱۰۰+
+docker/ ۱۰ ۳۰+
+docs/ ۱۸ ۵۰+
+scripts/ ۱ ۷
+فایل‌های ریشه - ۱۲
+جمع کل ۲۰۰+ ۱۵۰۰+
+
+---
+
+✅ تأکید نهایی
+
+این ساختار کامل‌ترین و جامع‌ترین ساختار درختی پروژه DOBNA است که:
+
+· ✅ تمام پوشه‌ها و زیرپوشه‌ها را شامل می‌شود
+· ✅ تمام فایل‌های مشخص‌شده در طول طراحی را دارد
+· ✅ بر اساس معماری Monorepo + Shared Packages + Supabase طراحی شده
+· ✅ برای محیط Production و توسعه‌ی تیمی آماده است
+
+---
