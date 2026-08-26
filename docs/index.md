@@ -603,7 +603,21 @@ Users are responsible for ensuring that deployment and operation comply with all
 Security
 If you discover a security vulnerability, please do not disclose it publicly.
 Instead, report it privately to the project maintainers through the project's security reporting process.
-Copyright
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Copyright
+
 © 2026 DOBNA Project
 All rights reserved regarding project branding and trademarks.
 Source code is licensed under the MIT License unless otherwise stated.
