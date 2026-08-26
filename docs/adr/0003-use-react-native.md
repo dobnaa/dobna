@@ -1,9 +1,9 @@
-# ADR-0002: Adopt Supabase as the Backend Platform
+# ADR-0003: Use React Native for Cross-Platform Mobile Development
 
 - **Status:** Accepted
 - **Date:** 2026-01-01
 - **Decision Makers:** DOBNA Core Team
-- **Technical Story:** Backend Platform Selection
+- **Technical Story:** Mobile Platform Architecture
 - **Supersedes:** None
 - **Superseded By:** None
 
@@ -11,21 +11,22 @@
 
 # Context
 
-DOBNA is a large-scale social gaming and financial platform that requires a modern backend capable of supporting real-time communication, authentication, relational data, secure APIs, file storage, serverless execution, and scalable infrastructure.
+DOBNA is a unified digital platform consisting of multiple client applications that share common business logic, APIs, data models, authentication mechanisms, design language, and infrastructure.
 
-The platform includes multiple applications:
+The platform includes:
 
 - Web Application
 - Mobile Application
 - Admin Dashboard
 - Backend Services
+- Shared Packages
+- Supabase Backend
 
-Core business domains include:
+The mobile application is expected to provide nearly all core platform capabilities, including:
 
-- User Accounts
 - Authentication
-- Wallets
-- Transactions
+- Wallet
+- Payments
 - Games
 - Rooms
 - Duels
@@ -33,513 +34,533 @@ Core business domains include:
 - Communities
 - Chat
 - Notifications
-- Reports
-- Media Uploads
-- Leaderboards
+- User Profiles
+- Stories
+- Media Upload
+- Settings
 
-The backend platform must provide:
+The organization requires simultaneous support for:
 
-- PostgreSQL
-- Authentication
-- Authorization
-- Row-Level Security
-- Object Storage
-- Realtime subscriptions
-- Serverless Functions
-- SQL Migrations
-- Type Generation
-- API support
-- High scalability
+- Android
+- iOS
 
-After evaluating available solutions, Supabase was selected.
+while maintaining a single development team and maximizing code reuse.
 
 ---
 
 # Decision
 
-DOBNA adopts **Supabase** as the primary backend platform.
+DOBNA adopts **React Native** as the primary framework for mobile application development.
 
-Supabase serves as the system of record for:
+A single React Native codebase will be used to build both Android and iOS applications.
 
-- Database
-- Authentication
-- Authorization
-- Storage
-- Realtime
-- Edge Functions
-- Database Migrations
-- SQL Functions
-- Policies
-- Triggers
-- Views
-- Generated Types
-
-Custom backend services remain responsible for domain-specific business logic that is unsuitable for direct database execution.
+The application will consume the same shared packages used by the web platform whenever possible.
 
 ---
 
 # Goals
 
-The decision aims to achieve:
+The mobile architecture aims to achieve:
 
-- Strong type safety
-- Centralized authentication
-- Secure data access
-- Real-time capabilities
-- SQL-first architecture
-- PostgreSQL compatibility
-- Developer productivity
-- Scalable infrastructure
-- Low operational overhead
+- Cross-platform development
+- Shared business logic
+- Shared TypeScript types
+- Shared validation
+- Shared API layer
+- Shared design language
+- High development velocity
+- Lower maintenance cost
+- Native performance where required
+- Excellent developer experience
+
+---
+
+# Repository Structure
+
+```
+apps/
+
+    dobna-mobile/
+
+packages/
+
+backend/
+
+supabase/
+```
+
+The mobile application resides inside the Monorepo and consumes internal workspace packages.
 
 ---
 
 # Architecture
 
 ```
-Clients
+React Native App
+
 │
-├── Web
-├── Mobile
-├── Admin
+
+├── Screens
+
+├── Navigation
+
+├── Features
+
+├── Services
+
+├── Hooks
+
+├── State
+
+├── UI Components
+
 │
+
 ▼
 
-Supabase Platform
+Shared Packages
 
-├── PostgreSQL
+│
+
+├── UI
+
+├── Types
+
+├── Validators
+
+├── API
+
 ├── Auth
-├── Storage
-├── Realtime
-├── Edge Functions
-├── Row Level Security
-├── Database Functions
-├── Triggers
-├── Views
-└── REST API
+
+├── Config
+
+├── Utils
+
+├── Constants
+
+└── Localization
+
+│
 
 ▼
 
-Backend Services
+Supabase
+
+│
 
 ▼
 
-External Providers
+PostgreSQL
 ```
 
 ---
 
-# Repository Structure
+# Why React Native?
 
-Supabase resources are organized as follows:
+The majority of business logic is identical across platforms.
 
-```
-supabase/
+Examples include:
 
-    migrations/
+- Authentication
+- Wallet
+- User Profiles
+- Payments
+- Games
+- Communities
+- Chat
+- Notifications
 
-    functions/
+Duplicating this logic in native Android and iOS projects would significantly increase maintenance costs.
 
-    sql/
-
-        functions/
-
-        triggers/
-
-        policies/
-
-        views/
-
-        indexes/
-
-        types/
-
-        helpers/
-
-    tests/
-
-    scripts/
-
-    types/
-```
+React Native enables sharing most of the application code.
 
 ---
 
-# PostgreSQL
+# TypeScript
 
-PostgreSQL is the primary database.
+All React Native code must be written in TypeScript.
 
-Reasons:
+Benefits include:
 
-- ACID compliance
-- mature ecosystem
-- relational integrity
-- advanced indexing
-- transactions
-- JSON support
-- extensions
-- SQL functions
+- Type Safety
+- Better Refactoring
+- Shared Interfaces
+- IDE Support
+- Compile-time Validation
+
+---
+
+# Shared Packages
+
+The mobile application imports reusable modules from:
+
+```
+packages/
+```
+
+Examples:
+
+```
+packages/ui
+
+packages/api
+
+packages/auth
+
+packages/hooks
+
+packages/types
+
+packages/utils
+
+packages/constants
+
+packages/config
+
+packages/localization
+
+packages/theme
+```
+
+Business logic must never be duplicated inside the mobile application when it already exists in shared packages.
+
+---
+
+# UI Components
+
+Reusable components are shared whenever platform compatibility allows.
+
+Examples:
+
+- Buttons
+- Inputs
+- Cards
+- Avatars
+- Dialogs
+- Loading Indicators
+- Empty States
+- Error Screens
+
+Platform-specific components remain isolated inside the mobile application.
+
+---
+
+# Navigation
+
+Navigation is implemented independently from web routing.
+
+Responsibilities include:
+
+- Authentication Flow
+- Main Tabs
+- Deep Links
+- Modal Navigation
+- Nested Navigation
+- Protected Routes
+
+Navigation state remains internal to the mobile application.
+
+---
+
+# State Management
+
+Application state is divided into:
+
+Global State
+
+Examples:
+
+- User
+- Wallet
+- Notifications
+- Theme
+- Language
+
+Feature State
+
+Examples:
+
+- Chat
+- Game
+- Room
+- Community
+
+Server State
+
+Examples:
+
+- Supabase Queries
+- Cached API Data
+
+Each layer has a clearly defined responsibility.
+
+---
+
+# API Communication
+
+The mobile application communicates with:
+
+- Supabase
+- Backend APIs
+- Edge Functions
+
+through shared API clients.
+
+Direct SQL access from the client is prohibited.
 
 ---
 
 # Authentication
 
-Supabase Auth manages:
+Authentication is handled through Supabase Auth.
 
-- Email login
-- Password login
-- Password reset
-- Email verification
-- JWT issuance
-- Session management
+Supported flows include:
 
-Application profiles remain stored separately in the `profiles` table.
+- Email Login
+- Password Login
+- Session Refresh
+- Logout
+- Token Validation
 
----
-
-# Authorization
-
-Authorization is enforced through PostgreSQL Row-Level Security (RLS).
-
-Policies are defined per table under:
-
-```
-supabase/sql/policies/
-```
-
-Examples:
-
-- profiles
-- wallets
-- transactions
-- games
-- duels
-- challenges
-- communities
-- chat
+JWT management follows the shared authentication package.
 
 ---
 
-# Database Schema
+# Offline Support
 
-The schema is migration-driven.
+Where practical, the application supports:
 
-Every structural change must be introduced through SQL migrations.
+- Local persistence
+- Cached queries
+- Retry queues
+- Optimistic updates
 
-Example:
-
-```
-0001_create_extensions.sql
-0002_create_profiles.sql
-0003_create_wallets.sql
-...
-```
-
-Direct modifications to production databases are prohibited.
+Critical financial operations always require server confirmation.
 
 ---
 
-# SQL Functions
+# Push Notifications
 
-Business logic that benefits from transactional execution is implemented as PostgreSQL functions.
+Push notifications are supported for:
 
-Examples:
+- Messages
+- Challenges
+- Duels
+- Wallet Events
+- Community Activity
+- System Announcements
 
-- create duel
-- join duel
-- create room
-- purchase card
-- transfer escrow
-- update balance
-- complete game
-- process referral reward
-
-Benefits:
-
-- atomic execution
-- reduced latency
-- centralized validation
-- transactional integrity
+Notification handling remains platform-specific while payload structures are shared.
 
 ---
 
-# Triggers
+# Media
 
-Database triggers automate internal operations.
+The application supports:
 
-Examples:
+- Image Upload
+- Avatar Upload
+- Story Media
+- Chat Attachments
+- Community Images
 
-- timestamp updates
-- audit logging
-- balance synchronization
-- statistics updates
-
-Triggers are deterministic and idempotent where possible.
-
----
-
-# Views
-
-Database views expose optimized read models.
-
-Examples:
-
-- leaderboard
-- user statistics
-- community rankings
-- transaction summaries
-
-Views simplify reporting and analytics.
-
----
-
-# Row-Level Security
-
-All public tables enforce Row-Level Security.
-
-Rules include:
-
-- users access only their own private data
-- administrators receive elevated access
-- public resources expose limited information
-- service role bypasses policies when required
-
-Security is enforced at the database layer.
-
----
-
-# Storage
-
-Supabase Storage manages:
-
-- avatars
-- profile images
-- community images
-- chat attachments
-- game assets
-- uploaded documents
-
-Bucket permissions follow least-privilege principles.
+Uploads are processed through Supabase Storage and Edge Functions.
 
 ---
 
 # Realtime
 
-Realtime subscriptions are used for:
+Realtime features include:
 
-- chat messages
-- room updates
-- duel status
-- challenge status
-- notifications
-- presence indicators
+- Chat
+- Game Status
+- Duel Status
+- Challenge Updates
+- Online Presence
+- Notifications
 
-Realtime reduces polling and improves responsiveness.
-
----
-
-# Edge Functions
-
-Edge Functions handle operations requiring secure server-side execution.
-
-Examples:
-
-- payment webhooks
-- image processing
-- notifications
-- authentication hooks
-- game processing
-
-Functions are located under:
-
-```
-supabase/functions/
-```
+Realtime subscriptions use Supabase Realtime.
 
 ---
 
-# Type Generation
+# Security
 
-Database types are generated automatically.
+Security principles include:
 
-```
-supabase/types/database.types.ts
-```
-
-These types are consumed by shared packages and applications.
-
-Benefits:
-
-- compile-time validation
-- autocomplete
-- reduced runtime errors
-
----
-
-# Migrations
-
-Every schema modification must be reversible.
-
-Migration rules:
-
-- incremental numbering
-- immutable history
-- no editing applied migrations
-- rollback strategy documented
-
----
-
-# Testing
-
-Database behavior is verified using:
-
-- pgTAP
-- integration tests
-- SQL fixtures
-
-Coverage includes:
-
-- functions
-- triggers
-- RLS policies
-- transactions
-
----
-
-# Security Principles
-
-Supabase implementation follows:
-
-- Least Privilege
-- Principle of Separation
+- Secure Storage
 - JWT Authentication
-- Secure Defaults
-- SQL Parameterization
-- Encrypted Connections
-- Row-Level Security
-- Audit Logging
+- HTTPS Only
+- Certificate Validation
+- Least Privilege
+- Input Validation
+
+Sensitive information must never be stored in plaintext.
 
 ---
 
 # Performance
 
-Optimization techniques include:
+Performance optimization techniques include:
 
-- indexes
-- views
-- SQL functions
-- query planning
-- pagination
-- selective joins
+- Lazy Loading
+- Code Splitting
+- Memoization
+- Image Optimization
+- Pagination
+- Virtualized Lists
 
-Expensive business operations execute inside PostgreSQL where transactional consistency is required.
-
----
-
-# Monitoring
-
-Operational monitoring includes:
-
-- database metrics
-- slow queries
-- connection usage
-- Edge Function logs
-- audit events
-- cron execution
-
-Monitoring integrates with Prometheus, Grafana, and Loki where applicable.
+Expensive computations should remain on the backend whenever possible.
 
 ---
 
-# Backups
+# Platform-Specific Code
 
-Backup strategy includes:
+Platform-specific implementations are allowed only when necessary.
 
-- scheduled database backups
-- migration history
-- storage redundancy
-- disaster recovery procedures
+Examples:
 
-Backups are tested periodically.
+- Camera
+- Biometrics
+- Native Permissions
+- Background Tasks
+- Push Notification Registration
+
+All other functionality should remain platform-independent.
+
+---
+
+# Testing
+
+Testing includes:
+
+- Unit Tests
+- Integration Tests
+- Component Tests
+- End-to-End Tests
+
+Business logic should be tested inside shared packages whenever possible.
+
+---
+
+# Accessibility
+
+The application follows accessibility best practices:
+
+- Screen Readers
+- Dynamic Font Sizes
+- Color Contrast
+- Accessible Navigation
+- Keyboard Support (where applicable)
+
+Accessibility is considered a functional requirement.
+
+---
+
+# Localization
+
+All user-facing text is localized.
+
+Supported languages include:
+
+- English
+- Persian
+- Turkish
+- Arabic
+
+Translations are maintained inside shared localization packages.
+
+---
+
+# CI/CD
+
+The mobile application participates in the Monorepo pipeline.
+
+Only affected packages trigger rebuilds.
+
+Build artifacts are generated independently for:
+
+- Android
+- iOS
 
 ---
 
 # Advantages
 
-- PostgreSQL foundation
-- Built-in authentication
-- Row-Level Security
-- Realtime support
-- Object Storage
-- Serverless Functions
-- Excellent TypeScript integration
-- Migration support
-- SQL-first development
-- Reduced infrastructure complexity
-- High developer productivity
+- Single codebase
+- Cross-platform development
+- High code reuse
+- Faster delivery
+- Lower maintenance cost
+- Shared architecture
+- Shared business logic
+- Shared API layer
+- Shared validation
+- Shared TypeScript models
 
 ---
 
 # Disadvantages
 
-- Vendor-specific features
-- Edge Function runtime limitations
-- Advanced customization may require external services
-- Dependency on Supabase platform availability
+- Native modules occasionally required
+- Larger application size
+- Dependency on React Native ecosystem
+- Platform-specific debugging complexity
 
-These trade-offs are acceptable for the project's scale and goals.
+These drawbacks are acceptable considering the project's goals.
 
 ---
 
 # Alternatives Considered
 
-## Firebase
+## Native Android + Native iOS
 
 Rejected.
 
 Reasons:
 
-- No relational database
-- Limited SQL capabilities
-- Vendor-specific querying
-- Less suitable for transactional financial workflows
+- Two codebases
+- Higher maintenance cost
+- Duplicate business logic
+- Larger development team
+- Slower feature delivery
 
 ---
 
-## Self-Managed PostgreSQL
+## Flutter
 
 Rejected.
 
 Reasons:
 
-- Higher operational burden
-- Infrastructure maintenance
-- Manual authentication implementation
-- Increased DevOps complexity
+- Lower code sharing with existing React ecosystem
+- Separate UI framework
+- Duplicate frontend expertise
+- Reduced reuse of existing packages
 
 ---
 
-## Hasura
+## Kotlin Multiplatform
 
 Rejected.
 
 Reasons:
 
-- Additional operational complexity
-- Separate authentication layer
-- Less integrated developer experience
-
----
-
-## Appwrite
-
-Rejected.
-
-Reasons:
-
+- UI duplication
 - Smaller ecosystem
-- Less mature PostgreSQL integration
-- Fewer production references for financial workloads
+- Less mature integration with the current architecture
+
+---
+
+## Ionic / Capacitor
+
+Rejected.
+
+Reasons:
+
+- WebView limitations
+- Lower native performance
+- Less suitable for graphics-intensive game features
+- Inferior user experience for complex mobile interactions
 
 ---
 
@@ -547,19 +568,19 @@ Reasons:
 
 Positive:
 
-- Faster backend development
-- Centralized authentication
-- Strong type safety
-- Reduced infrastructure management
-- Secure database access
-- Simplified real-time implementation
-- Consistent SQL architecture
+- Unified development workflow
+- Shared packages
+- Consistent UI
+- Faster feature delivery
+- Reduced maintenance
+- Easier onboarding
+- Shared architecture across all clients
 
 Negative:
 
-- Dependence on Supabase ecosystem
-- Some advanced backend logic still requires custom services
-- Team must maintain SQL expertise
+- Occasional native development required
+- Dependency on React Native ecosystem
+- Platform-specific optimization remains necessary
 
 Overall, the benefits significantly outweigh the drawbacks.
 
@@ -568,7 +589,7 @@ Overall, the benefits significantly outweigh the drawbacks.
 # Related ADRs
 
 - ADR-0001 — Adopt a Monorepo Architecture
-- ADR-0003 — Use React Native for Mobile
+- ADR-0002 — Adopt Supabase as the Backend Platform
 - ADR-0004 — Shared Packages Strategy
 - ADR-0005 — Backend Service Architecture
 - ADR-0006 — Docker Deployment Strategy
@@ -577,13 +598,12 @@ Overall, the benefits significantly outweigh the drawbacks.
 
 # References
 
-- Supabase Documentation
-- PostgreSQL Documentation
-- PostgreSQL Row-Level Security Guide
-- Supabase Edge Functions Documentation
-- Supabase Storage Documentation
-- Supabase Realtime Documentation
-- pgTAP Documentation
+- React Native Documentation
+- Expo Documentation (where applicable)
+- TypeScript Documentation
+- React Navigation Documentation
+- React Native Performance Guide
+- Supabase React Native Documentation
 
 ---
 
@@ -591,10 +611,10 @@ Overall, the benefits significantly outweigh the drawbacks.
 
 **Accepted**
 
-Supabase is adopted as the primary backend platform for DOBNA.
+React Native is adopted as the standard framework for the DOBNA mobile application.
 
-All persistent application data, authentication, authorization, storage, realtime communication, database functions, migrations, and generated types will be managed through Supabase.
+All new mobile features shall be implemented using React Native and TypeScript, leveraging the shared packages defined within the Monorepo whenever possible.
 
-Custom backend services will complement Supabase only for domain-specific processing, external integrations, asynchronous workloads, and business operations that extend beyond database-centric responsibilities.
+Platform-specific native code shall be introduced only when required by device capabilities or performance considerations.
 
-This decision establishes the backend foundation for the entire DOBNA platform.
+This decision establishes the long-term mobile development strategy for the DOBNA ecosystem.
